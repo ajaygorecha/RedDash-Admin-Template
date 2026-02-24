@@ -1,0 +1,123 @@
+<!-- =============================================
+     REDDASH NAVBAR COMPONENT (Reference)
+     ============================================= -->
+<header class="navbar-top">
+  <!-- Sidebar Toggle -->
+  <button class="navbar-toggle" data-action="toggle-sidebar" aria-label="Toggle Sidebar">
+    <i class="ri-menu-line"></i>
+  </button>
+
+  <!-- Search Bar -->
+  <div class="navbar-search">
+    <i class="ri-search-line navbar-search-icon"></i>
+    <input type="text" placeholder="Search anything... (Ctrl+K)" id="navSearchInput"
+           data-translate-placeholder="search.placeholder" autocomplete="off" aria-label="Search">
+  </div>
+
+  <!-- Actions -->
+  <div class="navbar-actions">
+
+    <!-- Theme Toggle -->
+    <button class="navbar-action-btn" data-action="toggle-theme" title="Toggle Theme" aria-label="Toggle Theme">
+      <i class="ri-moon-line" data-theme-icon></i>
+    </button>
+
+    <!-- Language Selector -->
+    <div class="position-relative">
+      <button class="lang-selector" data-dropdown-trigger="langMenu" aria-label="Change Language">
+        <span class="lang-current-flag lang-flag">🇺🇸</span>
+        <span class="lang-current-label">EN</span>
+        <i class="ri-arrow-down-s-line" style="font-size:13px"></i>
+      </button>
+      <ul class="dropdown-menu" id="langMenu" style="min-width:140px;right:0;left:auto;position:absolute;top:calc(100%+6px)">
+        <li><a class="dropdown-item" data-lang="en"><span class="lang-flag">🇺🇸</span> English</a></li>
+        <li><a class="dropdown-item" data-lang="hi"><span class="lang-flag">🇮🇳</span> हिंदी</a></li>
+        <li><a class="dropdown-item" data-lang="ar"><span class="lang-flag">🇸🇦</span> العربية</a></li>
+      </ul>
+    </div>
+
+    <div class="navbar-divider"></div>
+
+    <!-- Notifications -->
+    <div class="position-relative">
+      <button class="navbar-action-btn" data-dropdown-trigger="notifDropdown" aria-label="Notifications">
+        <i class="ri-notification-3-line"></i>
+        <span class="navbar-badge"></span>
+      </button>
+      <div class="dropdown-menu notification-dropdown" id="notifDropdown"
+           style="right:0;left:auto;position:absolute;top:calc(100%+8px);padding:0">
+        <div class="notification-header">
+          <span class="notification-title" data-translate="notifications.title">Notifications</span>
+          <a href="#" class="text-sm text-primary fw-500" data-translate="notifications.markAll">Mark all read</a>
+        </div>
+        <div class="notification-item unread">
+          <div class="avatar avatar-sm" style="background:rgba(255,0,56,0.1);color:#ff0038;flex-shrink:0">
+            <i class="ri-user-add-line"></i>
+          </div>
+          <div class="notification-item-content">
+            <div class="notification-item-text">New user <strong>Sarah Connor</strong> registered</div>
+            <div class="notification-item-time">2 minutes ago</div>
+          </div>
+        </div>
+        <div class="notification-item unread">
+          <div class="avatar avatar-sm" style="background:rgba(25,135,84,0.1);color:#198754;flex-shrink:0">
+            <i class="ri-checkbox-circle-line"></i>
+          </div>
+          <div class="notification-item-content">
+            <div class="notification-item-text">Project <strong>Alpha</strong> milestone completed</div>
+            <div class="notification-item-time">1 hour ago</div>
+          </div>
+        </div>
+        <div class="notification-item">
+          <div class="avatar avatar-sm" style="background:rgba(255,193,7,0.1);color:#ffc107;flex-shrink:0">
+            <i class="ri-alert-line"></i>
+          </div>
+          <div class="notification-item-content">
+            <div class="notification-item-text">Server CPU usage exceeded <strong>85%</strong></div>
+            <div class="notification-item-time">3 hours ago</div>
+          </div>
+        </div>
+        <div class="notification-item">
+          <div class="avatar avatar-sm" style="background:rgba(13,202,240,0.1);color:#0dcaf0;flex-shrink:0">
+            <i class="ri-file-list-3-line"></i>
+          </div>
+          <div class="notification-item-content">
+            <div class="notification-item-text">Monthly report is ready to download</div>
+            <div class="notification-item-time">Yesterday</div>
+          </div>
+        </div>
+        <div class="notification-footer" data-translate="notifications.viewAll">View all notifications</div>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <button class="navbar-action-btn" data-action="open-settings" title="Settings" aria-label="Settings">
+      <i class="ri-settings-3-line"></i>
+    </button>
+
+    <div class="navbar-divider"></div>
+
+    <!-- User Dropdown -->
+    <div class="position-relative">
+      <div class="navbar-user" data-dropdown-trigger="userDropdown">
+        <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="navbar-user-avatar">
+        <span class="navbar-user-name">Alex Johnson</span>
+        <i class="ri-arrow-down-s-line navbar-user-chevron"></i>
+      </div>
+      <ul class="dropdown-menu" id="userDropdown" style="right:0;left:auto;position:absolute;top:calc(100%+8px);min-width:200px">
+        <li>
+          <div class="px-3 py-2 border-bottom" style="border-color:var(--border-color)">
+            <div class="fw-700 text-sm">Alex Johnson</div>
+            <div class="text-xs text-muted">alex@reddash.com</div>
+          </div>
+        </li>
+        <li><a class="dropdown-item" href="profile.html"><i class="ri-user-3-line"></i> <span data-translate="profile.title">Profile</span></a></li>
+        <li><a class="dropdown-item" href="#"><i class="ri-settings-3-line"></i> Account Settings</a></li>
+        <li><a class="dropdown-item" href="#"><i class="ri-wallet-line"></i> Billing</a></li>
+        <div class="dropdown-divider"></div>
+        <li><a class="dropdown-item text-danger" href="login.html"><i class="ri-logout-box-r-line"></i> <span data-translate="profile.logout">Logout</span></a></li>
+      </ul>
+    </div>
+
+  </div>
+</header>

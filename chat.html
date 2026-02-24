@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages — RedDash Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <style>
+    .page-content { padding: 0 !important; height: calc(100vh - var(--navbar-height, 64px)); overflow: hidden; display: flex; flex-direction: column; }
+    .chat-wrapper { display: flex; height: 100%; overflow: hidden; }
+    .chat-sidebar { width: 280px; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; background: var(--bg-card); flex-shrink: 0; }
+    .chat-sidebar-header { padding: 16px; border-bottom: 1px solid var(--border-color); }
+    .chat-sidebar-search { display: flex; align-items: center; gap: 8px; background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; }
+    .chat-sidebar-search input { border: none; background: transparent; outline: none; font-size: 13px; color: var(--text-main); width: 100%; }
+    .chat-sidebar-search input::placeholder { color: var(--text-light); }
+    .chat-sidebar-search i { color: var(--text-light); font-size: 16px; flex-shrink: 0; }
+    .chat-new-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; }
+    .chat-new-btn:hover { opacity: 0.88; }
+    .chat-contacts { flex: 1; overflow-y: auto; }
+    .contact-item { display: flex; gap: 10px; padding: 12px 16px; cursor: pointer; transition: background 0.15s; border-bottom: 1px solid var(--border-color-light, rgba(0,0,0,0.05)); position: relative; }
+    .contact-item:hover { background: var(--bg-hover); }
+    .contact-item.active { background: var(--bg-active, rgba(255,0,56,0.06)); border-left: 3px solid var(--primary); }
+    .contact-avatar-wrap { position: relative; flex-shrink: 0; }
+    .contact-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
+    .contact-status-dot { position: absolute; bottom: 2px; right: 2px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--bg-card); }
+    .contact-status-dot.online { background: #198754; }
+    .contact-status-dot.away { background: #ffc107; }
+    .contact-status-dot.offline { background: #adb5bd; }
+    .contact-info { flex: 1; min-width: 0; }
+    .contact-name { font-size: 13px; font-weight: 600; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .contact-last-msg { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .contact-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+    .contact-time { font-size: 11px; color: var(--text-light); }
+    .contact-unread { width: 18px; height: 18px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .chat-main { flex: 1; display: flex; flex-direction: column; background: var(--bg-body); min-width: 0; }
+    .chat-header { padding: 14px 20px; border-bottom: 1px solid var(--border-color); background: var(--bg-card); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .chat-header-user { display: flex; align-items: center; gap: 12px; }
+    .chat-header-avatar-wrap { position: relative; }
+    .chat-header-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    .chat-online-dot { position: absolute; bottom: 2px; right: 2px; width: 10px; height: 10px; border-radius: 50%; background: #198754; border: 2px solid var(--bg-card); }
+    .chat-header-name { font-size: 14px; font-weight: 700; color: var(--text-main); }
+    .chat-header-status { font-size: 12px; color: #198754; }
+    .chat-header-actions { display: flex; align-items: center; gap: 4px; }
+    .chat-action-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: none; background: transparent; color: var(--text-muted); border-radius: 8px; cursor: pointer; font-size: 18px; transition: all 0.15s; }
+    .chat-action-btn:hover { background: var(--bg-hover); color: var(--primary); }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 4px; }
+    .msg-row { display: flex; flex-direction: column; }
+    .msg-row.sent { align-items: flex-end; }
+    .msg-row.received { align-items: flex-start; }
+    .msg-bubble { max-width: 60%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
+    .msg-received { background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border-color); border-bottom-left-radius: 4px; }
+    .msg-sent { background: var(--primary); color: #fff; border-bottom-right-radius: 4px; }
+    .msg-time { font-size: 11px; color: var(--text-light); margin-top: 4px; padding: 0 2px; }
+    .msg-sent .msg-time { color: var(--text-light); text-align: right; }
+    .msg-img { max-width: 220px; border-radius: 10px; overflow: hidden; margin-top: 2px; }
+    .msg-img img { width: 100%; display: block; }
+    .date-separator { text-align: center; font-size: 11px; color: var(--text-light); background: var(--bg-hover); padding: 4px 12px; border-radius: 20px; align-self: center; margin: 12px 0; font-weight: 500; }
+    .typing-indicator { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+    .typing-dots { display: flex; gap: 4px; padding: 10px 14px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; border-bottom-left-radius: 4px; }
+    .typing-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--text-light); animation: bounce 1.2s infinite; }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
+    .chat-input-area { padding: 16px 20px; border-top: 1px solid var(--border-color); background: var(--bg-card); flex-shrink: 0; }
+    .chat-input-wrap { display: flex; align-items: center; gap: 10px; background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 12px; transition: border-color 0.2s; }
+    .chat-input-wrap:focus-within { border-color: var(--primary); }
+    .chat-input-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border: none; background: transparent; color: var(--text-muted); border-radius: 6px; cursor: pointer; font-size: 18px; transition: all 0.15s; flex-shrink: 0; }
+    .chat-input-btn:hover { color: var(--primary); background: var(--bg-hover); }
+    .chat-input-field { flex: 1; border: none; background: transparent; outline: none; font-size: 13px; color: var(--text-main); resize: none; max-height: 100px; }
+    .chat-input-field::placeholder { color: var(--text-light); }
+    .chat-send-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border: none; background: var(--primary); color: #fff; border-radius: 8px; cursor: pointer; font-size: 18px; transition: opacity 0.2s, transform 0.15s; flex-shrink: 0; }
+    .chat-send-btn:hover { opacity: 0.88; transform: scale(1.05); }
+    @media (max-width: 768px) { .chat-sidebar { display: none; } }
+  </style>
+</head>
+<body>
+<div class="layout-wrapper" id="layoutWrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-brand"><div class="sidebar-brand-icon"><i class="ri-dashboard-3-fill"></i></div><span class="sidebar-brand-text">Red<span>Dash</span></span></a>
+    <div class="sidebar-scroll"><ul class="sidebar-nav">
+      <li class="sidebar-section-label">Main</li>
+      <li class="sidebar-item"><a href="index.html" class="sidebar-link" data-tooltip="Dashboard"><i class="ri-dashboard-3-line"></i><span class="sidebar-link-text">Dashboard</span></a></li>
+      <li class="sidebar-section-label">Apps</li>
+      <li class="sidebar-item"><a href="users.html" class="sidebar-link" data-tooltip="Users"><i class="ri-team-line"></i><span class="sidebar-link-text">Users</span></a></li>
+      <li class="sidebar-item"><a href="projects.html" class="sidebar-link" data-tooltip="Projects"><i class="ri-folder-3-line"></i><span class="sidebar-link-text">Projects</span></a></li>
+      <li class="sidebar-item"><a href="calendar.html" class="sidebar-link" data-tooltip="Calendar"><i class="ri-calendar-line"></i><span class="sidebar-link-text">Calendar</span></a></li>
+      <li class="sidebar-item"><a href="kanban.html" class="sidebar-link" data-tooltip="Kanban"><i class="ri-layout-column-line"></i><span class="sidebar-link-text">Kanban</span><span class="sidebar-badge">New</span></a></li>
+      <li class="sidebar-item"><a href="chat.html" class="sidebar-link active" data-tooltip="Chat"><i class="ri-message-3-line"></i><span class="sidebar-link-text">Chat</span><span class="sidebar-badge">5</span></a></li>
+      <li class="sidebar-section-label">Pages</li>
+      <li class="sidebar-item"><a href="pricing.html" class="sidebar-link" data-tooltip="Pricing"><i class="ri-price-tag-3-line"></i><span class="sidebar-link-text">Pricing</span></a></li>
+      <li class="sidebar-item"><a href="faq.html" class="sidebar-link" data-tooltip="FAQ"><i class="ri-question-line"></i><span class="sidebar-link-text">FAQ</span></a></li>
+      <li class="sidebar-item"><a href="profile.html" class="sidebar-link" data-tooltip="Profile"><i class="ri-user-3-line"></i><span class="sidebar-link-text">Profile</span></a></li>
+      <li class="sidebar-item"><a href="#authMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#authMenu" aria-expanded="false" data-tooltip="Auth"><i class="ri-shield-keyhole-line"></i><span class="sidebar-link-text">Authentication</span><i class="ri-arrow-right-s-line sidebar-arrow"></i></a><ul class="sidebar-submenu collapse" id="authMenu"><li><a href="login.html" class="sidebar-link">Login</a></li><li><a href="register.html" class="sidebar-link">Register</a></li></ul></li>
+      <li class="sidebar-item"><a href="#errorMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#errorMenu" aria-expanded="false" data-tooltip="Errors"><i class="ri-error-warning-line"></i><span class="sidebar-link-text">Error Pages</span><i class="ri-arrow-right-s-line sidebar-arrow"></i></a><ul class="sidebar-submenu collapse" id="errorMenu"><li><a href="404.html" class="sidebar-link">404 Page</a></li><li><a href="maintenance.html" class="sidebar-link">Maintenance</a></li></ul></li>
+      <li class="sidebar-section-label">Support</li>
+      <li class="sidebar-item"><a href="documentation.html" class="sidebar-link" data-tooltip="Docs"><i class="ri-book-open-line"></i><span class="sidebar-link-text">Documentation</span></a></li>
+      <li class="sidebar-item"><a href="changelog.html" class="sidebar-link" data-tooltip="Changelog"><i class="ri-history-line"></i><span class="sidebar-link-text">Changelog</span></a></li>
+    </ul></div>
+    <div class="sidebar-footer"><a href="profile.html" class="sidebar-user"><img src="https://picsum.photos/seed/admin/100" alt="Admin" class="sidebar-user-avatar"><div class="sidebar-user-info"><span class="sidebar-user-name">Alex Johnson</span><span class="sidebar-user-role">Administrator</span></div></a></div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-wrapper">
+
+    <!-- Navbar -->
+    <header class="navbar-top">
+      <button class="navbar-toggle" data-action="toggle-sidebar"><i class="ri-menu-line"></i></button>
+      <div class="navbar-search"><i class="ri-search-line navbar-search-icon"></i><input type="text" placeholder="Search..." autocomplete="off"></div>
+      <div class="navbar-actions">
+        <button class="navbar-action-btn" data-action="toggle-theme"><i class="ri-moon-line" data-theme-icon></i></button>
+        <div class="navbar-divider"></div>
+        <button class="navbar-action-btn" data-action="open-settings"><i class="ri-settings-3-line"></i></button>
+        <div class="navbar-divider"></div>
+        <div class="position-relative"><div class="navbar-user" data-dropdown-trigger="userDropdown"><img src="https://picsum.photos/seed/admin/100" alt="Admin" class="navbar-user-avatar"><span class="navbar-user-name">Alex Johnson</span><i class="ri-arrow-down-s-line navbar-user-chevron"></i></div><ul class="dropdown-menu" id="userDropdown" style="right:0;left:auto;position:absolute;top:calc(100%+8px);min-width:180px"><li><a class="dropdown-item" href="profile.html"><i class="ri-user-3-line"></i> Profile</a></li><li><a class="dropdown-item" href="login.html" style="color:var(--danger)"><i class="ri-logout-box-r-line"></i> Logout</a></li></ul></div>
+      </div>
+    </header>
+
+    <!-- Chat Layout -->
+    <main class="page-content">
+      <div class="chat-wrapper">
+
+        <!-- Contacts Sidebar -->
+        <div class="chat-sidebar">
+          <div class="chat-sidebar-header">
+            <div class="chat-sidebar-search">
+              <i class="ri-search-line"></i>
+              <input type="text" placeholder="Search conversations..." id="contactSearch" oninput="filterContacts(this.value)">
+            </div>
+            <button class="chat-new-btn"><i class="ri-add-line"></i> New Chat</button>
+          </div>
+          <div class="chat-contacts" id="contactList">
+
+            <div class="contact-item active" onclick="selectContact(this, 'Sarah Connor', 'online', 'sarah', 'Product Designer')" data-name="sarah connor">
+              <div class="contact-avatar-wrap">
+                <img src="https://picsum.photos/seed/sarah/100" alt="Sarah Connor" class="contact-avatar">
+                <span class="contact-status-dot online"></span>
+              </div>
+              <div class="contact-info">
+                <div class="contact-name">Sarah Connor</div>
+                <div class="contact-last-msg">Sounds great! I'll check it now.</div>
+              </div>
+              <div class="contact-meta">
+                <span class="contact-time">2m</span>
+                <span class="contact-unread">3</span>
+              </div>
+            </div>
+
+            <div class="contact-item" onclick="selectContact(this, 'James Miller', 'online', 'james', 'Backend Engineer')" data-name="james miller">
+              <div class="contact-avatar-wrap">
+                <img src="https://picsum.photos/seed/james/100" alt="James Miller" class="contact-avatar">
+                <span class="contact-status-dot online"></span>
+              </div>
+              <div class="contact-info">
+                <div class="contact-name">James Miller</div>
+                <div class="contact-last-msg">The API is ready for testing.</div>
+              </div>
+              <div class="contact-meta">
+                <span class="contact-time">18m</span>
+                <span class="contact-unread">1</span>
+              </div>
+            </div>
+
+            <div class="contact-item" onclick="selectContact(this, 'Emily Chen', 'away', 'emily', 'UX Researcher')" data-name="emily chen">
+              <div class="contact-avatar-wrap">
+                <img src="https://picsum.photos/seed/emily/100" alt="Emily Chen" class="contact-avatar">
+                <span class="contact-status-dot away"></span>
+              </div>
+              <div class="contact-info">
+                <div class="contact-name">Emily Chen</div>
+                <div class="contact-last-msg">Can we meet tomorrow at 10am?</div>
+              </div>
+              <div class="contact-meta">
+                <span class="contact-time">1h</span>
+              </div>
+            </div>
+
+            <div class="contact-item" onclick="selectContact(this, 'David Park', 'offline', 'david', 'DevOps Lead')" data-name="david park">
+              <div class="contact-avatar-wrap">
+                <img src="https://picsum.photos/seed/david/100" alt="David Park" class="contact-avatar">
+                <span class="contact-status-dot offline"></span>
+              </div>
+              <div class="contact-info">
+                <div class="contact-name">David Park</div>
+                <div class="contact-last-msg">Deployment is complete. All green.</div>
+              </div>
+              <div class="contact-meta">
+                <span class="contact-time">3h</span>
+              </div>
+            </div>
+
+            <div class="contact-item" onclick="selectContact(this, 'Maria Gonzalez', 'online', 'maria', 'Marketing Manager')" data-name="maria gonzalez">
+              <div class="contact-avatar-wrap">
+                <img src="https://picsum.photos/seed/maria/100" alt="Maria Gonzalez" class="contact-avatar">
+                <span class="contact-status-dot online"></span>
+              </div>
+              <div class="contact-info">
+                <div class="contact-name">Maria Gonzalez</div>
+                <div class="contact-last-msg">The campaign results are in!</div>
+              </div>
+              <div class="contact-meta">
+                <span class="contact-time">5h</span>
+                <span class="contact-unread">5</span>
+              </div>
+            </div>
+
+            <div class="contact-item" onclick="selectContact(this, 'Tom Bradley', 'away', 'tom', 'Frontend Engineer')" data-name="tom bradley">
+              <div class="contact-avatar-wrap">
+                <img src="https://picsum.photos/seed/tom/100" alt="Tom Bradley" class="contact-avatar">
+                <span class="contact-status-dot away"></span>
+              </div>
+              <div class="contact-info">
+                <div class="contact-name">Tom Bradley</div>
+                <div class="contact-last-msg">I pushed the fix to main.</div>
+              </div>
+              <div class="contact-meta">
+                <span class="contact-time">Yesterday</span>
+              </div>
+            </div>
+
+            <div class="contact-item" onclick="selectContact(this, 'Lisa Tanaka', 'offline', 'lisa', 'QA Engineer')" data-name="lisa tanaka">
+              <div class="contact-avatar-wrap">
+                <img src="https://picsum.photos/seed/lisa/100" alt="Lisa Tanaka" class="contact-avatar">
+                <span class="contact-status-dot offline"></span>
+              </div>
+              <div class="contact-info">
+                <div class="contact-name">Lisa Tanaka</div>
+                <div class="contact-last-msg">Found 2 bugs in the checkout flow.</div>
+              </div>
+              <div class="contact-meta">
+                <span class="contact-time">Yesterday</span>
+              </div>
+            </div>
+
+            <div class="contact-item" onclick="selectContact(this, 'Robert Kim', 'offline', 'robert', 'Data Analyst')" data-name="robert kim">
+              <div class="contact-avatar-wrap">
+                <img src="https://picsum.photos/seed/robert/100" alt="Robert Kim" class="contact-avatar">
+                <span class="contact-status-dot offline"></span>
+              </div>
+              <div class="contact-info">
+                <div class="contact-name">Robert Kim</div>
+                <div class="contact-last-msg">Sent you the Q1 report.</div>
+              </div>
+              <div class="contact-meta">
+                <span class="contact-time">2d</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Chat Main Area -->
+        <div class="chat-main">
+          <!-- Chat Header -->
+          <div class="chat-header">
+            <div class="chat-header-user">
+              <div class="chat-header-avatar-wrap">
+                <img src="https://picsum.photos/seed/sarah/100" alt="Sarah Connor" class="chat-header-avatar" id="chatHeaderAvatar">
+                <span class="chat-online-dot" id="chatOnlineDot"></span>
+              </div>
+              <div>
+                <div class="chat-header-name" id="chatHeaderName">Sarah Connor</div>
+                <div class="chat-header-status" id="chatHeaderStatus">Online — Product Designer</div>
+              </div>
+            </div>
+            <div class="chat-header-actions">
+              <button class="chat-action-btn" title="Video call"><i class="ri-vidicon-line"></i></button>
+              <button class="chat-action-btn" title="Voice call"><i class="ri-phone-line"></i></button>
+              <button class="chat-action-btn" title="Search in chat"><i class="ri-search-line"></i></button>
+              <button class="chat-action-btn" title="More options"><i class="ri-more-2-line"></i></button>
+            </div>
+          </div>
+
+          <!-- Messages -->
+          <div class="chat-messages" id="chatMessages">
+
+            <div class="date-separator">Yesterday</div>
+
+            <div class="msg-row received">
+              <div class="msg-bubble msg-received">Hey Alex! Did you get a chance to review the new design mockups I sent over?</div>
+              <span class="msg-time">10:24 AM</span>
+            </div>
+
+            <div class="msg-row sent">
+              <div class="msg-bubble msg-sent">Yes! I went through them this morning. Overall really impressive work Sarah.</div>
+              <span class="msg-time">10:31 AM</span>
+            </div>
+
+            <div class="msg-row sent">
+              <div class="msg-bubble msg-sent">I especially like the new onboarding flow. Much cleaner than before.</div>
+              <span class="msg-time">10:31 AM</span>
+            </div>
+
+            <div class="msg-row received">
+              <div class="msg-bubble msg-received">Thanks so much! I spent a lot of time on the onboarding. Glad it shows.</div>
+              <span class="msg-time">10:35 AM</span>
+            </div>
+
+            <div class="msg-row received">
+              <div class="msg-bubble msg-received">Here are the updated screens for the mobile version:</div>
+              <div class="msg-img">
+                <img src="https://picsum.photos/seed/mockup1/400/250" alt="Mockup">
+              </div>
+              <span class="msg-time">10:36 AM</span>
+            </div>
+
+            <div class="msg-row sent">
+              <div class="msg-bubble msg-sent">These look fantastic. The color palette is spot on with our brand guidelines.</div>
+              <span class="msg-time">10:42 AM</span>
+            </div>
+
+            <div class="msg-row received">
+              <div class="msg-bubble msg-received">I had a couple of concerns about the dashboard spacing on tablet. Can you check the Figma link?</div>
+              <span class="msg-time">10:44 AM</span>
+            </div>
+
+            <div class="msg-row sent">
+              <div class="msg-bubble msg-sent">Just opened it. I see what you mean — the sidebar collapses awkwardly at 768px.</div>
+              <span class="msg-time">10:48 AM</span>
+            </div>
+
+            <div class="msg-row sent">
+              <div class="msg-bubble msg-sent">I'll have Tom look at the breakpoints today and push a fix.</div>
+              <span class="msg-time">10:49 AM</span>
+            </div>
+
+            <div class="date-separator">Today</div>
+
+            <div class="msg-row received">
+              <div class="msg-bubble msg-received">Perfect! Also, one more thing — the client wants a dark mode version by Friday.</div>
+              <span class="msg-time">9:15 AM</span>
+            </div>
+
+            <div class="msg-row sent">
+              <div class="msg-bubble msg-sent">Friday is tight but doable. I'll loop in the dev team today.</div>
+              <span class="msg-time">9:22 AM</span>
+            </div>
+
+            <div class="msg-row received">
+              <div class="msg-bubble msg-received">Amazing! I'll send over the dark mode color tokens this afternoon.</div>
+              <span class="msg-time">9:25 AM</span>
+            </div>
+
+            <div class="msg-row sent">
+              <div class="msg-bubble msg-sent">Sounds great! I'll check it now.</div>
+              <span class="msg-time">9:28 AM</span>
+            </div>
+
+            <!-- Typing indicator -->
+            <div class="msg-row received" id="typingIndicator" style="display:none;">
+              <div class="typing-dots">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Input Area -->
+          <div class="chat-input-area">
+            <div class="chat-input-wrap">
+              <button class="chat-input-btn" title="Emoji"><i class="ri-emotion-line"></i></button>
+              <button class="chat-input-btn" title="Attach file"><i class="ri-attachment-2"></i></button>
+              <textarea class="chat-input-field" id="msgInput" rows="1" placeholder="Type a message..." onkeydown="handleMsgKey(event)"></textarea>
+              <button class="chat-input-btn" title="Voice message"><i class="ri-mic-line"></i></button>
+              <button class="chat-send-btn" onclick="sendMessage()" title="Send"><i class="ri-send-plane-fill"></i></button>
+            </div>
+          </div>
+        </div>
+        <!-- /Chat Main -->
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Settings Panel -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-panel-header"><span class="settings-panel-title"><i class="ri-settings-3-line me-2"></i>Layout Settings</span><button class="settings-close" data-action="close-settings"><i class="ri-close-line"></i></button></div>
+  <div class="settings-panel-body">
+    <div class="settings-section-title">Theme</div><div class="settings-option" data-action="toggle-theme"><i class="ri-moon-line"></i> Dark Mode</div>
+    <div class="settings-section-title">Layout Type</div><div class="settings-option active" data-layout="default"><i class="ri-layout-left-2-line"></i> Default</div><div class="settings-option" data-layout="horizontal"><i class="ri-layout-top-2-line"></i> Horizontal</div><div class="settings-option" data-layout="boxed"><i class="ri-layout-4-line"></i> Boxed</div>
+    <div class="settings-section-title">Language</div><div class="settings-option" data-lang="en">🇺🇸 English</div><div class="settings-option" data-lang="hi">🇮🇳 हिंदी</div><div class="settings-option" data-lang="ar">🇸🇦 العربية</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/animations.js"></script>
+<script src="assets/js/i18n.js"></script>
+<button class="scroll-to-top" id="scrollToTop"><i class="ri-arrow-up-line"></i></button>
+
+<script>
+  function selectContact(el, name, status, seed, role) {
+    document.querySelectorAll('.contact-item').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    const unread = el.querySelector('.contact-unread');
+    if (unread) unread.remove();
+    document.getElementById('chatHeaderName').textContent = name;
+    document.getElementById('chatHeaderAvatar').src = 'https://picsum.photos/seed/' + seed + '/100';
+    const dot = document.getElementById('chatOnlineDot');
+    const statusEl = document.getElementById('chatHeaderStatus');
+    if (status === 'online') {
+      dot.style.display = 'block'; dot.style.background = '#198754';
+      statusEl.style.color = '#198754';
+      statusEl.textContent = 'Online — ' + role;
+    } else if (status === 'away') {
+      dot.style.display = 'block'; dot.style.background = '#ffc107';
+      statusEl.style.color = '#d48d00';
+      statusEl.textContent = 'Away — ' + role;
+    } else {
+      dot.style.display = 'none';
+      statusEl.style.color = 'var(--text-light)';
+      statusEl.textContent = 'Offline — ' + role;
+    }
+    if (typeof gsap !== 'undefined') {
+      gsap.from('#chatMessages', { opacity: 0, y: 10, duration: 0.3, ease: 'power2.out' });
+    }
+  }
+
+  function sendMessage() {
+    const input = document.getElementById('msgInput');
+    const text = input.value.trim();
+    if (!text) return;
+    const msgs = document.getElementById('chatMessages');
+    const row = document.createElement('div');
+    row.className = 'msg-row sent';
+    const now = new Date();
+    const time = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0') + ' ' + (now.getHours() >= 12 ? 'PM' : 'AM');
+    row.innerHTML = `<div class="msg-bubble msg-sent">${escHtml(text)}</div><span class="msg-time">${time}</span>`;
+    msgs.appendChild(row);
+    input.value = '';
+    input.style.height = 'auto';
+    msgs.scrollTop = msgs.scrollHeight;
+    if (typeof gsap !== 'undefined') {
+      gsap.from(row, { opacity: 0, x: 20, duration: 0.25, ease: 'power2.out' });
+    }
+    // Simulate typing and reply
+    setTimeout(() => {
+      const typing = document.getElementById('typingIndicator');
+      typing.style.display = 'flex';
+      msgs.scrollTop = msgs.scrollHeight;
+      setTimeout(() => {
+        typing.style.display = 'none';
+        const replies = [
+          "Got it! I'll get back to you shortly.",
+          "Thanks for the update.",
+          "Sounds good to me!",
+          "Let me check and confirm.",
+          "Perfect, appreciate it!"
+        ];
+        const reply = document.createElement('div');
+        reply.className = 'msg-row received';
+        reply.innerHTML = `<div class="msg-bubble msg-received">${replies[Math.floor(Math.random()*replies.length)]}</div><span class="msg-time">${time}</span>`;
+        msgs.appendChild(reply);
+        msgs.scrollTop = msgs.scrollHeight;
+        if (typeof gsap !== 'undefined') {
+          gsap.from(reply, { opacity: 0, x: -20, duration: 0.25, ease: 'power2.out' });
+        }
+      }, 1800);
+    }, 600);
+  }
+
+  function handleMsgKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function filterContacts(q) {
+    q = q.toLowerCase();
+    document.querySelectorAll('.contact-item').forEach(item => {
+      const name = item.dataset.name || '';
+      item.style.display = name.includes(q) ? '' : 'none';
+    });
+  }
+
+  // Auto-resize textarea
+  document.getElementById('msgInput').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+  });
+
+  // Scroll messages to bottom on load
+  document.addEventListener('DOMContentLoaded', function() {
+    const msgs = document.getElementById('chatMessages');
+    msgs.scrollTop = msgs.scrollHeight;
+    if (typeof gsap !== 'undefined') {
+      gsap.from('.chat-sidebar', { opacity: 0, x: -20, duration: 0.4, ease: 'power2.out' });
+      gsap.from('.chat-header', { opacity: 0, y: -10, duration: 0.3, ease: 'power2.out', delay: 0.1 });
+    }
+  });
+</script>
+</body>
+</html>

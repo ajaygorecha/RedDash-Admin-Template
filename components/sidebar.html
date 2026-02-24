@@ -1,0 +1,148 @@
+<!-- =============================================
+     REDDASH SIDEBAR COMPONENT (Reference)
+     Include inline in each page
+     ============================================= -->
+<aside class="sidebar" id="sidebar">
+  <!-- Brand -->
+  <a href="index.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon">
+      <i class="ri-dashboard-3-fill"></i>
+    </div>
+    <span class="sidebar-brand-text">Red<span>Dash</span></span>
+  </a>
+
+  <!-- Scrollable Nav -->
+  <div class="sidebar-scroll">
+    <ul class="sidebar-nav">
+
+      <!-- Main -->
+      <li class="sidebar-section-label" data-translate="nav.dashboard">Main</li>
+
+      <li class="sidebar-item">
+        <a href="index.html" class="sidebar-link" data-tooltip="Dashboard">
+          <i class="ri-dashboard-3-line"></i>
+          <span class="sidebar-link-text" data-translate="nav.dashboard">Dashboard</span>
+        </a>
+      </li>
+
+      <!-- Apps -->
+      <li class="sidebar-section-label">Apps</li>
+
+      <li class="sidebar-item">
+        <a href="users.html" class="sidebar-link" data-tooltip="Users">
+          <i class="ri-team-line"></i>
+          <span class="sidebar-link-text" data-translate="nav.users">Users</span>
+        </a>
+      </li>
+
+      <li class="sidebar-item">
+        <a href="projects.html" class="sidebar-link" data-tooltip="Projects">
+          <i class="ri-folder-3-line"></i>
+          <span class="sidebar-link-text" data-translate="nav.projects">Projects</span>
+        </a>
+      </li>
+
+      <li class="sidebar-item">
+        <a href="calendar.html" class="sidebar-link" data-tooltip="Calendar">
+          <i class="ri-calendar-line"></i>
+          <span class="sidebar-link-text" data-translate="nav.calendar">Calendar</span>
+        </a>
+      </li>
+
+      <li class="sidebar-item">
+        <a href="kanban.html" class="sidebar-link" data-tooltip="Kanban">
+          <i class="ri-layout-column-line"></i>
+          <span class="sidebar-link-text" data-translate="nav.kanban">Kanban</span>
+          <span class="sidebar-badge">New</span>
+        </a>
+      </li>
+
+      <li class="sidebar-item">
+        <a href="chat.html" class="sidebar-link" data-tooltip="Chat">
+          <i class="ri-message-3-line"></i>
+          <span class="sidebar-link-text" data-translate="nav.chat">Chat</span>
+          <span class="sidebar-badge">5</span>
+        </a>
+      </li>
+
+      <!-- Pages -->
+      <li class="sidebar-section-label">Pages</li>
+
+      <li class="sidebar-item">
+        <a href="pricing.html" class="sidebar-link" data-tooltip="Pricing">
+          <i class="ri-price-tag-3-line"></i>
+          <span class="sidebar-link-text" data-translate="nav.pricing">Pricing</span>
+        </a>
+      </li>
+
+      <li class="sidebar-item">
+        <a href="faq.html" class="sidebar-link" data-tooltip="FAQ">
+          <i class="ri-question-line"></i>
+          <span class="sidebar-link-text" data-translate="nav.faq">FAQ</span>
+        </a>
+      </li>
+
+      <li class="sidebar-item">
+        <a href="profile.html" class="sidebar-link" data-tooltip="Profile">
+          <i class="ri-user-3-line"></i>
+          <span class="sidebar-link-text" data-translate="nav.profile">Profile</span>
+        </a>
+      </li>
+
+      <!-- Auth (collapsible) -->
+      <li class="sidebar-item">
+        <a href="#authMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#authMenu" aria-expanded="false" data-tooltip="Authentication">
+          <i class="ri-shield-keyhole-line"></i>
+          <span class="sidebar-link-text" data-translate="nav.authentication">Authentication</span>
+          <i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="authMenu">
+          <li><a href="login.html" class="sidebar-link" data-translate="nav.login">Login</a></li>
+          <li><a href="register.html" class="sidebar-link" data-translate="nav.register">Register</a></li>
+        </ul>
+      </li>
+
+      <!-- Error pages -->
+      <li class="sidebar-item">
+        <a href="#errorMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#errorMenu" aria-expanded="false" data-tooltip="Error Pages">
+          <i class="ri-error-warning-line"></i>
+          <span class="sidebar-link-text" data-translate="nav.pages">Error Pages</span>
+          <i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="errorMenu">
+          <li><a href="404.html" class="sidebar-link" data-translate="nav.error404">404 Page</a></li>
+          <li><a href="maintenance.html" class="sidebar-link" data-translate="nav.maintenance">Maintenance</a></li>
+        </ul>
+      </li>
+
+      <!-- Docs -->
+      <li class="sidebar-section-label">Support</li>
+
+      <li class="sidebar-item">
+        <a href="documentation.html" class="sidebar-link" data-tooltip="Documentation">
+          <i class="ri-book-open-line"></i>
+          <span class="sidebar-link-text" data-translate="nav.documentation">Documentation</span>
+        </a>
+      </li>
+
+      <li class="sidebar-item">
+        <a href="changelog.html" class="sidebar-link" data-tooltip="Changelog">
+          <i class="ri-history-line"></i>
+          <span class="sidebar-link-text" data-translate="nav.changelog">Changelog</span>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <div class="sidebar-footer">
+    <a href="profile.html" class="sidebar-user">
+      <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="sidebar-user-avatar">
+      <div class="sidebar-user-info">
+        <span class="sidebar-user-name">Alex Johnson</span>
+        <span class="sidebar-user-role">Administrator</span>
+      </div>
+    </a>
+  </div>
+</aside>

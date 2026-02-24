@@ -1,0 +1,67 @@
+<!-- =============================================
+     REDDASH SETTINGS PANEL COMPONENT (Reference)
+     ============================================= -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-panel-header">
+    <span class="settings-panel-title">
+      <i class="ri-settings-3-line me-2"></i> Layout Settings
+    </span>
+    <button class="settings-close" data-action="close-settings" aria-label="Close">
+      <i class="ri-close-line"></i>
+    </button>
+  </div>
+
+  <div class="settings-panel-body">
+
+    <!-- Theme -->
+    <div class="settings-section-title">Theme</div>
+    <div class="settings-option" data-action="toggle-theme" id="themeToggleOption">
+      <i class="ri-moon-line"></i> Dark Mode
+    </div>
+
+    <!-- Layout Type -->
+    <div class="settings-section-title">Layout Type</div>
+    <div class="settings-option active" data-layout="default">
+      <i class="ri-layout-left-2-line"></i> Default Sidebar
+    </div>
+    <div class="settings-option" data-layout="horizontal">
+      <i class="ri-layout-top-2-line"></i> Horizontal Layout
+    </div>
+    <div class="settings-option" data-layout="boxed">
+      <i class="ri-layout-4-line"></i> Boxed Layout
+    </div>
+
+    <!-- Sidebar State -->
+    <div class="settings-section-title">Sidebar</div>
+    <div class="settings-option" id="collapseOption" data-action="toggle-sidebar-setting">
+      <i class="ri-side-bar-line"></i> Collapsed Sidebar
+    </div>
+
+    <!-- RTL -->
+    <div class="settings-section-title">Direction</div>
+    <div class="settings-option d-flex align-items-center justify-content-between">
+      <span><i class="ri-layout-right-2-line me-2"></i>RTL Mode</span>
+      <label class="form-switch mb-0" style="margin-left:auto">
+        <input type="checkbox" data-action="toggle-rtl" id="rtlSwitch">
+      </label>
+    </div>
+
+    <!-- Language -->
+    <div class="settings-section-title">Language</div>
+    <div class="settings-option" data-lang="en">
+      🇺🇸 English
+    </div>
+    <div class="settings-option" data-lang="hi">
+      🇮🇳 हिंदी
+    </div>
+    <div class="settings-option" data-lang="ar">
+      🇸🇦 العربية
+    </div>
+
+    <div class="divider mt-4"></div>
+    <div class="text-sm text-muted text-center">
+      RedDash v1.0.0 · <a href="documentation.html">Docs</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanban Board — RedDash Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <style>
+    .kanban-board { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; align-items: flex-start; }
+    .kanban-col { width: 300px; flex-shrink: 0; }
+    .kanban-col-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: var(--bg-card); border-radius: var(--radius) var(--radius) 0 0; border: 1px solid var(--border-color); border-bottom: none; }
+    .kanban-col-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .kanban-col-title { font-size: 13px; font-weight: 700; color: var(--text-main); flex: 1; letter-spacing: 0.3px; }
+    .kanban-col-count { font-size: 11px; background: var(--bg-hover); color: var(--text-muted); padding: 2px 7px; border-radius: 20px; font-weight: 600; }
+    .kanban-col-add { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border: none; background: transparent; color: var(--text-light); cursor: pointer; border-radius: 6px; font-size: 18px; line-height: 1; }
+    .kanban-col-add:hover { background: var(--bg-hover); color: var(--primary); }
+    .kanban-cards { background: var(--bg-hover); border: 1px solid var(--border-color); border-radius: 0 0 var(--radius) var(--radius); padding: 10px; min-height: 200px; display: flex; flex-direction: column; gap: 10px; transition: background 0.2s; }
+    .kanban-cards.drag-over { background: color-mix(in srgb, var(--primary) 8%, var(--bg-hover)); border-color: var(--primary); }
+    .kanban-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-sm, 8px); padding: 14px; cursor: grab; transition: box-shadow 0.2s, transform 0.2s; }
+    .kanban-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+    .kanban-card.dragging { opacity: 0.4; transform: scale(0.97); cursor: grabbing; }
+    .kanban-card-priority { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.4px; }
+    .priority-high { background: rgba(220,53,69,0.12); color: #dc3545; }
+    .priority-medium { background: rgba(255,193,7,0.15); color: #d48d00; }
+    .priority-low { background: rgba(25,135,84,0.12); color: #198754; }
+    .kanban-card-title { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 6px; line-height: 1.4; }
+    .kanban-card-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
+    .kanban-card-footer { display: flex; align-items: center; justify-content: space-between; }
+    .kanban-card-assignee { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; border: 2px solid var(--bg-card); box-shadow: 0 0 0 1px var(--border-color); }
+    .kanban-card-meta { display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text-light); }
+    .kanban-card-meta i { font-size: 13px; }
+    .kanban-add-col { width: 260px; flex-shrink: 0; }
+    .kanban-add-col-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px; background: transparent; border: 2px dashed var(--border-color); border-radius: var(--radius); color: var(--text-light); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .kanban-add-col-btn:hover { border-color: var(--primary); color: var(--primary); background: rgba(255,0,56,0.04); }
+    .page-header-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+<div class="layout-wrapper" id="layoutWrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <a href="index.html" class="sidebar-brand"><div class="sidebar-brand-icon"><i class="ri-dashboard-3-fill"></i></div><span class="sidebar-brand-text">Red<span>Dash</span></span></a>
+    <div class="sidebar-scroll"><ul class="sidebar-nav">
+      <li class="sidebar-section-label">Main</li>
+      <li class="sidebar-item"><a href="index.html" class="sidebar-link" data-tooltip="Dashboard"><i class="ri-dashboard-3-line"></i><span class="sidebar-link-text">Dashboard</span></a></li>
+      <li class="sidebar-section-label">Apps</li>
+      <li class="sidebar-item"><a href="users.html" class="sidebar-link" data-tooltip="Users"><i class="ri-team-line"></i><span class="sidebar-link-text">Users</span></a></li>
+      <li class="sidebar-item"><a href="projects.html" class="sidebar-link" data-tooltip="Projects"><i class="ri-folder-3-line"></i><span class="sidebar-link-text">Projects</span></a></li>
+      <li class="sidebar-item"><a href="calendar.html" class="sidebar-link" data-tooltip="Calendar"><i class="ri-calendar-line"></i><span class="sidebar-link-text">Calendar</span></a></li>
+      <li class="sidebar-item"><a href="kanban.html" class="sidebar-link active" data-tooltip="Kanban"><i class="ri-layout-column-line"></i><span class="sidebar-link-text">Kanban</span><span class="sidebar-badge">New</span></a></li>
+      <li class="sidebar-item"><a href="chat.html" class="sidebar-link" data-tooltip="Chat"><i class="ri-message-3-line"></i><span class="sidebar-link-text">Chat</span><span class="sidebar-badge">5</span></a></li>
+      <li class="sidebar-section-label">Pages</li>
+      <li class="sidebar-item"><a href="pricing.html" class="sidebar-link" data-tooltip="Pricing"><i class="ri-price-tag-3-line"></i><span class="sidebar-link-text">Pricing</span></a></li>
+      <li class="sidebar-item"><a href="faq.html" class="sidebar-link" data-tooltip="FAQ"><i class="ri-question-line"></i><span class="sidebar-link-text">FAQ</span></a></li>
+      <li class="sidebar-item"><a href="profile.html" class="sidebar-link" data-tooltip="Profile"><i class="ri-user-3-line"></i><span class="sidebar-link-text">Profile</span></a></li>
+      <li class="sidebar-item"><a href="#authMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#authMenu" aria-expanded="false" data-tooltip="Auth"><i class="ri-shield-keyhole-line"></i><span class="sidebar-link-text">Authentication</span><i class="ri-arrow-right-s-line sidebar-arrow"></i></a><ul class="sidebar-submenu collapse" id="authMenu"><li><a href="login.html" class="sidebar-link">Login</a></li><li><a href="register.html" class="sidebar-link">Register</a></li></ul></li>
+      <li class="sidebar-item"><a href="#errorMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#errorMenu" aria-expanded="false" data-tooltip="Errors"><i class="ri-error-warning-line"></i><span class="sidebar-link-text">Error Pages</span><i class="ri-arrow-right-s-line sidebar-arrow"></i></a><ul class="sidebar-submenu collapse" id="errorMenu"><li><a href="404.html" class="sidebar-link">404 Page</a></li><li><a href="maintenance.html" class="sidebar-link">Maintenance</a></li></ul></li>
+      <li class="sidebar-section-label">Support</li>
+      <li class="sidebar-item"><a href="documentation.html" class="sidebar-link" data-tooltip="Docs"><i class="ri-book-open-line"></i><span class="sidebar-link-text">Documentation</span></a></li>
+      <li class="sidebar-item"><a href="changelog.html" class="sidebar-link" data-tooltip="Changelog"><i class="ri-history-line"></i><span class="sidebar-link-text">Changelog</span></a></li>
+    </ul></div>
+    <div class="sidebar-footer"><a href="profile.html" class="sidebar-user"><img src="https://picsum.photos/seed/admin/100" alt="Admin" class="sidebar-user-avatar"><div class="sidebar-user-info"><span class="sidebar-user-name">Alex Johnson</span><span class="sidebar-user-role">Administrator</span></div></a></div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-wrapper">
+
+    <!-- Navbar -->
+    <header class="navbar-top">
+      <button class="navbar-toggle" data-action="toggle-sidebar"><i class="ri-menu-line"></i></button>
+      <div class="navbar-search"><i class="ri-search-line navbar-search-icon"></i><input type="text" placeholder="Search..." autocomplete="off"></div>
+      <div class="navbar-actions">
+        <button class="navbar-action-btn" data-action="toggle-theme"><i class="ri-moon-line" data-theme-icon></i></button>
+        <div class="navbar-divider"></div>
+        <button class="navbar-action-btn" data-action="open-settings"><i class="ri-settings-3-line"></i></button>
+        <div class="navbar-divider"></div>
+        <div class="position-relative"><div class="navbar-user" data-dropdown-trigger="userDropdown"><img src="https://picsum.photos/seed/admin/100" alt="Admin" class="navbar-user-avatar"><span class="navbar-user-name">Alex Johnson</span><i class="ri-arrow-down-s-line navbar-user-chevron"></i></div><ul class="dropdown-menu" id="userDropdown" style="right:0;left:auto;position:absolute;top:calc(100%+8px);min-width:180px"><li><a class="dropdown-item" href="profile.html"><i class="ri-user-3-line"></i> Profile</a></li><li><a class="dropdown-item" href="login.html" style="color:var(--danger)"><i class="ri-logout-box-r-line"></i> Logout</a></li></ul></div>
+      </div>
+    </header>
+
+    <!-- Page Content -->
+    <main class="page-content">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Kanban Board</h1>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+              <li class="breadcrumb-item active">Kanban</li>
+            </ol>
+          </nav>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn btn-outline-secondary btn-sm" onclick="showToast('Filter applied','info')"><i class="ri-filter-3-line me-1"></i>Filter</button>
+          <button class="btn btn-outline-secondary btn-sm" onclick="showToast('Sorted by date','info')"><i class="ri-sort-desc me-1"></i>Sort</button>
+          <button class="btn btn-soft btn-sm" onclick="showAddCardModal()"><i class="ri-add-line me-1"></i>Add Card</button>
+          <button class="btn btn-primary btn-sm" onclick="showAddColumnModal()"><i class="ri-layout-column-fill me-1"></i>Add Column</button>
+        </div>
+      </div>
+
+      <!-- Board Stats -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+          <div class="stat-mini"><span class="stat-mini-value" id="totalCards">18</span><span class="stat-mini-label">Total Tasks</span></div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-mini"><span class="stat-mini-value text-danger">5</span><span class="stat-mini-label">High Priority</span></div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-mini"><span class="stat-mini-value text-warning">4</span><span class="stat-mini-label">In Progress</span></div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="stat-mini"><span class="stat-mini-value text-success">5</span><span class="stat-mini-label">Completed</span></div>
+        </div>
+      </div>
+
+      <!-- Kanban Board -->
+      <div class="kanban-board" id="kanbanBoard">
+
+        <!-- Column: Backlog -->
+        <div class="kanban-col" data-col="backlog">
+          <div class="kanban-col-header">
+            <div class="kanban-col-dot" style="background:#6c757d;"></div>
+            <span class="kanban-col-title">Backlog</span>
+            <span class="kanban-col-count" id="count-backlog">6</span>
+            <button class="kanban-col-add" title="Add card" onclick="showAddCardModal('backlog')"><i class="ri-add-line"></i></button>
+          </div>
+          <div class="kanban-cards" id="col-backlog" ondragover="onDragOver(event)" ondrop="onDrop(event,'backlog')" ondragleave="onDragLeave(event)">
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="1">
+              <span class="kanban-card-priority priority-high"><i class="ri-arrow-up-line"></i>High</span>
+              <div class="kanban-card-title">Redesign onboarding flow for new users</div>
+              <div class="kanban-card-desc">Review current flow, identify drop-off points, create new wireframes.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user1/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-calendar-line"></i> Mar 5</span>
+                  <span><i class="ri-chat-3-line"></i> 3</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="2">
+              <span class="kanban-card-priority priority-medium"><i class="ri-subtract-line"></i>Medium</span>
+              <div class="kanban-card-title">Set up CI/CD pipeline for staging environment</div>
+              <div class="kanban-card-desc">Configure GitHub Actions to auto-deploy on merge to staging branch.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user2/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-calendar-line"></i> Mar 8</span>
+                  <span><i class="ri-chat-3-line"></i> 1</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="3">
+              <span class="kanban-card-priority priority-low"><i class="ri-arrow-down-line"></i>Low</span>
+              <div class="kanban-card-title">Write unit tests for authentication module</div>
+              <div class="kanban-card-desc">Cover login, logout, token refresh, and password reset flows.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user3/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-calendar-line"></i> Mar 12</span>
+                  <span><i class="ri-chat-3-line"></i> 0</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="4">
+              <span class="kanban-card-priority priority-high"><i class="ri-arrow-up-line"></i>High</span>
+              <div class="kanban-card-title">Implement rate limiting on API endpoints</div>
+              <div class="kanban-card-desc">Prevent abuse by adding per-IP and per-user rate limiting middleware.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user4/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-calendar-line"></i> Mar 6</span>
+                  <span><i class="ri-chat-3-line"></i> 5</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="5">
+              <span class="kanban-card-priority priority-medium"><i class="ri-subtract-line"></i>Medium</span>
+              <div class="kanban-card-title">Create email notification templates</div>
+              <div class="kanban-card-desc">Design welcome, password reset, and weekly digest email templates.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user5/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-calendar-line"></i> Mar 14</span>
+                  <span><i class="ri-chat-3-line"></i> 2</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="6">
+              <span class="kanban-card-priority priority-low"><i class="ri-arrow-down-line"></i>Low</span>
+              <div class="kanban-card-title">Add dark mode support to mobile app</div>
+              <div class="kanban-card-desc">Sync theme preference with OS setting using system-ui media query.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user6/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-calendar-line"></i> Mar 20</span>
+                  <span><i class="ri-chat-3-line"></i> 4</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Column: In Progress -->
+        <div class="kanban-col" data-col="inprogress">
+          <div class="kanban-col-header">
+            <div class="kanban-col-dot" style="background:#ff0038;"></div>
+            <span class="kanban-col-title">In Progress</span>
+            <span class="kanban-col-count" id="count-inprogress">4</span>
+            <button class="kanban-col-add" title="Add card" onclick="showAddCardModal('inprogress')"><i class="ri-add-line"></i></button>
+          </div>
+          <div class="kanban-cards" id="col-inprogress" ondragover="onDragOver(event)" ondrop="onDrop(event,'inprogress')" ondragleave="onDragLeave(event)">
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="7">
+              <span class="kanban-card-priority priority-high"><i class="ri-arrow-up-line"></i>High</span>
+              <div class="kanban-card-title">Dashboard analytics real-time updates</div>
+              <div class="kanban-card-desc">Implement WebSocket connection for live chart and KPI data streaming.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user7/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-calendar-line"></i> Feb 28</span>
+                  <span><i class="ri-chat-3-line"></i> 8</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="8">
+              <span class="kanban-card-priority priority-medium"><i class="ri-subtract-line"></i>Medium</span>
+              <div class="kanban-card-title">Refactor database query layer</div>
+              <div class="kanban-card-desc">Consolidate repetitive queries, add indexing on frequently searched fields.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user8/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-calendar-line"></i> Mar 1</span>
+                  <span><i class="ri-chat-3-line"></i> 6</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="9">
+              <span class="kanban-card-priority priority-high"><i class="ri-arrow-up-line"></i>High</span>
+              <div class="kanban-card-title">Migrate user data to new schema</div>
+              <div class="kanban-card-desc">Run migration scripts on staging, verify integrity before production rollout.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user9/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-calendar-line"></i> Feb 26</span>
+                  <span><i class="ri-chat-3-line"></i> 12</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="10">
+              <span class="kanban-card-priority priority-low"><i class="ri-arrow-down-line"></i>Low</span>
+              <div class="kanban-card-title">Update third-party library dependencies</div>
+              <div class="kanban-card-desc">Run npm audit, resolve security advisories, upgrade minor and patch versions.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user10/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-calendar-line"></i> Mar 3</span>
+                  <span><i class="ri-chat-3-line"></i> 2</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Column: Review -->
+        <div class="kanban-col" data-col="review">
+          <div class="kanban-col-header">
+            <div class="kanban-col-dot" style="background:#ffc107;"></div>
+            <span class="kanban-col-title">Review</span>
+            <span class="kanban-col-count" id="count-review">3</span>
+            <button class="kanban-col-add" title="Add card" onclick="showAddCardModal('review')"><i class="ri-add-line"></i></button>
+          </div>
+          <div class="kanban-cards" id="col-review" ondragover="onDragOver(event)" ondrop="onDrop(event,'review')" ondragleave="onDragLeave(event)">
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="11">
+              <span class="kanban-card-priority priority-medium"><i class="ri-subtract-line"></i>Medium</span>
+              <div class="kanban-card-title">Mobile responsive layout fixes</div>
+              <div class="kanban-card-desc">Resolve layout breakage on 360px screens, fix nav overflow and touch targets.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user11/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-calendar-line"></i> Feb 25</span>
+                  <span><i class="ri-chat-3-line"></i> 7</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="12">
+              <span class="kanban-card-priority priority-high"><i class="ri-arrow-up-line"></i>High</span>
+              <div class="kanban-card-title">Security audit for payment processing</div>
+              <div class="kanban-card-desc">Review PCI compliance checklist, check for data exposure in logs and responses.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user12/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-calendar-line"></i> Feb 24</span>
+                  <span><i class="ri-chat-3-line"></i> 9</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="13">
+              <span class="kanban-card-priority priority-low"><i class="ri-arrow-down-line"></i>Low</span>
+              <div class="kanban-card-title">Add CSV export to reports module</div>
+              <div class="kanban-card-desc">Allow users to download filtered report data as CSV from the reports dashboard.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user13/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-calendar-line"></i> Feb 27</span>
+                  <span><i class="ri-chat-3-line"></i> 3</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Column: Done -->
+        <div class="kanban-col" data-col="done">
+          <div class="kanban-col-header">
+            <div class="kanban-col-dot" style="background:#198754;"></div>
+            <span class="kanban-col-title">Done</span>
+            <span class="kanban-col-count" id="count-done">5</span>
+            <button class="kanban-col-add" title="Add card" onclick="showAddCardModal('done')"><i class="ri-add-line"></i></button>
+          </div>
+          <div class="kanban-cards" id="col-done" ondragover="onDragOver(event)" ondrop="onDrop(event,'done')" ondragleave="onDragLeave(event)">
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="14" style="opacity:0.75;">
+              <span class="kanban-card-priority priority-medium"><i class="ri-subtract-line"></i>Medium</span>
+              <div class="kanban-card-title" style="text-decoration:line-through;opacity:0.6;">User role & permissions system</div>
+              <div class="kanban-card-desc">Implemented RBAC with admin, editor, and viewer roles across all modules.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user14/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-checkbox-circle-line" style="color:#198754;"></i> Done</span>
+                  <span><i class="ri-chat-3-line"></i> 4</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="15" style="opacity:0.75;">
+              <span class="kanban-card-priority priority-high"><i class="ri-arrow-up-line"></i>High</span>
+              <div class="kanban-card-title" style="text-decoration:line-through;opacity:0.6;">SSO integration with Google & Microsoft</div>
+              <div class="kanban-card-desc">OAuth 2.0 login with Google Workspace and Microsoft Azure AD fully deployed.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user15/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-checkbox-circle-line" style="color:#198754;"></i> Done</span>
+                  <span><i class="ri-chat-3-line"></i> 11</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="16" style="opacity:0.75;">
+              <span class="kanban-card-priority priority-low"><i class="ri-arrow-down-line"></i>Low</span>
+              <div class="kanban-card-title" style="text-decoration:line-through;opacity:0.6;">Upgrade Node.js runtime to v20 LTS</div>
+              <div class="kanban-card-desc">Updated all services to Node 20, resolved breaking changes in crypto and fetch.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user16/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-checkbox-circle-line" style="color:#198754;"></i> Done</span>
+                  <span><i class="ri-chat-3-line"></i> 2</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="17" style="opacity:0.75;">
+              <span class="kanban-card-priority priority-medium"><i class="ri-subtract-line"></i>Medium</span>
+              <div class="kanban-card-title" style="text-decoration:line-through;opacity:0.6;">Build admin user management interface</div>
+              <div class="kanban-card-desc">Create, edit, suspend, and delete users from the admin panel with audit log.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user17/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-checkbox-circle-line" style="color:#198754;"></i> Done</span>
+                  <span><i class="ri-chat-3-line"></i> 6</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="kanban-card" draggable="true" ondragstart="onDragStart(event)" data-card-id="18" style="opacity:0.75;">
+              <span class="kanban-card-priority priority-high"><i class="ri-arrow-up-line"></i>High</span>
+              <div class="kanban-card-title" style="text-decoration:line-through;opacity:0.6;">Implement audit logging for all mutations</div>
+              <div class="kanban-card-desc">Log all create/update/delete actions with user, timestamp, and diff snapshot.</div>
+              <div class="kanban-card-footer">
+                <img src="https://picsum.photos/seed/user18/100" alt="" class="kanban-card-assignee">
+                <div class="kanban-card-meta">
+                  <span><i class="ri-checkbox-circle-line" style="color:#198754;"></i> Done</span>
+                  <span><i class="ri-chat-3-line"></i> 8</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Add Column Button -->
+        <div class="kanban-add-col">
+          <button class="kanban-add-col-btn" onclick="showAddColumnModal()">
+            <i class="ri-add-line"></i> Add Column
+          </button>
+        </div>
+
+      </div>
+      <!-- /Kanban Board -->
+
+    </main>
+  </div>
+</div>
+
+<!-- Add Card Modal -->
+<div class="modal fade" id="addCardModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border-color);">
+      <div class="modal-header" style="border-color:var(--border-color);">
+        <h5 class="modal-title" style="color:var(--text-main);">Add New Card</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label" style="color:var(--text-main);font-size:13px;font-weight:600;">Title</label>
+          <input type="text" class="form-control" id="newCardTitle" placeholder="Enter card title..." style="background:var(--bg-body);border-color:var(--border-color);color:var(--text-main);">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" style="color:var(--text-main);font-size:13px;font-weight:600;">Description</label>
+          <textarea class="form-control" id="newCardDesc" rows="3" placeholder="Brief description..." style="background:var(--bg-body);border-color:var(--border-color);color:var(--text-main);resize:none;"></textarea>
+        </div>
+        <div class="row g-2">
+          <div class="col-6">
+            <label class="form-label" style="color:var(--text-main);font-size:13px;font-weight:600;">Priority</label>
+            <select class="form-select" id="newCardPriority" style="background:var(--bg-body);border-color:var(--border-color);color:var(--text-main);">
+              <option value="high">High</option>
+              <option value="medium" selected>Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div class="col-6">
+            <label class="form-label" style="color:var(--text-main);font-size:13px;font-weight:600;">Column</label>
+            <select class="form-select" id="newCardColumn" style="background:var(--bg-body);border-color:var(--border-color);color:var(--text-main);">
+              <option value="backlog">Backlog</option>
+              <option value="inprogress">In Progress</option>
+              <option value="review">Review</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-color:var(--border-color);">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="addNewCard()">Add Card</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Column Modal -->
+<div class="modal fade" id="addColumnModal" tabindex="-1">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border-color);">
+      <div class="modal-header" style="border-color:var(--border-color);">
+        <h5 class="modal-title" style="color:var(--text-main);">Add New Column</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label" style="color:var(--text-main);font-size:13px;font-weight:600;">Column Name</label>
+          <input type="text" class="form-control" id="newColName" placeholder="e.g. Testing" style="background:var(--bg-body);border-color:var(--border-color);color:var(--text-main);">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" style="color:var(--text-main);font-size:13px;font-weight:600;">Color</label>
+          <input type="color" class="form-control form-control-color" id="newColColor" value="#6366f1">
+        </div>
+      </div>
+      <div class="modal-footer" style="border-color:var(--border-color);">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="addNewColumn()">Add Column</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Panel -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-panel-header"><span class="settings-panel-title"><i class="ri-settings-3-line me-2"></i>Layout Settings</span><button class="settings-close" data-action="close-settings"><i class="ri-close-line"></i></button></div>
+  <div class="settings-panel-body">
+    <div class="settings-section-title">Theme</div><div class="settings-option" data-action="toggle-theme"><i class="ri-moon-line"></i> Dark Mode</div>
+    <div class="settings-section-title">Layout Type</div><div class="settings-option active" data-layout="default"><i class="ri-layout-left-2-line"></i> Default</div><div class="settings-option" data-layout="horizontal"><i class="ri-layout-top-2-line"></i> Horizontal</div><div class="settings-option" data-layout="boxed"><i class="ri-layout-4-line"></i> Boxed</div>
+    <div class="settings-section-title">Language</div><div class="settings-option" data-lang="en">🇺🇸 English</div><div class="settings-option" data-lang="hi">🇮🇳 हिंदी</div><div class="settings-option" data-lang="ar">🇸🇦 العربية</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/animations.js"></script>
+<script src="assets/js/i18n.js"></script>
+<button class="scroll-to-top" id="scrollToTop"><i class="ri-arrow-up-line"></i></button>
+
+<script>
+  /* ===== Drag and Drop ===== */
+  let draggedCard = null;
+
+  function onDragStart(e) {
+    draggedCard = e.currentTarget;
+    e.currentTarget.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  }
+
+  document.addEventListener('dragend', function(e) {
+    if (e.target.classList) e.target.classList.remove('dragging');
+    document.querySelectorAll('.kanban-cards').forEach(c => c.classList.remove('drag-over'));
+    draggedCard = null;
+    updateCounts();
+  });
+
+  function onDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    e.currentTarget.classList.add('drag-over');
+  }
+
+  function onDragLeave(e) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+
+  function onDrop(e, colId) {
+    e.preventDefault();
+    e.currentTarget.classList.remove('drag-over');
+    if (draggedCard) {
+      e.currentTarget.appendChild(draggedCard);
+      draggedCard.classList.remove('dragging');
+      if (typeof gsap !== 'undefined') {
+        gsap.from(draggedCard, { scale: 0.95, opacity: 0.5, duration: 0.25, ease: 'back.out(1.5)' });
+      }
+      updateCounts();
+      showToast('Card moved successfully', 'success');
+    }
+  }
+
+  function updateCounts() {
+    ['backlog', 'inprogress', 'review', 'done'].forEach(id => {
+      const col = document.getElementById('col-' + id);
+      const count = col ? col.querySelectorAll('.kanban-card').length : 0;
+      const badge = document.getElementById('count-' + id);
+      if (badge) badge.textContent = count;
+    });
+    const total = document.querySelectorAll('.kanban-card').length;
+    const el = document.getElementById('totalCards');
+    if (el) el.textContent = total;
+  }
+
+  /* ===== Modals ===== */
+  let targetColumn = 'backlog';
+
+  function showAddCardModal(col) {
+    targetColumn = col || 'backlog';
+    const sel = document.getElementById('newCardColumn');
+    if (sel) sel.value = targetColumn;
+    const modal = new bootstrap.Modal(document.getElementById('addCardModal'));
+    modal.show();
+  }
+
+  function addNewCard() {
+    const title = document.getElementById('newCardTitle').value.trim();
+    const desc = document.getElementById('newCardDesc').value.trim();
+    const priority = document.getElementById('newCardPriority').value;
+    const col = document.getElementById('newCardColumn').value;
+    if (!title) { showToast('Please enter a card title', 'warning'); return; }
+
+    const priorityMap = { high: 'priority-high', medium: 'priority-medium', low: 'priority-low' };
+    const priorityLabel = { high: 'High', medium: 'Medium', low: 'Low' };
+    const priorityIcon = { high: 'ri-arrow-up-line', medium: 'ri-subtract-line', low: 'ri-arrow-down-line' };
+    const seed = Math.floor(Math.random() * 100);
+    const id = Date.now();
+
+    const card = document.createElement('div');
+    card.className = 'kanban-card';
+    card.draggable = true;
+    card.dataset.cardId = id;
+    card.innerHTML = `
+      <span class="kanban-card-priority ${priorityMap[priority]}"><i class="${priorityIcon[priority]}"></i>${priorityLabel[priority]}</span>
+      <div class="kanban-card-title">${title}</div>
+      <div class="kanban-card-desc">${desc || 'No description provided.'}</div>
+      <div class="kanban-card-footer">
+        <img src="https://picsum.photos/seed/${seed}/100" alt="" class="kanban-card-assignee">
+        <div class="kanban-card-meta"><span><i class="ri-calendar-line"></i> TBD</span><span><i class="ri-chat-3-line"></i> 0</span></div>
+      </div>`;
+    card.addEventListener('dragstart', onDragStart);
+    document.getElementById('col-' + col).appendChild(card);
+    if (typeof gsap !== 'undefined') {
+      gsap.from(card, { opacity: 0, y: 20, duration: 0.3, ease: 'power2.out' });
+    }
+    updateCounts();
+    bootstrap.Modal.getInstance(document.getElementById('addCardModal')).hide();
+    document.getElementById('newCardTitle').value = '';
+    document.getElementById('newCardDesc').value = '';
+    showToast('Card added successfully', 'success');
+  }
+
+  function showAddColumnModal() {
+    const modal = new bootstrap.Modal(document.getElementById('addColumnModal'));
+    modal.show();
+  }
+
+  function addNewColumn() {
+    const name = document.getElementById('newColName').value.trim();
+    const color = document.getElementById('newColColor').value;
+    if (!name) { showToast('Please enter a column name', 'warning'); return; }
+    const id = name.toLowerCase().replace(/\s+/g, '-');
+    const board = document.getElementById('kanbanBoard');
+    const addBtn = board.querySelector('.kanban-add-col');
+    const col = document.createElement('div');
+    col.className = 'kanban-col';
+    col.dataset.col = id;
+    col.innerHTML = `
+      <div class="kanban-col-header">
+        <div class="kanban-col-dot" style="background:${color};"></div>
+        <span class="kanban-col-title">${name}</span>
+        <span class="kanban-col-count" id="count-${id}">0</span>
+        <button class="kanban-col-add" title="Add card" onclick="showAddCardModal('${id}')"><i class="ri-add-line"></i></button>
+      </div>
+      <div class="kanban-cards" id="col-${id}" ondragover="onDragOver(event)" ondrop="onDrop(event,'${id}')" ondragleave="onDragLeave(event)"></div>`;
+    board.insertBefore(col, addBtn);
+    if (typeof gsap !== 'undefined') {
+      gsap.from(col, { opacity: 0, x: 30, duration: 0.35, ease: 'power2.out' });
+    }
+    bootstrap.Modal.getInstance(document.getElementById('addColumnModal')).hide();
+    document.getElementById('newColName').value = '';
+    showToast(`Column "${name}" added`, 'success');
+  }
+
+  function showToast(msg, type) {
+    if (window.showNotification) { window.showNotification(msg, type); return; }
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--bg-card);border:1px solid var(--border-color);color:var(--text-main);padding:12px 20px;border-radius:10px;font-size:13px;z-index:9999;box-shadow:var(--shadow-lg);';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+  }
+
+  /* Animate cards on load */
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof gsap !== 'undefined') {
+      gsap.from('.kanban-col', { opacity: 0, y: 30, duration: 0.5, stagger: 0.1, ease: 'power2.out', delay: 0.2 });
+      gsap.from('.stat-mini', { opacity: 0, y: 20, duration: 0.4, stagger: 0.08, ease: 'power2.out' });
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendar — RedDash</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Remix Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+  <!-- FullCalendar -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet">
+
+  <!-- Theme & Layout CSS -->
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+
+  <style>
+    /* ── Calendar page scoped styles ── */
+
+    /* Layout: sidebar-left + calendar-right */
+    .calendar-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 991px) {
+      .calendar-layout { grid-template-columns: 1fr; }
+    }
+
+    /* ── Left sidebar panel ── */
+    .cal-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .cal-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .cal-panel-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .cal-panel-body { padding: 16px 20px; }
+
+    /* Add event button */
+    .btn-add-event {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 11px;
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius);
+      background: rgba(255,0,56,0.04);
+      color: var(--primary);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, border-style 0.2s;
+    }
+    .btn-add-event:hover {
+      background: rgba(255,0,56,0.1);
+      border-style: solid;
+    }
+
+    /* Mini calendar (non-functional cosmetic) */
+    .mini-cal { width: 100%; }
+    .mini-cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--text-main);
+    }
+    .mini-cal-nav {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .mini-cal-nav:hover { background: var(--bg-body); color: var(--text-main); }
+    .mini-cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      text-align: center;
+    }
+    .mini-cal-day-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      padding: 4px 0;
+    }
+    .mini-cal-day {
+      font-size: 0.75rem;
+      color: var(--text-main);
+      padding: 5px 2px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .mini-cal-day:hover { background: var(--bg-body); }
+    .mini-cal-day.today {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+    }
+    .mini-cal-day.has-event::after {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--primary);
+      margin: 1px auto 0;
+    }
+    .mini-cal-day.today::after { background: #fff; }
+    .mini-cal-day.other-month { color: var(--text-muted); opacity: 0.4; }
+
+    /* Event categories */
+    .event-category {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-color);
+      cursor: pointer;
+    }
+    .event-category:last-child { border-bottom: none; padding-bottom: 0; }
+    .event-category-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .event-category-label {
+      font-size: 0.83rem;
+      color: var(--text-main);
+      flex: 1;
+    }
+    .event-category-count {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .event-category input[type="checkbox"] {
+      accent-color: var(--primary);
+    }
+
+    /* Upcoming events list */
+    .upcoming-event {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .upcoming-event:last-child { border-bottom: none; padding-bottom: 0; }
+    .upcoming-event-date {
+      width: 42px;
+      text-align: center;
+      flex-shrink: 0;
+      background: var(--bg-body);
+      border-radius: 8px;
+      padding: 6px 4px;
+    }
+    .upcoming-event-day {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-main);
+      line-height: 1;
+    }
+    .upcoming-event-month {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+    .upcoming-event-bar {
+      width: 3px;
+      height: 100%;
+      border-radius: 2px;
+      min-height: 44px;
+      flex-shrink: 0;
+    }
+    .upcoming-event-title {
+      font-size: 0.83rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 3px;
+      line-height: 1.3;
+    }
+    .upcoming-event-time {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    /* ── Main calendar card ── */
+    .calendar-main-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .calendar-main-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .calendar-main-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .calendar-view-btns {
+      display: flex;
+      gap: 4px;
+    }
+    .cal-view-btn {
+      padding: 6px 14px;
+      border-radius: 7px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-body);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .cal-view-btn.active, .cal-view-btn:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .calendar-main-body { padding: 20px 24px; }
+
+    /* FullCalendar theme overrides */
+    .fc {
+      --fc-border-color: var(--border-color);
+      --fc-event-border-color: transparent;
+      --fc-page-bg-color: var(--bg-card);
+      --fc-neutral-bg-color: var(--bg-body);
+      --fc-list-event-hover-bg-color: var(--bg-body);
+      --fc-today-bg-color: rgba(255,0,56,0.06);
+      --fc-event-text-color: #fff;
+    }
+    .fc .fc-toolbar-title {
+      font-size: 1.1rem !important;
+      font-weight: 700 !important;
+      color: var(--text-main) !important;
+    }
+    .fc .fc-col-header-cell-cushion,
+    .fc .fc-daygrid-day-number,
+    .fc .fc-timegrid-axis-cushion,
+    .fc .fc-timegrid-slot-label-cushion {
+      color: var(--text-main) !important;
+      text-decoration: none !important;
+    }
+    .fc .fc-col-header-cell-cushion {
+      font-size: 0.75rem !important;
+      font-weight: 700 !important;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted) !important;
+    }
+    .fc .fc-daygrid-day-number { font-size: 0.8rem !important; font-weight: 600 !important; }
+    .fc .fc-button {
+      background: var(--bg-body) !important;
+      border: 1px solid var(--border-color) !important;
+      color: var(--text-main) !important;
+      font-size: 0.8rem !important;
+      font-weight: 600 !important;
+      border-radius: 7px !important;
+      padding: 5px 12px !important;
+      box-shadow: none !important;
+      transition: background 0.15s, color 0.15s;
+    }
+    .fc .fc-button:hover {
+      background: var(--primary) !important;
+      border-color: var(--primary) !important;
+      color: #fff !important;
+    }
+    .fc .fc-button-active,
+    .fc .fc-button-primary:not(:disabled).fc-button-active {
+      background: var(--primary) !important;
+      border-color: var(--primary) !important;
+      color: #fff !important;
+    }
+    .fc .fc-toolbar { gap: 10px; flex-wrap: wrap; }
+    .fc-event {
+      border-radius: 6px !important;
+      font-size: 0.75rem !important;
+      font-weight: 600 !important;
+      padding: 2px 6px !important;
+      cursor: pointer;
+    }
+    .fc .fc-daygrid-event-dot { display: none; }
+    .fc .fc-list-event-title a { color: var(--text-main) !important; text-decoration: none !important; }
+    .fc .fc-list-event:hover td { background: var(--bg-body) !important; }
+    .fc-theme-standard td, .fc-theme-standard th { border-color: var(--border-color) !important; }
+
+    /* Event detail toast/popup */
+    .event-detail-popup {
+      position: fixed;
+      z-index: 9999;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      padding: 16px 20px;
+      min-width: 240px;
+      max-width: 300px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      transform: translateY(4px);
+    }
+    .event-detail-popup.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+    .event-popup-color {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+    .event-popup-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+    }
+    .event-popup-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .event-popup-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Modal */
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+    }
+    .modal-header { border-bottom: 1px solid var(--border-color); padding: 20px 24px; }
+    .modal-footer { border-top: 1px solid var(--border-color); }
+    .modal-title  { font-weight: 700; color: var(--text-main); }
+    .form-label   { font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
+    .form-control, .form-select {
+      background: var(--bg-body);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 8px;
+      font-size: 0.875rem;
+    }
+    .form-control:focus, .form-select:focus {
+      background: var(--bg-body);
+      border-color: var(--primary);
+      color: var(--text-main);
+      box-shadow: 0 0 0 3px rgba(255,0,56,0.12);
+    }
+    [data-theme="dark"] .btn-close { filter: invert(1); }
+
+    /* Color picker swatches */
+    .color-swatch {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: border-color 0.15s, transform 0.15s;
+      display: inline-block;
+    }
+    .color-swatch:hover, .color-swatch.selected { border-color: var(--text-main); transform: scale(1.15); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <a href="index.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="ri-dashboard-3-fill"></i></div>
+    <span class="sidebar-brand-text">Red<span>Dash</span></span>
+  </a>
+
+  <div class="sidebar-scroll">
+    <ul class="sidebar-nav">
+      <li class="sidebar-section-label">Main</li>
+      <li class="sidebar-item">
+        <a href="index.html" class="sidebar-link" data-tooltip="Dashboard">
+          <i class="ri-dashboard-3-line"></i>
+          <span class="sidebar-link-text">Dashboard</span>
+        </a>
+      </li>
+
+      <li class="sidebar-section-label">Apps</li>
+      <li class="sidebar-item">
+        <a href="users.html" class="sidebar-link" data-tooltip="Users">
+          <i class="ri-team-line"></i>
+          <span class="sidebar-link-text">Users</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="projects.html" class="sidebar-link" data-tooltip="Projects">
+          <i class="ri-folder-3-line"></i>
+          <span class="sidebar-link-text">Projects</span>
+        </a>
+      </li>
+      <li class="sidebar-item active">
+        <a href="calendar.html" class="sidebar-link" data-tooltip="Calendar">
+          <i class="ri-calendar-line"></i>
+          <span class="sidebar-link-text">Calendar</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="kanban.html" class="sidebar-link" data-tooltip="Kanban">
+          <i class="ri-layout-column-line"></i>
+          <span class="sidebar-link-text">Kanban</span>
+          <span class="sidebar-badge">New</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="chat.html" class="sidebar-link" data-tooltip="Chat">
+          <i class="ri-message-3-line"></i>
+          <span class="sidebar-link-text">Chat</span>
+          <span class="sidebar-badge">5</span>
+        </a>
+      </li>
+
+      <li class="sidebar-section-label">Pages</li>
+      <li class="sidebar-item">
+        <a href="pricing.html" class="sidebar-link" data-tooltip="Pricing">
+          <i class="ri-price-tag-3-line"></i>
+          <span class="sidebar-link-text">Pricing</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="faq.html" class="sidebar-link" data-tooltip="FAQ">
+          <i class="ri-question-line"></i>
+          <span class="sidebar-link-text">FAQ</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="profile.html" class="sidebar-link" data-tooltip="Profile">
+          <i class="ri-user-3-line"></i>
+          <span class="sidebar-link-text">Profile</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="#authMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#authMenu" aria-expanded="false" data-tooltip="Authentication">
+          <i class="ri-shield-keyhole-line"></i>
+          <span class="sidebar-link-text">Authentication</span>
+          <i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="authMenu">
+          <li><a href="login.html" class="sidebar-link">Login</a></li>
+          <li><a href="register.html" class="sidebar-link">Register</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-item">
+        <a href="#errorMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#errorMenu" aria-expanded="false" data-tooltip="Error Pages">
+          <i class="ri-error-warning-line"></i>
+          <span class="sidebar-link-text">Error Pages</span>
+          <i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="errorMenu">
+          <li><a href="404.html" class="sidebar-link">404 Page</a></li>
+          <li><a href="maintenance.html" class="sidebar-link">Maintenance</a></li>
+        </ul>
+      </li>
+
+      <li class="sidebar-section-label">Support</li>
+      <li class="sidebar-item">
+        <a href="documentation.html" class="sidebar-link" data-tooltip="Documentation">
+          <i class="ri-book-open-line"></i>
+          <span class="sidebar-link-text">Documentation</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="changelog.html" class="sidebar-link" data-tooltip="Changelog">
+          <i class="ri-history-line"></i>
+          <span class="sidebar-link-text">Changelog</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="profile.html" class="sidebar-user">
+      <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="sidebar-user-avatar">
+      <div class="sidebar-user-info">
+        <span class="sidebar-user-name">Alex Johnson</span>
+        <span class="sidebar-user-role">Administrator</span>
+      </div>
+    </a>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════
+     MAIN WRAPPER
+═══════════════════════════════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- ── NAVBAR ── -->
+  <header class="navbar-top">
+    <button class="navbar-toggle" data-action="toggle-sidebar">
+      <i class="ri-menu-line"></i>
+    </button>
+
+    <div class="navbar-search">
+      <i class="ri-search-line navbar-search-icon"></i>
+      <input type="text" placeholder="Search anything..." id="navSearchInput" autocomplete="off">
+    </div>
+
+    <div class="navbar-actions">
+      <button class="navbar-action-btn" data-action="toggle-theme">
+        <i class="ri-moon-line" data-theme-icon></i>
+      </button>
+
+      <div class="position-relative">
+        <button class="lang-selector" data-dropdown-trigger="langMenu">
+          <span class="lang-current-flag lang-flag">🇺🇸</span>
+          <span class="lang-current-label">EN</span>
+          <i class="ri-arrow-down-s-line" style="font-size:13px"></i>
+        </button>
+        <ul class="dropdown-menu" id="langMenu" style="min-width:140px;right:0;left:auto;position:absolute;top:calc(100%+6px)">
+          <li><a class="dropdown-item" data-lang="en"><span class="lang-flag">🇺🇸</span> English</a></li>
+          <li><a class="dropdown-item" data-lang="hi"><span class="lang-flag">🇮🇳</span> हिंदी</a></li>
+          <li><a class="dropdown-item" data-lang="ar"><span class="lang-flag">🇸🇦</span> العربية</a></li>
+        </ul>
+      </div>
+
+      <div class="navbar-divider"></div>
+      <button class="navbar-action-btn" data-action="open-settings">
+        <i class="ri-settings-3-line"></i>
+      </button>
+      <div class="navbar-divider"></div>
+
+      <div class="position-relative">
+        <div class="navbar-user" data-dropdown-trigger="userDropdown">
+          <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="navbar-user-avatar">
+          <span class="navbar-user-name">Alex Johnson</span>
+          <i class="ri-arrow-down-s-line navbar-user-chevron"></i>
+        </div>
+        <ul class="dropdown-menu" id="userDropdown" style="right:0;left:auto;position:absolute;top:calc(100%+8px);min-width:200px">
+          <li><a class="dropdown-item" href="profile.html"><i class="ri-user-3-line"></i> Profile</a></li>
+          <li><a class="dropdown-item" href="login.html" style="color:var(--danger)"><i class="ri-logout-box-r-line"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── PAGE CONTENT ── -->
+  <main class="page-content" id="pageContent">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" data-translate="calendarTitle">Calendar</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.html" data-translate="home">Home</a></li>
+            <li class="breadcrumb-item active" data-translate="calendar">Calendar</li>
+          </ol>
+        </nav>
+      </div>
+      <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addEventModal">
+        <i class="ri-add-line me-1"></i> Add Event
+      </button>
+    </div>
+
+    <!-- Calendar Layout -->
+    <div class="calendar-layout">
+
+      <!-- ── LEFT SIDEBAR ── -->
+      <div class="cal-sidebar">
+
+        <!-- Add Event Quick Button -->
+        <button class="btn-add-event" data-bs-toggle="modal" data-bs-target="#addEventModal">
+          <i class="ri-add-circle-line" style="font-size:1.1rem"></i> Add New Event
+        </button>
+
+        <!-- Mini Calendar -->
+        <div class="cal-panel">
+          <div class="cal-panel-header">
+            <i class="ri-calendar-2-line" style="color:var(--primary)"></i> February 2026
+          </div>
+          <div class="cal-panel-body">
+            <div class="mini-cal">
+              <div class="mini-cal-header">
+                <button class="mini-cal-nav"><i class="ri-arrow-left-s-line"></i></button>
+                <span>February 2026</span>
+                <button class="mini-cal-nav"><i class="ri-arrow-right-s-line"></i></button>
+              </div>
+              <div class="mini-cal-grid">
+                <div class="mini-cal-day-label">Su</div>
+                <div class="mini-cal-day-label">Mo</div>
+                <div class="mini-cal-day-label">Tu</div>
+                <div class="mini-cal-day-label">We</div>
+                <div class="mini-cal-day-label">Th</div>
+                <div class="mini-cal-day-label">Fr</div>
+                <div class="mini-cal-day-label">Sa</div>
+                <!-- Week 1 -->
+                <div class="mini-cal-day other-month">26</div>
+                <div class="mini-cal-day other-month">27</div>
+                <div class="mini-cal-day other-month">28</div>
+                <div class="mini-cal-day other-month">29</div>
+                <div class="mini-cal-day other-month">30</div>
+                <div class="mini-cal-day other-month">31</div>
+                <div class="mini-cal-day">1</div>
+                <!-- Week 2 -->
+                <div class="mini-cal-day">2</div>
+                <div class="mini-cal-day has-event">3</div>
+                <div class="mini-cal-day">4</div>
+                <div class="mini-cal-day has-event">5</div>
+                <div class="mini-cal-day">6</div>
+                <div class="mini-cal-day has-event">7</div>
+                <div class="mini-cal-day">8</div>
+                <!-- Week 3 -->
+                <div class="mini-cal-day">9</div>
+                <div class="mini-cal-day has-event">10</div>
+                <div class="mini-cal-day">11</div>
+                <div class="mini-cal-day">12</div>
+                <div class="mini-cal-day has-event">13</div>
+                <div class="mini-cal-day">14</div>
+                <div class="mini-cal-day">15</div>
+                <!-- Week 4 -->
+                <div class="mini-cal-day">16</div>
+                <div class="mini-cal-day">17</div>
+                <div class="mini-cal-day has-event">18</div>
+                <div class="mini-cal-day">19</div>
+                <div class="mini-cal-day">20</div>
+                <div class="mini-cal-day has-event">21</div>
+                <div class="mini-cal-day">22</div>
+                <!-- Week 5 -->
+                <div class="mini-cal-day">23</div>
+                <div class="mini-cal-day today">24</div>
+                <div class="mini-cal-day">25</div>
+                <div class="mini-cal-day">26</div>
+                <div class="mini-cal-day">27</div>
+                <div class="mini-cal-day">28</div>
+                <div class="mini-cal-day other-month">1</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event Categories -->
+        <div class="cal-panel">
+          <div class="cal-panel-header">
+            <i class="ri-list-check-2" style="color:var(--primary)"></i> Event Categories
+          </div>
+          <div class="cal-panel-body" style="padding-top:10px;padding-bottom:10px">
+            <div class="event-category">
+              <input type="checkbox" class="form-check-input" checked style="accent-color:#ff0038">
+              <div class="event-category-dot" style="background:#ff0038"></div>
+              <span class="event-category-label">Meetings</span>
+              <span class="event-category-count">8</span>
+            </div>
+            <div class="event-category">
+              <input type="checkbox" class="form-check-input" checked style="accent-color:#0098ff">
+              <div class="event-category-dot" style="background:#0098ff"></div>
+              <span class="event-category-label">Deadlines</span>
+              <span class="event-category-count">5</span>
+            </div>
+            <div class="event-category">
+              <input type="checkbox" class="form-check-input" checked style="accent-color:#00c878">
+              <div class="event-category-dot" style="background:#00c878"></div>
+              <span class="event-category-label">Reminders</span>
+              <span class="event-category-count">12</span>
+            </div>
+            <div class="event-category">
+              <input type="checkbox" class="form-check-input" checked style="accent-color:#ffb400">
+              <div class="event-category-dot" style="background:#ffb400"></div>
+              <span class="event-category-label">Personal</span>
+              <span class="event-category-count">3</span>
+            </div>
+            <div class="event-category">
+              <input type="checkbox" class="form-check-input" checked style="accent-color:#8a2be2">
+              <div class="event-category-dot" style="background:#8a2be2"></div>
+              <span class="event-category-label">Milestones</span>
+              <span class="event-category-count">4</span>
+            </div>
+            <div class="event-category">
+              <input type="checkbox" class="form-check-input" checked style="accent-color:#e040fb">
+              <div class="event-category-dot" style="background:#e040fb"></div>
+              <span class="event-category-label">Events</span>
+              <span class="event-category-count">6</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Events -->
+        <div class="cal-panel">
+          <div class="cal-panel-header">
+            <i class="ri-time-line" style="color:var(--primary)"></i> Upcoming Events
+          </div>
+          <div class="cal-panel-body" style="padding-top:10px;padding-bottom:10px">
+
+            <div class="upcoming-event">
+              <div class="upcoming-event-date">
+                <div class="upcoming-event-day">24</div>
+                <div class="upcoming-event-month">Feb</div>
+              </div>
+              <div class="upcoming-event-bar" style="background:#ff0038"></div>
+              <div>
+                <div class="upcoming-event-title">Sprint Planning</div>
+                <div class="upcoming-event-time"><i class="ri-time-line"></i> 10:00 – 11:30 AM</div>
+              </div>
+            </div>
+
+            <div class="upcoming-event">
+              <div class="upcoming-event-date">
+                <div class="upcoming-event-day">25</div>
+                <div class="upcoming-event-month">Feb</div>
+              </div>
+              <div class="upcoming-event-bar" style="background:#0098ff"></div>
+              <div>
+                <div class="upcoming-event-title">API Deadline</div>
+                <div class="upcoming-event-time"><i class="ri-time-line"></i> End of Day</div>
+              </div>
+            </div>
+
+            <div class="upcoming-event">
+              <div class="upcoming-event-date">
+                <div class="upcoming-event-day">26</div>
+                <div class="upcoming-event-month">Feb</div>
+              </div>
+              <div class="upcoming-event-bar" style="background:#00c878"></div>
+              <div>
+                <div class="upcoming-event-title">Code Review</div>
+                <div class="upcoming-event-time"><i class="ri-time-line"></i> 2:00 – 3:00 PM</div>
+              </div>
+            </div>
+
+            <div class="upcoming-event">
+              <div class="upcoming-event-date">
+                <div class="upcoming-event-day">27</div>
+                <div class="upcoming-event-month">Feb</div>
+              </div>
+              <div class="upcoming-event-bar" style="background:#8a2be2"></div>
+              <div>
+                <div class="upcoming-event-title">Q1 Milestone Review</div>
+                <div class="upcoming-event-time"><i class="ri-time-line"></i> 9:00 AM</div>
+              </div>
+            </div>
+
+            <div class="upcoming-event">
+              <div class="upcoming-event-date">
+                <div class="upcoming-event-day">28</div>
+                <div class="upcoming-event-month">Feb</div>
+              </div>
+              <div class="upcoming-event-bar" style="background:#e040fb"></div>
+              <div>
+                <div class="upcoming-event-title">Design Workshop</div>
+                <div class="upcoming-event-time"><i class="ri-time-line"></i> 1:00 – 5:00 PM</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div><!-- end .cal-sidebar -->
+
+      <!-- ── MAIN CALENDAR ── -->
+      <div class="calendar-main-card">
+        <div class="calendar-main-header">
+          <div class="calendar-main-title">
+            <i class="ri-calendar-line" style="color:var(--primary)"></i>
+            Event Calendar
+          </div>
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <div class="calendar-view-btns">
+              <button class="cal-view-btn active" id="viewMonth">Month</button>
+              <button class="cal-view-btn" id="viewWeek">Week</button>
+              <button class="cal-view-btn" id="viewDay">Day</button>
+              <button class="cal-view-btn" id="viewList">List</button>
+            </div>
+          </div>
+        </div>
+        <div class="calendar-main-body">
+          <div id="fullCalendar"></div>
+        </div>
+      </div>
+
+    </div><!-- end .calendar-layout -->
+
+  </main><!-- end .page-content -->
+
+  <!-- ── FOOTER ── -->
+  <footer class="page-footer">
+    <span>© 2026 <strong>RedDash</strong>. All rights reserved.</span>
+    <span>Version 1.0.0</span>
+  </footer>
+
+</div><!-- end .main-wrapper -->
+
+<!-- ═══════════════════════════════════════
+     EVENT POPUP (hover detail)
+═══════════════════════════════════════ -->
+<div class="event-detail-popup" id="eventPopup">
+  <div class="event-popup-title">
+    <span class="event-popup-color" id="popupColor"></span>
+    <span id="popupTitle"></span>
+  </div>
+  <div class="event-popup-meta"><i class="ri-calendar-2-line"></i> <span id="popupDate"></span></div>
+  <div class="event-popup-meta"><i class="ri-time-line"></i> <span id="popupTime"></span></div>
+  <div class="event-popup-meta"><i class="ri-map-pin-line"></i> <span id="popupLocation">Remote / Online</span></div>
+  <div class="event-popup-actions">
+    <button class="btn btn-sm btn-primary" style="font-size:0.75rem;padding:4px 10px">Edit</button>
+    <button class="btn btn-sm btn-outline-secondary" style="font-size:0.75rem;padding:4px 10px" id="popupClose">Close</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     ADD EVENT MODAL
+═══════════════════════════════════════ -->
+<div class="modal fade" id="addEventModal" tabindex="-1" aria-labelledby="addEventModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addEventModalLabel">
+          <i class="ri-calendar-event-line me-2" style="color:var(--primary)"></i>Add New Event
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-4">
+        <form id="addEventForm" novalidate>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Event Title <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="eventTitle" placeholder="e.g. Sprint Planning Meeting" required>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label">Start Date &amp; Time <span class="text-danger">*</span></label>
+              <input type="datetime-local" class="form-control" id="eventStart" required>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label">End Date &amp; Time</label>
+              <input type="datetime-local" class="form-control" id="eventEnd">
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label">Category</label>
+              <select class="form-select" id="eventCategory">
+                <option value="meeting" style="color:#ff0038">Meetings</option>
+                <option value="deadline" style="color:#0098ff">Deadlines</option>
+                <option value="reminder" style="color:#00c878">Reminders</option>
+                <option value="personal" style="color:#ffb400">Personal</option>
+                <option value="milestone" style="color:#8a2be2">Milestones</option>
+                <option value="event" style="color:#e040fb">Events</option>
+              </select>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label">Location</label>
+              <input type="text" class="form-control" id="eventLocation" placeholder="e.g. Conference Room A">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" rows="2" id="eventDesc" placeholder="Event details..."></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Color</label>
+              <div class="d-flex gap-2 flex-wrap mt-1">
+                <span class="color-swatch selected" data-color="#ff0038" style="background:#ff0038" title="Red"></span>
+                <span class="color-swatch" data-color="#0098ff" style="background:#0098ff" title="Blue"></span>
+                <span class="color-swatch" data-color="#00c878" style="background:#00c878" title="Green"></span>
+                <span class="color-swatch" data-color="#ffb400" style="background:#ffb400" title="Yellow"></span>
+                <span class="color-swatch" data-color="#8a2be2" style="background:#8a2be2" title="Purple"></span>
+                <span class="color-swatch" data-color="#e040fb" style="background:#e040fb" title="Pink"></span>
+                <span class="color-swatch" data-color="#00c8d4" style="background:#00c8d4" title="Teal"></span>
+                <span class="color-swatch" data-color="#ff6b35" style="background:#ff6b35" title="Orange"></span>
+              </div>
+              <input type="hidden" id="selectedColor" value="#ff0038">
+            </div>
+            <div class="col-12">
+              <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="allDayCheck" style="border-color:var(--border-color)">
+                <label class="form-check-label" for="allDayCheck" style="font-size:0.875rem;color:var(--text-main)">All Day Event</label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer gap-2">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="saveEventBtn">
+          <i class="ri-save-line me-1"></i> Save Event
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     SETTINGS PANEL
+═══════════════════════════════════════ -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-panel-header">
+    <span class="settings-panel-title"><i class="ri-settings-3-line me-2"></i>Layout Settings</span>
+    <button class="settings-close" data-action="close-settings"><i class="ri-close-line"></i></button>
+  </div>
+  <div class="settings-panel-body">
+    <div class="settings-section-title">Theme</div>
+    <div class="settings-option" data-action="toggle-theme"><i class="ri-moon-line"></i> Dark Mode</div>
+    <div class="settings-section-title">Layout Type</div>
+    <div class="settings-option active" data-layout="default"><i class="ri-layout-left-2-line"></i> Default</div>
+    <div class="settings-option" data-layout="horizontal"><i class="ri-layout-top-2-line"></i> Horizontal</div>
+    <div class="settings-option" data-layout="boxed"><i class="ri-layout-4-line"></i> Boxed</div>
+    <div class="settings-section-title">Language</div>
+    <div class="settings-option" data-lang="en">🇺🇸 English</div>
+    <div class="settings-option" data-lang="hi">🇮🇳 हिंदी</div>
+    <div class="settings-option" data-lang="ar">🇸🇦 العربية</div>
+  </div>
+</div>
+
+<!-- Scroll To Top -->
+<button class="scroll-to-top" id="scrollToTop"><i class="ri-arrow-up-line"></i></button>
+
+<!-- ═══════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<!-- FullCalendar -->
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+<!-- Core JS -->
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/animations.js"></script>
+<script src="assets/js/i18n.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── Sample events data ── */
+  const calEvents = [
+    // Meetings (red)
+    { id: '1',  title: 'Sprint Planning',       start: '2026-02-24T10:00:00', end: '2026-02-24T11:30:00', color: '#ff0038', extendedProps: { category: 'meeting', location: 'Room A' } },
+    { id: '2',  title: 'Product Roadmap Review', start: '2026-02-26T14:00:00', end: '2026-02-26T15:30:00', color: '#ff0038', extendedProps: { category: 'meeting', location: 'Board Room' } },
+    { id: '3',  title: 'Stakeholder Sync',       start: '2026-03-03T09:00:00', end: '2026-03-03T10:00:00', color: '#ff0038', extendedProps: { category: 'meeting', location: 'Remote' } },
+    { id: '4',  title: 'Team Standup',            start: '2026-02-25T09:00:00', end: '2026-02-25T09:15:00', color: '#ff0038', extendedProps: { category: 'meeting', location: 'Remote' } },
+    // Deadlines (blue)
+    { id: '5',  title: 'API Integration Deadline', start: '2026-02-28', allDay: true,                       color: '#0098ff', extendedProps: { category: 'deadline', location: '' } },
+    { id: '6',  title: 'Design Assets Due',        start: '2026-03-05', allDay: true,                       color: '#0098ff', extendedProps: { category: 'deadline', location: '' } },
+    { id: '7',  title: 'Report Submission',        start: '2026-03-12T17:00:00',                            color: '#0098ff', extendedProps: { category: 'deadline', location: '' } },
+    // Reminders (green)
+    { id: '8',  title: 'Code Review',              start: '2026-02-26T14:00:00', end: '2026-02-26T15:00:00', color: '#00c878', extendedProps: { category: 'reminder', location: 'Remote' } },
+    { id: '9',  title: 'Performance Review',       start: '2026-03-10T11:00:00',                            color: '#00c878', extendedProps: { category: 'reminder', location: 'HR Office' } },
+    { id: '10', title: 'Update Documentation',     start: '2026-03-07T15:00:00',                            color: '#00c878', extendedProps: { category: 'reminder', location: 'Remote' } },
+    // Personal (yellow)
+    { id: '11', title: 'Team Lunch',               start: '2026-03-01T12:00:00', end: '2026-03-01T13:30:00', color: '#ffb400', extendedProps: { category: 'personal', location: 'The Grill' } },
+    { id: '12', title: 'Birthday Celebration',     start: '2026-03-15T16:00:00',                            color: '#ffb400', extendedProps: { category: 'personal', location: 'Office' } },
+    // Milestones (purple)
+    { id: '13', title: 'Q1 Milestone Review',      start: '2026-02-27T09:00:00', end: '2026-02-27T10:30:00', color: '#8a2be2', extendedProps: { category: 'milestone', location: 'Main Hall' } },
+    { id: '14', title: 'Version 1.0 Release',      start: '2026-03-20', allDay: true,                        color: '#8a2be2', extendedProps: { category: 'milestone', location: '' } },
+    // Events (pink)
+    { id: '15', title: 'Design Workshop',          start: '2026-02-28T13:00:00', end: '2026-02-28T17:00:00', color: '#e040fb', extendedProps: { category: 'event', location: 'Workshop Room' } },
+    { id: '16', title: 'Hackathon Day 1',           start: '2026-03-22', end: '2026-03-24', allDay: true,    color: '#e040fb', extendedProps: { category: 'event', location: 'HQ' } },
+    { id: '17', title: 'Company All-Hands',         start: '2026-03-31T10:00:00', end: '2026-03-31T12:00:00', color: '#ff0038', extendedProps: { category: 'meeting', location: 'Auditorium' } },
+    { id: '18', title: 'UX Research Session',       start: '2026-03-08T14:00:00', end: '2026-03-08T16:00:00', color: '#0098ff', extendedProps: { category: 'deadline', location: 'Lab 2' } },
+  ];
+
+  /* ── Calendar init ── */
+  const calEl = document.getElementById('fullCalendar');
+  let calendar;
+
+  function initCalendar() {
+    calendar = new FullCalendar.Calendar(calEl, {
+      initialView: 'dayGridMonth',
+      initialDate: '2026-02-24',
+      headerToolbar: {
+        left:   'prev,next today',
+        center: 'title',
+        right:  ''
+      },
+      events: calEvents,
+      editable: true,
+      selectable: true,
+      dayMaxEvents: 3,
+      moreLinkClick: 'popover',
+      eventClick: function (info) {
+        showEventPopup(info.event, info.jsEvent);
+      },
+      select: function (info) {
+        // Pre-fill modal with selected date
+        const startInput = document.getElementById('eventStart');
+        if (startInput) {
+          startInput.value = info.startStr + 'T09:00';
+        }
+        new bootstrap.Modal(document.getElementById('addEventModal')).show();
+        calendar.unselect();
+      },
+      eventMouseEnter: function (info) {
+        gsap.to(info.el, { scale: 1.02, duration: 0.15, ease: 'power1.out' });
+      },
+      eventMouseLeave: function (info) {
+        gsap.to(info.el, { scale: 1, duration: 0.15, ease: 'power1.out' });
+        hideEventPopup();
+      },
+      height: 'auto'
+    });
+
+    calendar.render();
+  }
+
+  initCalendar();
+
+  /* ── View switcher buttons ── */
+  const viewBtns = {
+    viewMonth: 'dayGridMonth',
+    viewWeek:  'timeGridWeek',
+    viewDay:   'timeGridDay',
+    viewList:  'listMonth'
+  };
+  Object.entries(viewBtns).forEach(([id, view]) => {
+    document.getElementById(id)?.addEventListener('click', function () {
+      document.querySelectorAll('.cal-view-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      calendar.changeView(view);
+    });
+  });
+
+  /* ── Event popup ── */
+  const popup = document.getElementById('eventPopup');
+
+  function showEventPopup(event, jsEvent) {
+    document.getElementById('popupColor').style.background = event.backgroundColor;
+    document.getElementById('popupTitle').textContent = event.title;
+    document.getElementById('popupDate').textContent = event.start
+      ? event.start.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' })
+      : '';
+    document.getElementById('popupTime').textContent = event.allDay
+      ? 'All Day'
+      : event.start.toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
+    document.getElementById('popupLocation').textContent =
+      event.extendedProps?.location || 'Remote / Online';
+
+    const x = Math.min(jsEvent.clientX + 12, window.innerWidth  - 310);
+    const y = Math.min(jsEvent.clientY + 12, window.innerHeight - 200);
+    popup.style.left = x + 'px';
+    popup.style.top  = y + 'px';
+    popup.classList.add('visible');
+  }
+
+  function hideEventPopup() {
+    popup.classList.remove('visible');
+  }
+
+  document.getElementById('popupClose')?.addEventListener('click', hideEventPopup);
+  document.addEventListener('click', function (e) {
+    if (!popup.contains(e.target) && !e.target.closest('.fc-event')) {
+      hideEventPopup();
+    }
+  });
+
+  /* ── Color swatch selection in modal ── */
+  document.querySelectorAll('.color-swatch').forEach(swatch => {
+    swatch.addEventListener('click', function () {
+      document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+      this.classList.add('selected');
+      document.getElementById('selectedColor').value = this.dataset.color;
+    });
+  });
+
+  /* ── Save Event ── */
+  document.getElementById('saveEventBtn')?.addEventListener('click', function () {
+    const title    = document.getElementById('eventTitle').value.trim();
+    const start    = document.getElementById('eventStart').value;
+    const end      = document.getElementById('eventEnd').value;
+    const color    = document.getElementById('selectedColor').value;
+    const allDay   = document.getElementById('allDayCheck').checked;
+    const location = document.getElementById('eventLocation').value;
+
+    if (!title || !start) {
+      document.getElementById('eventTitle').classList.add('is-invalid');
+      return;
+    }
+
+    calendar.addEvent({
+      title,
+      start,
+      end: end || undefined,
+      allDay,
+      color,
+      extendedProps: { location }
+    });
+
+    bootstrap.Modal.getInstance(document.getElementById('addEventModal'))?.hide();
+    document.getElementById('addEventForm').reset();
+    document.getElementById('selectedColor').value = '#ff0038';
+    document.querySelectorAll('.color-swatch').forEach((s, i) => {
+      s.classList.toggle('selected', i === 0);
+    });
+    document.getElementById('eventTitle').classList.remove('is-invalid');
+  });
+
+  /* ── GSAP page entrance ── */
+  gsap.from('.cal-sidebar > *', {
+    x: -20, opacity: 0, stagger: 0.08, duration: 0.45, ease: 'power2.out', delay: 0.2
+  });
+  gsap.from('.calendar-main-card', {
+    y: 16, opacity: 0, duration: 0.5, ease: 'power2.out', delay: 0.3
+  });
+})();
+</script>
+</body>
+</html>
