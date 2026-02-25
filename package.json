@@ -1,0 +1,28 @@
+{
+  "name": "reddash-admin-template",
+  "version": "1.0.0",
+  "description": "Free open source admin dashboard template - Bootstrap 5, vanilla JavaScript, dark mode, multi-language, Chart.js, DataTables, FullCalendar",
+  "keywords": [
+    "admin-dashboard",
+    "admin-template",
+    "bootstrap",
+    "bootstrap-5",
+    "dashboard-template",
+    "admin-panel",
+    "free-template",
+    "open-source",
+    "vanilla-javascript",
+    "chartjs",
+    "datatables",
+    "fullcalendar",
+    "dark-mode",
+    "responsive",
+    "saas"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/reddash-admin-template.git"
+  },
+  "homepage": "https://github.com/your-username/reddash-admin-template#readme"
+}

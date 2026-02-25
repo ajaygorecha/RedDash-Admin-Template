@@ -1,11 +1,27 @@
 # RedDash Admin Template
 
-A premium-quality, fully responsive admin dashboard template built with vanilla JavaScript. Enterprise-ready with multi-layout support, dark mode, multi-language (i18n), and modern UI components.
+**Free and open source** admin dashboard template built with Bootstrap 5 and vanilla JavaScript. No build step, no framework lock-in — just HTML, CSS, and JS. Perfect for SaaS apps, internal tools, CRM, and admin panels.
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![License](https://img.shields.io/badge/license-Commercial-green)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952b3)
-![No Framework](https://img.shields.io/badge/JS-Vanilla-yellow)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue)](https://github.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Bootstrap 5](https://img.shields.io/badge/Bootstrap-5.3-7952b3)](https://getbootstrap.com/)
+[![Vanilla JS](https://img.shields.io/badge/JavaScript-Vanilla-yellow)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+
+---
+
+## 🔍 Keywords
+
+`admin template` · `admin dashboard` · `bootstrap admin` · `dashboard template` · `admin panel` · `SaaS dashboard` · `responsive admin` · `dark mode` · `free admin template` · `open source dashboard` · `Bootstrap 5 template` · `vanilla JavaScript` · `Chart.js` · `DataTables` · `FullCalendar` · `Kanban` · `multi-language` · `i18n` · `RTL` · `GSAP` · `Three.js`
+
+---
+
+## 🎯 Perfect For
+
+- **SaaS dashboards** — Analytics, charts, user management
+- **Admin panels** — Backend for web apps, CMS, e-commerce
+- **Internal tools** — CRM, project management, team dashboards
+- **Startup MVPs** — Ship fast with a polished UI
+- **Prototypes** — Demo your idea without building from scratch
 
 ---
 
@@ -108,6 +124,8 @@ npx serve .
 ```
 
 Then visit `http://localhost:8000`
+
+> **Note:** When you push to GitHub, update the `repository.url` in `package.json` with your repo URL. This helps GitHub show the correct link in the "About" section.
 
 ### Option 3: Deploy to Vercel
 
@@ -235,7 +253,19 @@ See `changelog.html` for version history. **v1.0.0** (February 2026) — Initial
 
 ## 📄 License
 
-Commercial Ready. See your license terms for usage.
+This project is licensed under the **MIT License** — free for personal and commercial use. You can use, modify, and distribute it without restrictions. See [LICENSE](LICENSE) for details.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to open issues or submit pull requests.
+
+---
+
+## ⭐ Show Your Support
+
+If this template helps you, consider giving it a star on GitHub.
 
 ---
 
@@ -251,4 +281,14 @@ Commercial Ready. See your license terms for usage.
 
 ---
 
-**RedDash Admin Template** — Premium SaaS dashboard, built for speed and flexibility.
+---
+
+---
+
+**RedDash Admin Template** — Free, open source admin dashboard. Built for speed, flexibility, and ease of use. Use it for your next SaaS, CRM, internal tool, or admin panel project.
+
+---
+
+### 💡 GitHub Topics (add these to your repo for discoverability)
+
+`admin-dashboard` `bootstrap` `bootstrap-5` `dashboard-template` `free-template` `admin-panel` `html-template` `javascript` `vanilla-js` `chartjs` `datatables` `fullcalendar` `dark-mode` `responsive` `saas` `open-source`
