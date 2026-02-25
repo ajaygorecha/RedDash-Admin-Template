@@ -24,14 +24,17 @@ const AnimationManager = (() => {
       delay: 0.1
     });
 
-    gsap.from('.card', {
-      opacity: 0,
-      y: 16,
-      duration: 0.45,
-      stagger: 0.06,
-      ease: 'power2.out',
-      delay: 0.15
-    });
+    const dashCards = document.querySelectorAll('.card-hover, .stat-card');
+    if (dashCards.length) {
+      gsap.from(dashCards, {
+        opacity: 0,
+        y: 16,
+        duration: 0.45,
+        stagger: 0.06,
+        ease: 'power2.out',
+        delay: 0.15
+      });
+    }
   }
 
   // Animated counter

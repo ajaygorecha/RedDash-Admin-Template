@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation — RedDash</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Remix Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+
+  <!-- Theme & Layout CSS -->
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+
+  <style>
+    /* ── Docs layout ── */
+    .docs-layout {
+      display: flex;
+      gap: 0;
+      align-items: flex-start;
+    }
+
+    /* ── Docs sidebar ── */
+    .docs-sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: sticky;
+      top: 80px;
+    }
+    .docs-sidebar-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 700; font-size: 0.85rem;
+      color: var(--text-main);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .docs-sidebar-header i { color: var(--primary); }
+    .docs-nav { padding: 12px 0; }
+    .docs-nav-section {
+      padding: 6px 20px 4px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+    .docs-nav-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 20px;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      transition: all 0.15s;
+      cursor: pointer;
+    }
+    .docs-nav-link:hover { color: var(--primary); background: rgba(255,0,56,0.04); }
+    .docs-nav-link.active {
+      color: var(--primary);
+      background: rgba(255,0,56,0.06);
+      border-left-color: var(--primary);
+      font-weight: 600;
+    }
+    .docs-nav-link i { font-size: 0.9rem; width: 16px; }
+
+    /* ── Docs content ── */
+    .docs-content {
+      flex: 1;
+      min-width: 0;
+      padding-left: 32px;
+    }
+
+    /* ── Section ── */
+    .docs-section {
+      display: none;
+      animation: fade-in 0.3s ease;
+    }
+    .docs-section.active { display: block; }
+    @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .docs-section-header {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--border-color);
+    }
+    .docs-section-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,0,56,0.1); color: var(--primary);
+      border-radius: 6px; padding: 3px 10px;
+      font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+    .docs-section-title {
+      font-size: 1.6rem; font-weight: 800;
+      color: var(--text-main); margin-bottom: 6px;
+    }
+    .docs-section-desc {
+      color: var(--text-muted); font-size: 0.92rem; line-height: 1.6;
+    }
+
+    /* ── Docs card ── */
+    .docs-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    .docs-card-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 700; font-size: 0.88rem; color: var(--text-main);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .docs-card-header i { color: var(--primary); }
+    .docs-card-body { padding: 20px; }
+
+    /* ── Code block ── */
+    .code-block {
+      background: #0f1115;
+      color: #e4e6eb;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-family: 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin: 12px 0;
+      position: relative;
+    }
+    .code-block .kw  { color: #ff6b8a; }
+    .code-block .str { color: #a8ff78; }
+    .code-block .cmt { color: #636e7b; font-style: italic; }
+    .code-block .fn  { color: #79c7ff; }
+    .code-block .var { color: #ffb86c; }
+    .copy-btn {
+      position: absolute; top: 8px; right: 10px;
+      background: rgba(255,255,255,0.08); border: none;
+      color: rgba(255,255,255,0.5); border-radius: 5px;
+      padding: 3px 9px; font-size: 0.72rem; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .copy-btn:hover { background: rgba(255,0,56,0.3); color: #fff; }
+
+    /* ── Steps ── */
+    .steps { counter-reset: step; padding: 0; list-style: none; }
+    .step {
+      counter-increment: step;
+      display: flex; gap: 14px; padding: 14px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; flex-shrink: 0;
+    }
+    .step-num::before { content: counter(step); }
+    .step-body { flex: 1; }
+    .step-title { font-weight: 600; font-size: 0.875rem; color: var(--text-main); margin-bottom: 4px; }
+    .step-desc  { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── Alert info ── */
+    .docs-alert {
+      padding: 14px 18px; border-radius: 8px;
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 0.85rem; line-height: 1.6; margin: 12px 0;
+    }
+    .docs-alert-info    { background: rgba(0,152,255,0.1); border-left: 3px solid #0098ff; color: var(--text-main); }
+    .docs-alert-warning { background: rgba(255,180,0,0.1); border-left: 3px solid #ffb400; color: var(--text-main); }
+    .docs-alert-success { background: rgba(0,200,120,0.1); border-left: 3px solid #00c878; color: var(--text-main); }
+    .docs-alert i { margin-top: 1px; font-size: 1rem; flex-shrink: 0; }
+    .docs-alert-info i    { color: #0098ff; }
+    .docs-alert-warning i { color: #ffb400; }
+    .docs-alert-success i { color: #00c878; }
+
+    /* ── Reference links ── */
+    .ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+    .ref-card {
+      background: var(--bg-body); border: 1px solid var(--border-color);
+      border-radius: 10px; padding: 16px; text-align: center;
+      text-decoration: none; color: var(--text-main);
+      transition: all 0.2s; cursor: pointer;
+    }
+    .ref-card:hover { border-color: var(--primary); background: rgba(255,0,56,0.04); color: var(--primary); transform: translateY(-2px); }
+    .ref-card-icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .ref-card-name { font-weight: 700; font-size: 0.82rem; margin-bottom: 2px; }
+    .ref-card-desc { font-size: 0.72rem; color: var(--text-muted); }
+
+    /* ── Folder tree ── */
+    .folder-tree { font-family: 'Fira Code', monospace; font-size: 0.82rem; line-height: 1.8; }
+    .folder-tree .dir  { color: #79c7ff; font-weight: 600; }
+    .folder-tree .file { color: #e4e6eb; }
+    .folder-tree .cmt  { color: #636e7b; }
+
+    /* ── Table ── */
+    .docs-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    .docs-table th {
+      background: var(--bg-body); color: var(--text-muted);
+      font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.05em; padding: 10px 14px;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+    }
+    .docs-table td { padding: 10px 14px; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
+    .docs-table tr:last-child td { border-bottom: none; }
+    .docs-table code {
+      background: rgba(255,0,56,0.08); color: var(--primary);
+      padding: 1px 6px; border-radius: 4px; font-size: 0.8rem;
+    }
+
+    @media (max-width: 992px) {
+      .docs-layout { flex-direction: column; }
+      .docs-sidebar { width: 100%; position: static; }
+      .docs-content { padding-left: 0; padding-top: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <a href="index.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="ri-dashboard-3-fill"></i></div>
+    <span class="sidebar-brand-text">Red<span>Dash</span></span>
+  </a>
+
+  <div class="sidebar-scroll">
+    <ul class="sidebar-nav">
+      <li class="sidebar-section-label">Main</li>
+      <li class="sidebar-item">
+        <a href="index.html" class="sidebar-link" data-tooltip="Dashboard">
+          <i class="ri-dashboard-3-line"></i>
+          <span class="sidebar-link-text">Dashboard</span>
+        </a>
+      </li>
+
+      <li class="sidebar-section-label">Apps</li>
+      <li class="sidebar-item">
+        <a href="users.html" class="sidebar-link" data-tooltip="Users">
+          <i class="ri-team-line"></i>
+          <span class="sidebar-link-text">Users</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="projects.html" class="sidebar-link" data-tooltip="Projects">
+          <i class="ri-folder-3-line"></i>
+          <span class="sidebar-link-text">Projects</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="calendar.html" class="sidebar-link" data-tooltip="Calendar">
+          <i class="ri-calendar-line"></i>
+          <span class="sidebar-link-text">Calendar</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="kanban.html" class="sidebar-link" data-tooltip="Kanban">
+          <i class="ri-layout-column-line"></i>
+          <span class="sidebar-link-text">Kanban</span>
+          <span class="sidebar-badge">New</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="chat.html" class="sidebar-link" data-tooltip="Chat">
+          <i class="ri-message-3-line"></i>
+          <span class="sidebar-link-text">Chat</span>
+          <span class="sidebar-badge">5</span>
+        </a>
+      </li>
+
+      <li class="sidebar-section-label">Pages</li>
+      <li class="sidebar-item">
+        <a href="pricing.html" class="sidebar-link" data-tooltip="Pricing">
+          <i class="ri-price-tag-3-line"></i>
+          <span class="sidebar-link-text">Pricing</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="faq.html" class="sidebar-link" data-tooltip="FAQ">
+          <i class="ri-question-line"></i>
+          <span class="sidebar-link-text">FAQ</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="profile.html" class="sidebar-link" data-tooltip="Profile">
+          <i class="ri-user-3-line"></i>
+          <span class="sidebar-link-text">Profile</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="#authMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#authMenu" aria-expanded="false" data-tooltip="Authentication">
+          <i class="ri-shield-keyhole-line"></i>
+          <span class="sidebar-link-text">Authentication</span>
+          <i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="authMenu">
+          <li><a href="login.html" class="sidebar-link">Login</a></li>
+          <li><a href="register.html" class="sidebar-link">Register</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-item">
+        <a href="#errorMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#errorMenu" aria-expanded="false" data-tooltip="Error Pages">
+          <i class="ri-error-warning-line"></i>
+          <span class="sidebar-link-text">Error Pages</span>
+          <i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="errorMenu">
+          <li><a href="404.html" class="sidebar-link">404 Page</a></li>
+          <li><a href="maintenance.html" class="sidebar-link">Maintenance</a></li>
+        </ul>
+      </li>
+
+      
+      <li class="sidebar-section-label">UI Components</li>
+      <li class="sidebar-item">
+        <a href="#uiMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#uiMenu" aria-expanded="false" data-tooltip="UI Kit">
+          <i class="ri-stack-line"></i>
+          <span class="sidebar-link-text">UI Kit</span>
+          <i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="uiMenu">
+          <li><a href="components/components-items/card.html" class="sidebar-link">Cards</a></li>
+          <li><a href="components/components-items/stat-card.html" class="sidebar-link">Stat Cards</a></li>
+          <li><a href="components/components-items/modal.html" class="sidebar-link">UI Elements</a></li>
+          <li><a href="components/components-items/table.html" class="sidebar-link">Tables &amp; Timeline</a></li>
+        </ul>
+      </li>
+
+<li class="sidebar-section-label">Support</li>
+      <li class="sidebar-item active">
+        <a href="documentation.html" class="sidebar-link" data-tooltip="Documentation">
+          <i class="ri-book-open-line"></i>
+          <span class="sidebar-link-text">Documentation</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="changelog.html" class="sidebar-link" data-tooltip="Changelog">
+          <i class="ri-history-line"></i>
+          <span class="sidebar-link-text">Changelog</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="profile.html" class="sidebar-user">
+      <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="sidebar-user-avatar">
+      <div class="sidebar-user-info">
+        <span class="sidebar-user-name">Alex Johnson</span>
+        <span class="sidebar-user-role">Administrator</span>
+      </div>
+    </a>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════
+     MAIN WRAPPER
+═══════════════════════════════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- ── NAVBAR ── -->
+  <header class="navbar-top">
+    <button class="navbar-toggle" data-action="toggle-sidebar">
+      <i class="ri-menu-line"></i>
+    </button>
+
+    <div class="navbar-search">
+      <i class="ri-search-line navbar-search-icon"></i>
+      <input type="text" placeholder="Search anything..." id="navSearchInput" autocomplete="off">
+    </div>
+
+    <div class="navbar-actions">
+      <button class="navbar-action-btn" data-action="toggle-theme">
+        <i class="ri-moon-line" data-theme-icon></i>
+      </button>
+
+      <div class="position-relative">
+        <button class="lang-selector" data-dropdown-trigger="langMenu">
+          <span class="lang-current-flag lang-flag">🇺🇸</span>
+          <span class="lang-current-label">EN</span>
+          <i class="ri-arrow-down-s-line" style="font-size:13px"></i>
+        </button>
+        <ul class="dropdown-menu" id="langMenu" style="min-width:140px;right:0;left:auto;position:absolute;top:calc(100%+6px)">
+          <li><a class="dropdown-item" data-lang="en"><span class="lang-flag">🇺🇸</span> English</a></li>
+          <li><a class="dropdown-item" data-lang="hi"><span class="lang-flag">🇮🇳</span> हिंदी</a></li>
+          <li><a class="dropdown-item" data-lang="ar"><span class="lang-flag">🇸🇦</span> العربية</a></li>
+        </ul>
+      </div>
+
+      <div class="navbar-divider"></div>
+      <button class="navbar-action-btn" data-action="open-settings">
+        <i class="ri-settings-3-line"></i>
+      </button>
+      <div class="navbar-divider"></div>
+
+      <div class="position-relative">
+        <div class="navbar-user" data-dropdown-trigger="userDropdown">
+          <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="navbar-user-avatar">
+          <span class="navbar-user-name">Alex Johnson</span>
+          <i class="ri-arrow-down-s-line navbar-user-chevron"></i>
+        </div>
+        <ul class="dropdown-menu" id="userDropdown" style="right:0;left:auto;position:absolute;top:calc(100%+8px);min-width:200px">
+          <li><a class="dropdown-item" href="profile.html"><i class="ri-user-3-line"></i> Profile</a></li>
+          <li><a class="dropdown-item" href="login.html" style="color:var(--danger)"><i class="ri-logout-box-r-line"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── PAGE CONTENT ── -->
+  <main class="page-content" id="pageContent">
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Documentation</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item active">Documentation</li>
+          </ol>
+        </nav>
+      </div>
+      <a href="changelog.html" class="btn btn-sm" style="background:var(--primary);color:#fff;border-radius:8px">
+        <i class="ri-history-line me-1"></i>Changelog
+      </a>
+    </div>
+
+    <div class="docs-layout">
+      <!-- ── Docs Sidebar ── -->
+      <div class="docs-sidebar">
+        <div class="docs-sidebar-header"><i class="ri-book-open-line"></i> Contents</div>
+        <nav class="docs-nav">
+          <div class="docs-nav-section">Getting Started</div>
+          <a class="docs-nav-link active" data-section="installation"><i class="ri-download-cloud-line"></i> Installation</a>
+          <a class="docs-nav-link" data-section="folder-structure"><i class="ri-folder-4-line"></i> Folder Structure</a>
+
+          <div class="docs-nav-section">Customization</div>
+          <a class="docs-nav-link" data-section="theme"><i class="ri-palette-line"></i> Theme Customization</a>
+          <a class="docs-nav-link" data-section="colors"><i class="ri-drop-line"></i> Changing Primary Color</a>
+          <a class="docs-nav-link" data-section="dark-mode"><i class="ri-moon-line"></i> Enabling Dark Mode</a>
+
+          <div class="docs-nav-section">Development</div>
+          <a class="docs-nav-link" data-section="new-page"><i class="ri-file-add-line"></i> Adding New Page</a>
+          <a class="docs-nav-link" data-section="new-component"><i class="ri-puzzle-line"></i> Adding New Component</a>
+          <a class="docs-nav-link" data-section="datatables"><i class="ri-table-line"></i> Using DataTables</a>
+          <a class="docs-nav-link" data-section="fullcalendar"><i class="ri-calendar-line"></i> Using FullCalendar</a>
+          <a class="docs-nav-link" data-section="threejs"><i class="ri-3d-cube-sphere-line"></i> Using Three.js</a>
+
+          <div class="docs-nav-section">Deployment</div>
+          <a class="docs-nav-link" data-section="vercel"><i class="ri-server-line"></i> Deploy on Vercel</a>
+          <a class="docs-nav-link" data-section="performance"><i class="ri-speed-line"></i> Performance Tips</a>
+
+          <div class="docs-nav-section">References</div>
+          <a class="docs-nav-link" data-section="references"><i class="ri-links-line"></i> Library References</a>
+        </nav>
+      </div>
+
+      <!-- ── Docs Content ── -->
+      <div class="docs-content">
+
+        <!-- 1. Installation -->
+        <div class="docs-section active" id="sec-installation">
+          <div class="docs-section-header">
+            <div class="docs-section-badge"><i class="ri-download-cloud-line"></i> Getting Started</div>
+            <h2 class="docs-section-title">Installation</h2>
+            <p class="docs-section-desc">Get RedDash running in minutes — no build tools required.</p>
+          </div>
+
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-git-branch-line"></i> Method 1: Direct Download</div>
+            <div class="docs-card-body">
+              <ol class="steps">
+                <li class="step">
+                  <div class="step-num"></div>
+                  <div class="step-body">
+                    <div class="step-title">Download the template</div>
+                    <div class="step-desc">Extract the ZIP file to your desired project directory.</div>
+                  </div>
+                </li>
+                <li class="step">
+                  <div class="step-num"></div>
+                  <div class="step-body">
+                    <div class="step-title">Open in browser</div>
+                    <div class="step-desc">Open <code style="background:rgba(255,0,56,0.08);color:var(--primary);padding:1px 6px;border-radius:4px">index.html</code> directly in any modern browser or serve with a local dev server.</div>
+                  </div>
+                </li>
+                <li class="step">
+                  <div class="step-num"></div>
+                  <div class="step-body">
+                    <div class="step-title">Start customizing</div>
+                    <div class="step-desc">Edit <code style="background:rgba(255,0,56,0.08);color:var(--primary);padding:1px 6px;border-radius:4px">assets/css/theme.css</code> to personalize colors, and modify any HTML page for your content.</div>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-terminal-box-line"></i> Method 2: Local Dev Server</div>
+            <div class="docs-card-body">
+              <p style="font-size:0.875rem;color:var(--text-muted);margin-bottom:12px">Run a lightweight local server for the best development experience:</p>
+              <div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt"># Using VS Code Live Server (recommended)</span>
+Install the "Live Server" extension in VS Code
+Right-click index.html → "Open with Live Server"
+
+<span class="cmt"># Using Python</span>
+<span class="fn">python</span> -m http.server <span class="var">8080</span>
+
+<span class="cmt"># Using Node.js npx</span>
+<span class="fn">npx</span> serve .
+
+<span class="cmt"># Using PHP</span>
+<span class="fn">php</span> -S localhost:<span class="var">8080</span></div>
+
+              <div class="docs-alert docs-alert-info">
+                <i class="ri-information-line"></i>
+                <span>Live Server automatically reloads the page when you save files, making development faster.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-checkbox-circle-line"></i> System Requirements</div>
+            <div class="docs-card-body">
+              <table class="docs-table">
+                <thead><tr><th>Requirement</th><th>Minimum</th><th>Recommended</th></tr></thead>
+                <tbody>
+                  <tr><td>Browser</td><td>Chrome 90+, Firefox 88+</td><td>Latest stable version</td></tr>
+                  <tr><td>Node.js (optional)</td><td>v14+</td><td>v18+ LTS</td></tr>
+                  <tr><td>Internet</td><td>Required for CDN</td><td>–</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Folder Structure -->
+        <div class="docs-section" id="sec-folder-structure">
+          <div class="docs-section-header">
+            <div class="docs-section-badge"><i class="ri-folder-4-line"></i> Getting Started</div>
+            <h2 class="docs-section-title">Folder Structure</h2>
+            <p class="docs-section-desc">RedDash follows a clean, flat file organization. All pages are at the root level.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-folder-open-line"></i> Project Tree</div>
+            <div class="docs-card-body">
+              <div class="code-block folder-tree">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="dir">reddash/</span>
+├── <span class="file">index.html</span>            <span class="cmt"># Dashboard</span>
+├── <span class="file">login.html</span>
+├── <span class="file">register.html</span>
+├── <span class="file">profile.html</span>
+├── <span class="file">users.html</span>
+├── <span class="file">projects.html</span>
+├── <span class="file">calendar.html</span>
+├── <span class="file">kanban.html</span>
+├── <span class="file">chat.html</span>
+├── <span class="file">pricing.html</span>
+├── <span class="file">faq.html</span>
+├── <span class="file">404.html</span>
+├── <span class="file">maintenance.html</span>
+├── <span class="file">documentation.html</span>
+├── <span class="file">changelog.html</span>
+├── <span class="file">vercel.json</span>
+├── <span class="dir">assets/</span>
+│   ├── <span class="dir">css/</span>
+│   │   ├── <span class="file">theme.css</span>       <span class="cmt"># CSS variables, dark mode</span>
+│   │   ├── <span class="file">layout.css</span>      <span class="cmt"># Sidebar, navbar, grid</span>
+│   │   └── <span class="file">components.css</span>  <span class="cmt"># UI components</span>
+│   ├── <span class="dir">js/</span>
+│   │   ├── <span class="file">theme.js</span>        <span class="cmt"># Dark mode logic</span>
+│   │   ├── <span class="file">layout.js</span>       <span class="cmt"># Sidebar, dropdowns</span>
+│   │   ├── <span class="file">animations.js</span>   <span class="cmt"># GSAP animations</span>
+│   │   ├── <span class="file">i18n.js</span>         <span class="cmt"># Multi-language</span>
+│   │   ├── <span class="file">charts.js</span>       <span class="cmt"># Chart.js configs</span>
+│   │   ├── <span class="file">datatable-init.js</span>
+│   │   ├── <span class="file">calendar-init.js</span>
+│   │   └── <span class="file">three-init.js</span>
+│   └── <span class="dir">images/</span>
+└── <span class="dir">components/</span>         <span class="cmt"># Reference components</span>
+    ├── <span class="file">sidebar.html</span>
+    ├── <span class="file">navbar.html</span>
+    ├── <span class="file">footer.html</span>
+    └── <span class="file">settings-panel.html</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Theme Customization -->
+        <div class="docs-section" id="sec-theme">
+          <div class="docs-section-header">
+            <div class="docs-section-badge"><i class="ri-palette-line"></i> Customization</div>
+            <h2 class="docs-section-title">Theme Customization</h2>
+            <p class="docs-section-desc">All visual tokens are defined in <code style="background:rgba(255,0,56,0.08);color:var(--primary);padding:1px 6px;border-radius:4px">assets/css/theme.css</code> using CSS variables.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-code-s-slash-line"></i> theme.css — Core Variables</div>
+            <div class="docs-card-body">
+              <div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">/* Light mode (default) */</span>
+<span class="kw">:root</span> {
+  <span class="var">--primary</span>:      <span class="str">#ff0038</span>;
+  <span class="var">--radius</span>:       <span class="str">10px</span>;
+  <span class="var">--bg-body</span>:      <span class="str">#f8f9fa</span>;
+  <span class="var">--bg-card</span>:      <span class="str">#ffffff</span>;
+  <span class="var">--text-main</span>:    <span class="str">#212529</span>;
+  <span class="var">--text-muted</span>:   <span class="str">#6c757d</span>;
+  <span class="var">--border-color</span>: <span class="str">#e9ecef</span>;
+  <span class="var">--sidebar-width</span>:<span class="str">260px</span>;
+}
+
+<span class="cmt">/* Dark mode */</span>
+<span class="kw">[data-theme="dark"]</span> {
+  <span class="var">--bg-body</span>:      <span class="str">#0f1115</span>;
+  <span class="var">--bg-card</span>:      <span class="str">#1c1f26</span>;
+  <span class="var">--text-main</span>:    <span class="str">#e4e6eb</span>;
+  <span class="var">--text-muted</span>:   <span class="str">#8b92a5</span>;
+  <span class="var">--border-color</span>: <span class="str">#2a2e38</span>;
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Changing Primary Color -->
+        <div class="docs-section" id="sec-colors">
+          <div class="docs-section-header">
+            <div class="docs-section-badge"><i class="ri-drop-line"></i> Customization</div>
+            <h2 class="docs-section-title">Changing Primary Color</h2>
+            <p class="docs-section-desc">Change the entire color palette with one variable edit.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-edit-line"></i> One-Line Change</div>
+            <div class="docs-card-body">
+              <p style="font-size:0.875rem;color:var(--text-muted);margin-bottom:12px">Open <code style="background:rgba(255,0,56,0.08);color:var(--primary);padding:1px 6px;border-radius:4px">assets/css/theme.css</code> and update the <code style="background:rgba(255,0,56,0.08);color:var(--primary);padding:1px 6px;border-radius:4px">--primary</code> value:</p>
+              <div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="kw">:root</span> {
+  <span class="cmt">/* Change this to any color */</span>
+  <span class="var">--primary</span>: <span class="str">#6366f1</span>; <span class="cmt">/* indigo */</span>
+  <span class="var">--primary</span>: <span class="str">#0ea5e9</span>; <span class="cmt">/* sky blue */</span>
+  <span class="var">--primary</span>: <span class="str">#10b981</span>; <span class="cmt">/* emerald */</span>
+  <span class="var">--primary</span>: <span class="str">#f59e0b</span>; <span class="cmt">/* amber */</span>
+  <span class="var">--primary</span>: <span class="str">#8b5cf6</span>; <span class="cmt">/* violet */</span>
+}</div>
+              <div class="docs-alert docs-alert-success">
+                <i class="ri-check-line"></i>
+                <span>No rebuild needed. All buttons, active states, badges, and chart colors update automatically.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Dark Mode -->
+        <div class="docs-section" id="sec-dark-mode">
+          <div class="docs-section-header">
+            <div class="docs-section-badge"><i class="ri-moon-line"></i> Customization</div>
+            <h2 class="docs-section-title">Enabling Dark Mode</h2>
+            <p class="docs-section-desc">Dark mode is built in and persists across sessions via localStorage.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-code-s-slash-line"></i> How It Works</div>
+            <div class="docs-card-body">
+              <div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">/* In theme.css — dark mode variables */</span>
+<span class="kw">[data-theme="dark"]</span> {
+  <span class="var">--bg-body</span>: <span class="str">#0f1115</span>;
+  <span class="var">--bg-card</span>: <span class="str">#1c1f26</span>;
+  <span class="cmt">/* ... etc */</span>
+}
+
+<span class="cmt">/* In theme.js — toggle logic */</span>
+<span class="kw">const</span> <span class="var">savedTheme</span> = localStorage.getItem(<span class="str">'reddash-theme'</span>);
+<span class="kw">if</span> (savedTheme) {
+  document.documentElement.setAttribute(<span class="str">'data-theme'</span>, savedTheme);
+}
+
+<span class="cmt">/* Toggle on button click */</span>
+document.querySelector(<span class="str">'[data-action="toggle-theme"]'</span>)
+  .addEventListener(<span class="str">'click'</span>, () => {
+    <span class="kw">const</span> <span class="var">current</span> = document.documentElement.getAttribute(<span class="str">'data-theme'</span>);
+    <span class="kw">const</span> <span class="var">next</span> = current === <span class="str">'dark'</span> ? <span class="str">'light'</span> : <span class="str">'dark'</span>;
+    document.documentElement.setAttribute(<span class="str">'data-theme'</span>, next);
+    localStorage.setItem(<span class="str">'reddash-theme'</span>, next);
+  });</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Adding New Page -->
+        <div class="docs-section" id="sec-new-page">
+          <div class="docs-section-header">
+            <div class="docs-section-badge"><i class="ri-file-add-line"></i> Development</div>
+            <h2 class="docs-section-title">Adding a New Page</h2>
+            <p class="docs-section-desc">Follow these steps to add a new page that fits the RedDash design system.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-list-check-3"></i> Steps</div>
+            <div class="docs-card-body">
+              <ol class="steps">
+                <li class="step">
+                  <div class="step-num"></div>
+                  <div class="step-body">
+                    <div class="step-title">Copy an existing page</div>
+                    <div class="step-desc">Duplicate <code style="background:rgba(255,0,56,0.08);color:var(--primary);padding:1px 6px;border-radius:4px">users.html</code> or any other page and rename it (e.g., <code style="background:rgba(255,0,56,0.08);color:var(--primary);padding:1px 6px;border-radius:4px">reports.html</code>).</div>
+                  </div>
+                </li>
+                <li class="step">
+                  <div class="step-num"></div>
+                  <div class="step-body">
+                    <div class="step-title">Update the &lt;title&gt; tag</div>
+                    <div class="step-desc">Change to: <code style="background:rgba(255,0,56,0.08);color:var(--primary);padding:1px 6px;border-radius:4px">&lt;title&gt;Reports — RedDash&lt;/title&gt;</code></div>
+                  </div>
+                </li>
+                <li class="step">
+                  <div class="step-num"></div>
+                  <div class="step-body">
+                    <div class="step-title">Set active sidebar link</div>
+                    <div class="step-desc">Find the correct <code style="background:rgba(255,0,56,0.08);color:var(--primary);padding:1px 6px;border-radius:4px">.sidebar-item</code> and add class <code style="background:rgba(255,0,56,0.08);color:var(--primary);padding:1px 6px;border-radius:4px">active</code>. Remove it from the previous active item.</div>
+                  </div>
+                </li>
+                <li class="step">
+                  <div class="step-num"></div>
+                  <div class="step-body">
+                    <div class="step-title">Replace page content</div>
+                    <div class="step-desc">Edit the content inside <code style="background:rgba(255,0,56,0.08);color:var(--primary);padding:1px 6px;border-radius:4px">&lt;main class="page-content"&gt;</code>.</div>
+                  </div>
+                </li>
+                <li class="step">
+                  <div class="step-num"></div>
+                  <div class="step-body">
+                    <div class="step-title">Add link to sidebar</div>
+                    <div class="step-desc">Add a new <code style="background:rgba(255,0,56,0.08);color:var(--primary);padding:1px 6px;border-radius:4px">&lt;li class="sidebar-item"&gt;</code> to the sidebar nav in all pages.</div>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. Adding New Component -->
+        <div class="docs-section" id="sec-new-component">
+          <div class="docs-section-header">
+            <div class="docs-section-badge"><i class="ri-puzzle-line"></i> Development</div>
+            <h2 class="docs-section-title">Adding a New Component</h2>
+            <p class="docs-section-desc">Create reusable UI components following the RedDash pattern.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-code-s-slash-line"></i> Component Pattern</div>
+            <div class="docs-card-body">
+              <div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">&lt;!-- 1. Add styles in &lt;style&gt; using CSS variables --&gt;</span>
+<span class="kw">.my-component</span> {
+  <span class="var">background</span>: var(--bg-card);
+  <span class="var">border</span>: 1px solid var(--border-color);
+  <span class="var">border-radius</span>: var(--radius);
+  <span class="var">color</span>: var(--text-main);
+}
+
+<span class="cmt">&lt;!-- 2. HTML structure --&gt;</span>
+&lt;<span class="fn">div</span> class="my-component" id="myComp"&gt;
+  &lt;<span class="fn">div</span> class="my-component-header"&gt;Title&lt;/<span class="fn">div</span>&gt;
+  &lt;<span class="fn">div</span> class="my-component-body"&gt;Content&lt;/<span class="fn">div</span>&gt;
+&lt;/<span class="fn">div</span>&gt;
+
+<span class="cmt">&lt;!-- 3. GSAP entrance animation --&gt;</span>
+gsap.from(<span class="str">'#myComp'</span>, {
+  y: 20, opacity: 0, duration: 0.4, ease: <span class="str">'power2.out'</span>
+});</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8. DataTables -->
+        <div class="docs-section" id="sec-datatables">
+          <div class="docs-section-header">
+            <div class="docs-section-badge"><i class="ri-table-line"></i> Development</div>
+            <h2 class="docs-section-title">Using DataTables</h2>
+            <p class="docs-section-desc">RedDash uses DataTables 2.x with Bootstrap 5 integration and custom theme overrides.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-code-s-slash-line"></i> Setup & Initialization</div>
+            <div class="docs-card-body">
+              <div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">&lt;!-- 1. Add CDN links in &lt;head&gt; --&gt;</span>
+&lt;link href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.min.css" rel="stylesheet"&gt;
+
+<span class="cmt">&lt;!-- 2. Add scripts before &lt;/body&gt; --&gt;</span>
+&lt;script src="https://code.jquery.com/jquery-3.7.1.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.datatables.net/2.0.3/js/dataTables.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.min.js"&gt;&lt;/script&gt;
+
+<span class="cmt">&lt;!-- 3. Initialize --&gt;</span>
+<span class="kw">const</span> <span class="var">table</span> = $(<span class="str">'#myTable'</span>).DataTable({
+  pageLength: 10,
+  responsive: true,
+  language: {
+    search: <span class="str">''</span>,
+    searchPlaceholder: <span class="str">'Search...'</span>
+  }
+});</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9. FullCalendar -->
+        <div class="docs-section" id="sec-fullcalendar">
+          <div class="docs-section-header">
+            <div class="docs-section-badge"><i class="ri-calendar-line"></i> Development</div>
+            <h2 class="docs-section-title">Using FullCalendar</h2>
+            <p class="docs-section-desc">RedDash uses FullCalendar v6 with month, week, and day views.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-code-s-slash-line"></i> Initialization</div>
+            <div class="docs-card-body">
+              <div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button"><span class="cmt">&lt;!-- CDN --&gt;</span>
+&lt;script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"&gt;&lt;/script&gt;
+
+<span class="cmt">/* Initialize */</span>
+<span class="kw">const</span> <span class="var">calendar</span> = <span class="kw">new</span> FullCalendar.Calendar(
+  document.getElementById(<span class="str">'calendarEl'</span>), {
+    initialView: <span class="str">'dayGridMonth'</span>,
+    headerToolbar: {
+      left:   <span class="str">'prev,next today'</span>,
+      center: <span class="str">'title'</span>,
+      right:  <span class="str">'dayGridMonth,timeGridWeek,timeGridDay'</span>
+    },
+    events: [ <span class="cmt">/* your events array */</span> ]
+  }
+);
+calendar.render();</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10. Three.js -->
+        <div class="docs-section" id="sec-threejs">
+          <div class="docs-section-header">
+            <div class="docs-section-badge"><i class="ri-3d-cube-sphere-line"></i> Development</div>
+            <h2 class="docs-section-title">Using Three.js</h2>
+            <p class="docs-section-desc">RedDash uses Three.js for the animated particle background on the login/register pages.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-code-s-slash-line"></i> Canvas Setup Pattern</div>
+            <div class="docs-card-body">
+              <div class="code-block">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">&lt;!-- Canvas element --&gt;</span>
+&lt;canvas id="threeCanvas" style="position:fixed;inset:0;z-index:0"&gt;&lt;/canvas&gt;
+
+<span class="cmt">/* Initialize Three.js scene */</span>
+<span class="kw">const</span> <span class="var">scene</span>    = <span class="kw">new</span> THREE.Scene();
+<span class="kw">const</span> <span class="var">camera</span>   = <span class="kw">new</span> THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
+<span class="kw">const</span> <span class="var">renderer</span> = <span class="kw">new</span> THREE.WebGLRenderer({
+  canvas: document.getElementById(<span class="str">'threeCanvas'</span>),
+  alpha: <span class="str">true</span>
+});
+renderer.setSize(innerWidth, innerHeight);
+
+<span class="cmt">/* Responsive resize */</span>
+window.addEventListener(<span class="str">'resize'</span>, () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 11. Vercel -->
+        <div class="docs-section" id="sec-vercel">
+          <div class="docs-section-header">
+            <div class="docs-section-badge"><i class="ri-server-line"></i> Deployment</div>
+            <h2 class="docs-section-title">Deploy on Vercel</h2>
+            <p class="docs-section-desc">Deploy RedDash to Vercel in under 2 minutes.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-list-check-3"></i> Steps</div>
+            <div class="docs-card-body">
+              <ol class="steps">
+                <li class="step">
+                  <div class="step-num"></div>
+                  <div class="step-body">
+                    <div class="step-title">Create a GitHub repository</div>
+                    <div class="step-desc">Push the RedDash folder to a new GitHub repo.</div>
+                  </div>
+                </li>
+                <li class="step">
+                  <div class="step-num"></div>
+                  <div class="step-body">
+                    <div class="step-title">Connect to Vercel</div>
+                    <div class="step-desc">Go to vercel.com → New Project → Import your GitHub repo.</div>
+                  </div>
+                </li>
+                <li class="step">
+                  <div class="step-num"></div>
+                  <div class="step-body">
+                    <div class="step-title">Deploy</div>
+                    <div class="step-desc">Click Deploy. Vercel detects a static site and deploys instantly. Your <code style="background:rgba(255,0,56,0.08);color:var(--primary);padding:1px 6px;border-radius:4px">vercel.json</code> handles routing.</div>
+                  </div>
+                </li>
+              </ol>
+              <div class="code-block" style="margin-top:16px">
+<button class="copy-btn" onclick="copyCode(this)">Copy</button><span class="cmt">// vercel.json</span>
+{
+  <span class="str">"rewrites"</span>: [
+    { <span class="str">"source"</span>: <span class="str">"/(.*)"</span>, <span class="str">"destination"</span>: <span class="str">"/"</span> }
+  ]
+}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12. Performance -->
+        <div class="docs-section" id="sec-performance">
+          <div class="docs-section-header">
+            <div class="docs-section-badge"><i class="ri-speed-line"></i> Deployment</div>
+            <h2 class="docs-section-title">Performance Tips</h2>
+            <p class="docs-section-desc">Best practices for keeping RedDash fast in production.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-bar-chart-box-line"></i> Optimization Checklist</div>
+            <div class="docs-card-body">
+              <table class="docs-table">
+                <thead><tr><th>Tip</th><th>Impact</th><th>Notes</th></tr></thead>
+                <tbody>
+                  <tr><td>Use CDN for all libraries</td><td style="color:#00c878">High</td><td>Already configured</td></tr>
+                  <tr><td>Enable browser caching</td><td style="color:#00c878">High</td><td>Set Cache-Control headers on server</td></tr>
+                  <tr><td>Compress images</td><td style="color:#ffb400">Medium</td><td>Use WebP format where possible</td></tr>
+                  <tr><td>Lazy load off-screen content</td><td style="color:#ffb400">Medium</td><td>Use <code>loading="lazy"</code> on images</td></tr>
+                  <tr><td>Minimize inline styles</td><td style="color:#0098ff">Low</td><td>Move to components.css</td></tr>
+                  <tr><td>Remove unused pages</td><td style="color:#0098ff">Low</td><td>Delete pages not used in production</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- References -->
+        <div class="docs-section" id="sec-references">
+          <div class="docs-section-header">
+            <div class="docs-section-badge"><i class="ri-links-line"></i> References</div>
+            <h2 class="docs-section-title">Library References</h2>
+            <p class="docs-section-desc">Official documentation for all libraries used in RedDash.</p>
+          </div>
+          <div class="docs-card">
+            <div class="docs-card-header"><i class="ri-external-link-line"></i> Official Docs</div>
+            <div class="docs-card-body">
+              <div class="ref-grid">
+                <a href="https://getbootstrap.com/docs/5.3" target="_blank" class="ref-card">
+                  <div class="ref-card-icon">🅱️</div>
+                  <div class="ref-card-name">Bootstrap 5</div>
+                  <div class="ref-card-desc">CSS Framework</div>
+                </a>
+                <a href="https://remixicon.com" target="_blank" class="ref-card">
+                  <div class="ref-card-icon">✦</div>
+                  <div class="ref-card-name">Remix Icon</div>
+                  <div class="ref-card-desc">Icon Library</div>
+                </a>
+                <a href="https://gsap.com/docs" target="_blank" class="ref-card">
+                  <div class="ref-card-icon">⚡</div>
+                  <div class="ref-card-name">GSAP</div>
+                  <div class="ref-card-desc">Animations</div>
+                </a>
+                <a href="https://www.chartjs.org/docs" target="_blank" class="ref-card">
+                  <div class="ref-card-icon">📊</div>
+                  <div class="ref-card-name">Chart.js</div>
+                  <div class="ref-card-desc">Data Charts</div>
+                </a>
+                <a href="https://datatables.net/manual" target="_blank" class="ref-card">
+                  <div class="ref-card-icon">🗃️</div>
+                  <div class="ref-card-name">DataTables</div>
+                  <div class="ref-card-desc">Table Plugin</div>
+                </a>
+                <a href="https://fullcalendar.io/docs" target="_blank" class="ref-card">
+                  <div class="ref-card-icon">📅</div>
+                  <div class="ref-card-name">FullCalendar</div>
+                  <div class="ref-card-desc">Calendar</div>
+                </a>
+                <a href="https://threejs.org/docs" target="_blank" class="ref-card">
+                  <div class="ref-card-icon">🌐</div>
+                  <div class="ref-card-name">Three.js</div>
+                  <div class="ref-card-desc">3D Graphics</div>
+                </a>
+                <a href="https://vercel.com/docs" target="_blank" class="ref-card">
+                  <div class="ref-card-icon">▲</div>
+                  <div class="ref-card-name">Vercel</div>
+                  <div class="ref-card-desc">Deployment</div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.docs-content -->
+    </div><!-- /.docs-layout -->
+
+  </main><!-- /.page-content -->
+</div><!-- /.main-wrapper -->
+
+<!-- ═══════════════════════════════════════
+     SETTINGS PANEL
+═══════════════════════════════════════ -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-panel-header">
+    <span class="settings-panel-title"><i class="ri-settings-3-line me-2"></i>Layout Settings</span>
+    <button class="settings-close" data-action="close-settings"><i class="ri-close-line"></i></button>
+  </div>
+  <div class="settings-panel-body">
+    <div class="settings-section-title">Theme</div>
+    <div class="settings-option" data-action="toggle-theme"><i class="ri-moon-line"></i> Dark Mode</div>
+    <div class="settings-section-title">Layout Type</div>
+    <div class="settings-option active" data-layout="default"><i class="ri-layout-left-2-line"></i> Default</div>
+    <div class="settings-option" data-layout="horizontal"><i class="ri-layout-top-2-line"></i> Horizontal</div>
+    <div class="settings-option" data-layout="boxed"><i class="ri-layout-4-line"></i> Boxed</div>
+    <div class="settings-section-title">Language</div>
+    <div class="settings-option" data-lang="en">🇺🇸 English</div>
+    <div class="settings-option" data-lang="hi">🇮🇳 हिंदी</div>
+    <div class="settings-option" data-lang="ar">🇸🇦 العربية</div>
+  </div>
+</div>
+
+<!-- Scroll To Top -->
+<button class="scroll-to-top" id="scrollToTop"><i class="ri-arrow-up-line"></i></button>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/animations.js"></script>
+<script src="assets/js/i18n.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── Docs nav ── */
+  const navLinks = document.querySelectorAll('.docs-nav-link');
+  const sections = document.querySelectorAll('.docs-section');
+
+  navLinks.forEach(link => {
+    link.addEventListener('click', function () {
+      navLinks.forEach(l => l.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      this.classList.add('active');
+      const target = document.getElementById('sec-' + this.dataset.section);
+      if (target) {
+        target.classList.add('active');
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  /* ── Copy code ── */
+  window.copyCode = function (btn) {
+    const block = btn.closest('.code-block');
+    const text  = block.textContent.replace('Copy', '').trim();
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 1500);
+    });
+  };
+
+  /* ── GSAP entrance ── */
+  gsap.from('.docs-sidebar', { x: -20, opacity: 0, duration: 0.5, ease: 'power2.out', delay: 0.1 });
+  gsap.from('.docs-section.active', { y: 16, opacity: 0, duration: 0.5, ease: 'power2.out', delay: 0.2 });
+
+})();
+</script>
+</body>
+</html>

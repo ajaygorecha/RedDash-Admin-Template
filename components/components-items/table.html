@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tables & Timeline — RedDash UI Kit</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/theme.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <style>
+    .kit-section { margin-bottom: 48px; }
+    .kit-section-header { margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); }
+    .kit-section-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+    .kit-section-desc  { font-size: 0.82rem; color: var(--text-muted); }
+    .kit-preview { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; }
+    .kit-preview-body   { padding: 28px; }
+    .kit-preview-footer { padding: 10px 18px; background: var(--bg-body); border-top: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+    .kit-preview-footer code { background: var(--bg-hover); padding: 1px 5px; border-radius: 4px; font-size: 0.72rem; color: var(--primary); }
+    body { background: var(--bg-body); color: var(--text-main); font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .rd-table-header {
+      padding: 16px 20px; border-bottom: 1px solid var(--border-color);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+    }
+    .rd-table-title  { font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
+    .rd-table { width: 100%; border-collapse: collapse; }
+    .rd-table thead th {
+      background: var(--bg-body); color: var(--text-muted);
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; padding: 10px 16px;
+      border-bottom: 1px solid var(--border-color); text-align: left; white-space: nowrap;
+    }
+    .rd-table tbody td { padding: 13px 16px; border-bottom: 1px solid var(--border-color); font-size: 0.875rem; color: var(--text-main); vertical-align: middle; }
+    .rd-table tbody tr:last-child td { border-bottom: none; }
+    .rd-table tbody tr:hover td { background: var(--bg-body); }
+    .rd-table tfoot td { padding: 12px 16px; background: var(--bg-body); border-top: 1px solid var(--border-color); font-size: 0.82rem; font-weight: 600; color: var(--text-main); }
+
+    .rd-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 700;
+    }
+    .rd-badge-success { background: rgba(0,200,120,0.1); color: #00c878; }
+    .rd-badge-primary { background: rgba(255,0,56,0.1); color: var(--primary); }
+    .rd-badge-info    { background: rgba(0,152,255,0.1); color: #0098ff; }
+    .rd-badge-warning { background: rgba(255,180,0,0.1); color: #ffb400; }
+
+    .rd-cell-user { display: flex; align-items: center; gap: 10px; }
+    .rd-cell-user-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .rd-cell-user-name { font-weight: 600; font-size: 0.875rem; color: var(--text-main); line-height: 1.2; }
+    .rd-cell-user-email { font-size: 0.75rem; color: var(--text-muted); }
+
+    .rd-btn-action { width: 28px; height: 28px; border-radius: 6px; border: none; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; cursor: pointer; transition: background 0.15s, color 0.15s; }
+    .rd-btn-action-view   { background: rgba(0,152,255,0.1);  color: #0098ff; }
+    .rd-btn-action-edit   { background: rgba(255,180,0,0.1);  color: #ffb400; }
+    .rd-btn-action-delete { background: rgba(255,0,56,0.1);   color: var(--primary); }
+    .rd-btn-action:hover  { filter: brightness(1.15); }
+
+    /* ════════ TIMELINE ════════ */
+    .rd-timeline { padding: 0; list-style: none; }
+    .rd-timeline-item {
+      position: relative; padding-left: 40px; padding-bottom: 24px;
+    }
+    .rd-timeline-item:last-child { padding-bottom: 0; }
+    .rd-timeline-item::before {
+      content: ''; position: absolute; left: 15px; top: 24px; bottom: 0;
+      width: 2px; background: var(--border-color);
+    }
+    .rd-timeline-item:last-child::before { display: none; }
+    .rd-timeline-dot {
+      position: absolute; left: 0; top: 0;
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; z-index: 1; border: 2px solid var(--bg-card);
+    }
+    .rd-timeline-date  { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
+    .rd-timeline-title { font-size: 0.875rem; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
+    .rd-timeline-text  { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+    .rd-timeline-card  {
+      background: var(--bg-body); border: 1px solid var(--border-color);
+      border-radius: 8px; padding: 12px 16px; margin-top: 8px;
+    }
+
+    /* ════════ ACTIVITY FEED ════════ */
+    .rd-activity { padding: 0; list-style: none; }
+    .rd-activity-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border-color); }
+    .rd-activity-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .rd-activity-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0; }
+    .rd-activity-text { font-size: 0.875rem; color: var(--text-main); line-height: 1.5; }
+    .rd-activity-text strong { color: var(--text-main); }
+    .rd-activity-time { font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; }
+    </style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="../../index.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="ri-dashboard-3-fill"></i></div>
+    <span class="sidebar-brand-text">Red<span>Dash</span></span>
+  </a>
+  <div class="sidebar-scroll">
+    <ul class="sidebar-nav">
+      <li class="sidebar-section-label">Main</li>
+      <li class="sidebar-item">
+        <a href="../../index.html" class="sidebar-link" data-tooltip="Dashboard"><i class="ri-dashboard-3-line"></i><span class="sidebar-link-text">Dashboard</span></a>
+      </li>
+      <li class="sidebar-section-label">Apps</li>
+      <li class="sidebar-item">
+        <a href="../../users.html" class="sidebar-link" data-tooltip="Users"><i class="ri-team-line"></i><span class="sidebar-link-text">Users</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../projects.html" class="sidebar-link" data-tooltip="Projects"><i class="ri-folder-3-line"></i><span class="sidebar-link-text">Projects</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../calendar.html" class="sidebar-link" data-tooltip="Calendar"><i class="ri-calendar-line"></i><span class="sidebar-link-text">Calendar</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../kanban.html" class="sidebar-link" data-tooltip="Kanban"><i class="ri-layout-column-line"></i><span class="sidebar-link-text">Kanban</span><span class="sidebar-badge">New</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../chat.html" class="sidebar-link" data-tooltip="Chat"><i class="ri-message-3-line"></i><span class="sidebar-link-text">Chat</span><span class="sidebar-badge">5</span></a>
+      </li>
+      <li class="sidebar-section-label">Pages</li>
+      <li class="sidebar-item">
+        <a href="../../pricing.html" class="sidebar-link" data-tooltip="Pricing"><i class="ri-price-tag-3-line"></i><span class="sidebar-link-text">Pricing</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../faq.html" class="sidebar-link" data-tooltip="FAQ"><i class="ri-question-line"></i><span class="sidebar-link-text">FAQ</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../profile.html" class="sidebar-link" data-tooltip="Profile"><i class="ri-user-3-line"></i><span class="sidebar-link-text">Profile</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="#authMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#authMenu" aria-expanded="false" data-tooltip="Authentication">
+          <i class="ri-shield-keyhole-line"></i><span class="sidebar-link-text">Authentication</span><i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="authMenu">
+          <li><a href="../../login.html" class="sidebar-link">Login</a></li>
+          <li><a href="../../register.html" class="sidebar-link">Register</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-item">
+        <a href="#errorMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#errorMenu" aria-expanded="false" data-tooltip="Error Pages">
+          <i class="ri-error-warning-line"></i><span class="sidebar-link-text">Error Pages</span><i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="errorMenu">
+          <li><a href="../../404.html" class="sidebar-link">404 Page</a></li>
+          <li><a href="../../maintenance.html" class="sidebar-link">Maintenance</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-section-label">UI Components</li>
+      <li class="sidebar-item active">
+        <a href="#uiMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#uiMenu" aria-expanded="true" data-tooltip="UI Kit">
+          <i class="ri-stack-line"></i><span class="sidebar-link-text">UI Kit</span><i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse show" id="uiMenu">
+          <li><a href="card.html" class="sidebar-link">Cards</a></li>
+          <li><a href="stat-card.html" class="sidebar-link">Stat Cards</a></li>
+          <li><a href="modal.html" class="sidebar-link">UI Elements</a></li>
+          <li><a href="table.html" class="sidebar-link active">Tables &amp; Timeline</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-section-label">Support</li>
+      <li class="sidebar-item">
+        <a href="../../documentation.html" class="sidebar-link" data-tooltip="Documentation"><i class="ri-book-open-line"></i><span class="sidebar-link-text">Documentation</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../changelog.html" class="sidebar-link" data-tooltip="Changelog"><i class="ri-history-line"></i><span class="sidebar-link-text">Changelog</span></a>
+      </li>
+    </ul>
+  </div>
+  <div class="sidebar-footer">
+    <a href="../../profile.html" class="sidebar-user">
+      <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="sidebar-user-avatar">
+      <div class="sidebar-user-info">
+        <span class="sidebar-user-name">Alex Johnson</span>
+        <span class="sidebar-user-role">Administrator</span>
+      </div>
+    </a>
+  </div>
+</aside>
+<!-- MAIN WRAPPER -->
+<div class="main-wrapper" id="mainWrapper">
+  <header class="navbar-top">
+    <button class="navbar-toggle" data-action="toggle-sidebar"><i class="ri-menu-line"></i></button>
+    <div class="navbar-search">
+      <i class="ri-search-line navbar-search-icon"></i>
+      <input type="text" placeholder="Search anything..." autocomplete="off">
+    </div>
+    <div class="navbar-actions">
+      <button class="navbar-action-btn" data-action="toggle-theme"><i class="ri-moon-line" data-theme-icon></i></button>
+      <div class="position-relative">
+        <button class="lang-selector" data-dropdown-trigger="langMenu">
+          <span class="lang-flag">🇺🇸</span><span class="lang-current-label">EN</span><i class="ri-arrow-down-s-line" style="font-size:13px"></i>
+        </button>
+        <ul class="dropdown-menu" id="langMenu" style="min-width:140px;right:0;left:auto;position:absolute;top:calc(100%+6px)">
+          <li><a class="dropdown-item" data-lang="en"><span class="lang-flag">🇺🇸</span> English</a></li>
+          <li><a class="dropdown-item" data-lang="hi"><span class="lang-flag">🇮🇳</span> हिंदी</a></li>
+          <li><a class="dropdown-item" data-lang="ar"><span class="lang-flag">🇸🇦</span> العربية</a></li>
+        </ul>
+      </div>
+      <div class="navbar-divider"></div>
+      <button class="navbar-action-btn" data-action="open-settings"><i class="ri-settings-3-line"></i></button>
+      <div class="navbar-divider"></div>
+      <div class="position-relative">
+        <div class="navbar-user" data-dropdown-trigger="userDropdown">
+          <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="navbar-user-avatar">
+          <span class="navbar-user-name">Alex Johnson</span>
+          <i class="ri-arrow-down-s-line navbar-user-chevron"></i>
+        </div>
+        <ul class="dropdown-menu" id="userDropdown" style="right:0;left:auto;position:absolute;top:calc(100%+8px);min-width:200px">
+          <li><a class="dropdown-item" href="../../profile.html"><i class="ri-user-3-line"></i> Profile</a></li>
+          <li><a class="dropdown-item" href="../../login.html" style="color:var(--danger)"><i class="ri-logout-box-r-line"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+  <!-- PAGE CONTENT -->
+  <main class="page-content">
+    <div class="page-header d-flex align-items-start justify-content-between flex-wrap gap-3">
+      <div>
+        <h1 class="page-title">Tables &amp; Timeline</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../../index.html">Home</a></li>
+            <li class="breadcrumb-item">UI Kit</li>
+            <li class="breadcrumb-item active">Tables &amp; Timeline</li>
+          </ol>
+        </nav>
+      </div>
+      <span style="background:rgba(255,0,56,0.1);color:var(--primary);border-radius:6px;padding:4px 12px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em"><i class="ri-table-line me-1"></i>Component</span>
+    </div>
+
+  </div>
+
+    <!-- ── Basic Table ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Basic Table</div>
+      <div class="kit-section-desc">Simple data table with header, sortable columns, status badges, and action buttons.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body" style="padding:0">
+        <div class="rd-table-wrap" style="border:none;border-radius:0">
+          <div class="rd-table-header">
+            <div class="rd-table-title">Recent Orders</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-sm" style="border:1px solid var(--border-color);color:var(--text-muted);background:transparent;border-radius:7px;font-size:0.8rem"><i class="ri-filter-line me-1"></i>Filter</button>
+              <button class="btn btn-sm" style="background:var(--primary);color:#fff;border-radius:7px;font-size:0.8rem"><i class="ri-download-line me-1"></i>Export</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="rd-table">
+              <thead>
+                <tr>
+                  <th><input type="checkbox" style="border-radius:4px"></th>
+                  <th>Order ID <i class="ri-arrow-up-down-line" style="font-size:0.8rem"></i></th>
+                  <th>Customer <i class="ri-arrow-up-down-line" style="font-size:0.8rem"></i></th>
+                  <th>Product</th>
+                  <th>Amount <i class="ri-arrow-up-down-line" style="font-size:0.8rem"></i></th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><input type="checkbox" style="border-radius:4px"></td>
+                  <td style="font-weight:600;color:var(--primary)">#ORD-001</td>
+                  <td>
+                    <div class="rd-cell-user">
+                      <img src="https://picsum.photos/seed/c1/100" class="rd-cell-user-avatar" alt="">
+                      <div><div class="rd-cell-user-name">Sarah Chen</div><div class="rd-cell-user-email">sarah@email.com</div></div>
+                    </div>
+                  </td>
+                  <td>RedDash Pro License</td>
+                  <td style="font-weight:600">$149.00</td>
+                  <td><span class="rd-badge rd-badge-success">Completed</span></td>
+                  <td style="color:var(--text-muted)">Feb 24, 2026</td>
+                  <td>
+                    <div style="display:flex;gap:4px">
+                      <button class="rd-btn-action rd-btn-action-view" title="View"><i class="ri-eye-line"></i></button>
+                      <button class="rd-btn-action rd-btn-action-edit" title="Edit"><i class="ri-edit-line"></i></button>
+                      <button class="rd-btn-action rd-btn-action-delete" title="Delete"><i class="ri-delete-bin-line"></i></button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" style="border-radius:4px"></td>
+                  <td style="font-weight:600;color:var(--primary)">#ORD-002</td>
+                  <td>
+                    <div class="rd-cell-user">
+                      <img src="https://picsum.photos/seed/c2/100" class="rd-cell-user-avatar" alt="">
+                      <div><div class="rd-cell-user-name">Mark Davis</div><div class="rd-cell-user-email">mark@email.com</div></div>
+                    </div>
+                  </td>
+                  <td>Analytics Module</td>
+                  <td style="font-weight:600">$79.00</td>
+                  <td><span class="rd-badge rd-badge-warning">Pending</span></td>
+                  <td style="color:var(--text-muted)">Feb 23, 2026</td>
+                  <td>
+                    <div style="display:flex;gap:4px">
+                      <button class="rd-btn-action rd-btn-action-view" title="View"><i class="ri-eye-line"></i></button>
+                      <button class="rd-btn-action rd-btn-action-edit" title="Edit"><i class="ri-edit-line"></i></button>
+                      <button class="rd-btn-action rd-btn-action-delete" title="Delete"><i class="ri-delete-bin-line"></i></button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" style="border-radius:4px"></td>
+                  <td style="font-weight:600;color:var(--primary)">#ORD-003</td>
+                  <td>
+                    <div class="rd-cell-user">
+                      <img src="https://picsum.photos/seed/c3/100" class="rd-cell-user-avatar" alt="">
+                      <div><div class="rd-cell-user-name">Lisa Park</div><div class="rd-cell-user-email">lisa@email.com</div></div>
+                    </div>
+                  </td>
+                  <td>Extended License</td>
+                  <td style="font-weight:600">$299.00</td>
+                  <td><span class="rd-badge rd-badge-info">Processing</span></td>
+                  <td style="color:var(--text-muted)">Feb 23, 2026</td>
+                  <td>
+                    <div style="display:flex;gap:4px">
+                      <button class="rd-btn-action rd-btn-action-view" title="View"><i class="ri-eye-line"></i></button>
+                      <button class="rd-btn-action rd-btn-action-edit" title="Edit"><i class="ri-edit-line"></i></button>
+                      <button class="rd-btn-action rd-btn-action-delete" title="Delete"><i class="ri-delete-bin-line"></i></button>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><input type="checkbox" style="border-radius:4px"></td>
+                  <td style="font-weight:600;color:var(--primary)">#ORD-004</td>
+                  <td>
+                    <div class="rd-cell-user">
+                      <img src="https://picsum.photos/seed/c4/100" class="rd-cell-user-avatar" alt="">
+                      <div><div class="rd-cell-user-name">Tom Wilson</div><div class="rd-cell-user-email">tom@email.com</div></div>
+                    </div>
+                  </td>
+                  <td>Starter Pack</td>
+                  <td style="font-weight:600">$39.00</td>
+                  <td><span class="rd-badge rd-badge-primary">Refunded</span></td>
+                  <td style="color:var(--text-muted)">Feb 22, 2026</td>
+                  <td>
+                    <div style="display:flex;gap:4px">
+                      <button class="rd-btn-action rd-btn-action-view" title="View"><i class="ri-eye-line"></i></button>
+                      <button class="rd-btn-action rd-btn-action-edit" title="Edit"><i class="ri-edit-line"></i></button>
+                      <button class="rd-btn-action rd-btn-action-delete" title="Delete"><i class="ri-delete-bin-line"></i></button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="4" style="color:var(--text-muted)">Showing 4 of 248 records</td>
+                  <td>$566.00</td>
+                  <td colspan="3"></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-table</code> — <code>.rd-cell-user</code> for user cells — <code>.rd-btn-action-{view|edit|delete}</code> for action buttons</div>
+    </div>
+  </div>
+
+  <!-- ── Striped & Bordered ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Striped &amp; Bordered Table Variants</div>
+      <div class="kit-section-desc">Alternate row shading and full border styles.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <p style="font-size:0.82rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px">Striped</p>
+        <div style="overflow-x:auto;margin-bottom:28px">
+          <table class="rd-table" style="border:1px solid var(--border-color);border-radius:var(--radius)">
+            <thead><tr><th>Name</th><th>Role</th><th>Department</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr style="background:var(--bg-card)"><td>Sarah Chen</td><td>Designer</td><td>Product</td><td><span class="rd-badge rd-badge-success">Active</span></td></tr>
+              <tr style="background:var(--bg-body)"><td>Mark Davis</td><td>Developer</td><td>Engineering</td><td><span class="rd-badge rd-badge-success">Active</span></td></tr>
+              <tr style="background:var(--bg-card)"><td>Lisa Park</td><td>PM</td><td>Product</td><td><span class="rd-badge rd-badge-warning">Away</span></td></tr>
+              <tr style="background:var(--bg-body)"><td>Tom Wilson</td><td>DevOps</td><td>Engineering</td><td><span class="rd-badge rd-badge-primary">Inactive</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="font-size:0.82rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px">Bordered</p>
+        <div style="overflow-x:auto">
+          <table class="rd-table" style="border:1px solid var(--border-color)">
+            <thead><tr><th style="border:1px solid var(--border-color)">Month</th><th style="border:1px solid var(--border-color)">Revenue</th><th style="border:1px solid var(--border-color)">Orders</th><th style="border:1px solid var(--border-color)">Growth</th></tr></thead>
+            <tbody>
+              <tr><td style="border:1px solid var(--border-color)">January</td><td style="border:1px solid var(--border-color)">$62,400</td><td style="border:1px solid var(--border-color)">984</td><td style="border:1px solid var(--border-color);color:#00c878">+8.2%</td></tr>
+              <tr><td style="border:1px solid var(--border-color)">February</td><td style="border:1px solid var(--border-color)">$71,850</td><td style="border:1px solid var(--border-color)">1,140</td><td style="border:1px solid var(--border-color);color:#00c878">+15.1%</td></tr>
+              <tr><td style="border:1px solid var(--border-color)">March</td><td style="border:1px solid var(--border-color)">$84,200</td><td style="border:1px solid var(--border-color)">1,284</td><td style="border:1px solid var(--border-color);color:#00c878">+17.2%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> Alternating <code>background: var(--bg-body)</code> on odd rows for striped effect</div>
+    </div>
+  </div>
+
+  <!-- ── Timeline Vertical ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Timeline — Vertical</div>
+      <div class="kit-section-desc">Vertical chronological event list with icons and optional content cards.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <ul class="rd-timeline">
+          <li class="rd-timeline-item">
+            <div class="rd-timeline-dot" style="background:rgba(255,0,56,0.1);color:var(--primary)"><i class="ri-rocket-line"></i></div>
+            <div class="rd-timeline-date">February 25, 2026 · 09:30 AM</div>
+            <div class="rd-timeline-title">RedDash v1.0.0 Released</div>
+            <div class="rd-timeline-text">Initial release with 15+ pages, dark mode, multi-language, and full component library.</div>
+            <div class="rd-timeline-card">
+              <div style="font-size:0.78rem;font-weight:600;color:var(--primary)">15 pages · 3 CSS files · 8 JS files</div>
+            </div>
+          </li>
+          <li class="rd-timeline-item">
+            <div class="rd-timeline-dot" style="background:rgba(0,200,120,0.1);color:#00c878"><i class="ri-check-double-line"></i></div>
+            <div class="rd-timeline-date">February 22, 2026 · 2:15 PM</div>
+            <div class="rd-timeline-title">All Core Pages Completed</div>
+            <div class="rd-timeline-text">Dashboard, Users, Projects, Calendar, Kanban, Chat, Pricing, FAQ, and Profile pages built and tested.</div>
+          </li>
+          <li class="rd-timeline-item">
+            <div class="rd-timeline-dot" style="background:rgba(0,152,255,0.1);color:#0098ff"><i class="ri-code-s-slash-line"></i></div>
+            <div class="rd-timeline-date">February 18, 2026 · 11:00 AM</div>
+            <div class="rd-timeline-title">Component Library Started</div>
+            <div class="rd-timeline-text">Began building reusable UI components: buttons, cards, modals, tables, timeline, and activity feed.</div>
+          </li>
+          <li class="rd-timeline-item" style="padding-bottom:0">
+            <div class="rd-timeline-dot" style="background:rgba(255,180,0,0.1);color:#ffb400"><i class="ri-lightbulb-line"></i></div>
+            <div class="rd-timeline-date">February 15, 2026 · 10:00 AM</div>
+            <div class="rd-timeline-title">Project Kickoff</div>
+            <div class="rd-timeline-text">RedDash admin template project started. Tech stack finalized: Bootstrap 5, GSAP, Chart.js, FullCalendar, DataTables, Three.js.</div>
+          </li>
+        </ul>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-timeline</code> + <code>.rd-timeline-item</code> + <code>.rd-timeline-dot</code> + optional <code>.rd-timeline-card</code></div>
+    </div>
+  </div>
+
+  <!-- ── Timeline Horizontal ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Timeline — Horizontal</div>
+      <div class="kit-section-desc">Step-by-step progress indicator for wizards or workflows.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <div style="display:flex;align-items:flex-start;gap:0;position:relative;padding:0 20px">
+          <!-- Step 1 -->
+          <div style="flex:1;text-align:center;position:relative">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:0.85rem;font-weight:700;z-index:1;position:relative">1</div>
+            <div style="position:absolute;top:17px;left:calc(50% + 18px);right:0;height:2px;background:var(--primary)"></div>
+            <div style="font-size:0.8rem;font-weight:700;color:var(--text-main)">Account</div>
+            <div style="font-size:0.72rem;color:var(--text-muted)">Completed</div>
+          </div>
+          <!-- Step 2 -->
+          <div style="flex:1;text-align:center;position:relative">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:0.85rem;font-weight:700;z-index:1;position:relative"><i class="ri-check-line"></i></div>
+            <div style="position:absolute;top:17px;left:0;right:0;height:2px;background:var(--primary)"></div>
+            <div style="font-size:0.8rem;font-weight:700;color:var(--text-main)">Profile</div>
+            <div style="font-size:0.72rem;color:var(--text-muted)">Completed</div>
+          </div>
+          <!-- Step 3 (active) -->
+          <div style="flex:1;text-align:center;position:relative">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:0.85rem;font-weight:700;z-index:1;position:relative;box-shadow:0 0 0 5px rgba(255,0,56,0.15)">3</div>
+            <div style="position:absolute;top:17px;left:0;width:50%;height:2px;background:var(--primary)"></div>
+            <div style="position:absolute;top:17px;right:0;width:50%;height:2px;background:var(--border-color)"></div>
+            <div style="font-size:0.8rem;font-weight:700;color:var(--primary)">Payment</div>
+            <div style="font-size:0.72rem;color:var(--primary)">Current</div>
+          </div>
+          <!-- Step 4 -->
+          <div style="flex:1;text-align:center;position:relative">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--border-color);color:var(--text-muted);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:0.85rem;font-weight:700;z-index:1;position:relative">4</div>
+            <div style="position:absolute;top:17px;left:0;right:0;height:2px;background:var(--border-color)"></div>
+            <div style="font-size:0.8rem;font-weight:600;color:var(--text-muted)">Review</div>
+            <div style="font-size:0.72rem;color:var(--text-muted)">Pending</div>
+          </div>
+          <!-- Step 5 -->
+          <div style="flex:1;text-align:center;position:relative">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--border-color);color:var(--text-muted);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:0.85rem;font-weight:700;z-index:1;position:relative">5</div>
+            <div style="position:absolute;top:17px;left:0;width:50%;height:2px;background:var(--border-color)"></div>
+            <div style="font-size:0.8rem;font-weight:600;color:var(--text-muted)">Confirm</div>
+            <div style="font-size:0.72rem;color:var(--text-muted)">Pending</div>
+          </div>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> Horizontal step timeline — flex layout with absolute connector lines</div>
+    </div>
+  </div>
+
+  <!-- ── Activity Feed ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Activity Feed</div>
+      <div class="kit-section-desc">Chronological list of user or system events for dashboards and profile pages.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body" style="padding:0">
+        <div style="padding:16px 24px;border-bottom:1px solid var(--border-color);font-weight:700;font-size:0.875rem;color:var(--text-main);display:flex;align-items:center;justify-content:space-between">
+          <span><i class="ri-pulse-line me-2" style="color:var(--primary)"></i>Activity Feed</span>
+          <a href="#" style="font-size:0.78rem;color:var(--primary);text-decoration:none">View All</a>
+        </div>
+        <ul class="rd-activity" style="padding:8px 24px 16px">
+          <li class="rd-activity-item">
+            <div class="rd-activity-icon" style="background:rgba(255,0,56,0.1);color:var(--primary)"><i class="ri-folder-add-line"></i></div>
+            <div>
+              <div class="rd-activity-text"><strong>Sarah Chen</strong> created project <strong>E-Commerce Redesign</strong></div>
+              <div class="rd-activity-time">2 min ago</div>
+            </div>
+          </li>
+          <li class="rd-activity-item">
+            <div class="rd-activity-icon" style="background:rgba(0,200,120,0.1);color:#00c878"><i class="ri-check-double-line"></i></div>
+            <div>
+              <div class="rd-activity-text"><strong>Mark Davis</strong> completed task <strong>"API Integration"</strong> in Sprint 14</div>
+              <div class="rd-activity-time">18 min ago</div>
+            </div>
+          </li>
+          <li class="rd-activity-item">
+            <div class="rd-activity-icon" style="background:rgba(0,152,255,0.1);color:#0098ff"><i class="ri-user-add-line"></i></div>
+            <div>
+              <div class="rd-activity-text"><strong>Alex Johnson</strong> invited <strong>Nina Patel</strong> to the Analytics Platform project</div>
+              <div class="rd-activity-time">1 hour ago</div>
+            </div>
+          </li>
+          <li class="rd-activity-item">
+            <div class="rd-activity-icon" style="background:rgba(255,180,0,0.1);color:#ffb400"><i class="ri-message-3-line"></i></div>
+            <div>
+              <div class="rd-activity-text"><strong>Lisa Park</strong> commented on <strong>"Q1 Goals Review"</strong> — "Looking great, let's push it to staging"</div>
+              <div class="rd-activity-time">3 hours ago</div>
+            </div>
+          </li>
+          <li class="rd-activity-item">
+            <div class="rd-activity-icon" style="background:rgba(255,0,56,0.1);color:var(--primary)"><i class="ri-upload-cloud-2-line"></i></div>
+            <div>
+              <div class="rd-activity-text"><strong>Tom Wilson</strong> deployed <strong>v2.3.1</strong> to production successfully</div>
+              <div class="rd-activity-time">Yesterday · 4:20 PM</div>
+            </div>
+          </li>
+          <li class="rd-activity-item">
+            <div class="rd-activity-icon" style="background:rgba(0,200,120,0.1);color:#00c878"><i class="ri-git-merge-line"></i></div>
+            <div>
+              <div class="rd-activity-text"><strong>James Lee</strong> merged PR <strong>#52 — Dark mode improvements</strong> into main</div>
+              <div class="rd-activity-time">Yesterday · 2:10 PM</div>
+            </div>
+          </li>
+          <li class="rd-activity-item" style="border-bottom:none">
+            <div class="rd-activity-icon" style="background:rgba(0,152,255,0.1);color:#0098ff"><i class="ri-calendar-event-line"></i></div>
+            <div>
+              <div class="rd-activity-text"><strong>Sarah Chen</strong> scheduled <strong>"Sprint 15 Planning"</strong> for March 2, 2026 at 10:00 AM</div>
+              <div class="rd-activity-time">2 days ago</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-activity</code> + <code>.rd-activity-item</code> + <code>.rd-activity-icon</code> + <code>.rd-activity-time</code></div>
+    </div>
+  </div>
+
+  </main>
+  <footer class="page-footer">
+    <span>© 2026 <strong>RedDash</strong>. All rights reserved.</span>
+    <span>Version 1.0.0</span>
+  </footer>
+</div><!-- /.main-wrapper -->
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-panel-header">
+    <span class="settings-panel-title"><i class="ri-settings-3-line me-2"></i>Layout Settings</span>
+    <button class="settings-close" data-action="close-settings"><i class="ri-close-line"></i></button>
+  </div>
+  <div class="settings-panel-body">
+    <div class="settings-section-title">Theme</div>
+    <div class="settings-option" data-action="toggle-theme"><i class="ri-moon-line"></i> Dark Mode</div>
+    <div class="settings-section-title">Layout Type</div>
+    <div class="settings-option active" data-layout="default"><i class="ri-layout-left-2-line"></i> Default</div>
+    <div class="settings-option" data-layout="horizontal"><i class="ri-layout-top-2-line"></i> Horizontal</div>
+    <div class="settings-option" data-layout="boxed"><i class="ri-layout-4-line"></i> Boxed</div>
+    <div class="settings-section-title">Language</div>
+    <div class="settings-option" data-lang="en">🇺🇸 English</div>
+    <div class="settings-option" data-lang="hi">🇮🇳 हिंदी</div>
+    <div class="settings-option" data-lang="ar">🇸🇦 العربية</div>
+  </div>
+</div>
+<button class="scroll-to-top" id="scrollToTop"><i class="ri-arrow-up-line"></i></button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/layout.js"></script>
+<script src="../../assets/js/animations.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (typeof gsap === 'undefined') return;
+  gsap.from('.page-header',  { y: 18, opacity: 0, duration: 0.45, ease: 'power2.out' });
+  gsap.from('.kit-section',  { y: 14, opacity: 0, stagger: 0.07, duration: 0.4, ease: 'power2.out', delay: 0.12 });
+  gsap.from('.navbar-top',   { y: -10, opacity: 0, duration: 0.35, ease: 'power2.out' });
+});
+</script>
+</body>
+</html>

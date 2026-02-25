@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stat Cards — RedDash UI Kit</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/theme.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+
+  <style>
+    .kit-section { margin-bottom: 48px; }
+    .kit-section-header { margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); }
+    .kit-section-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+    .kit-section-desc  { font-size: 0.82rem; color: var(--text-muted); }
+    .kit-preview { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; }
+    .kit-preview-body   { padding: 28px; }
+    .kit-preview-footer { padding: 10px 18px; background: var(--bg-body); border-top: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+    .kit-preview-footer code { background: var(--bg-hover); padding: 1px 5px; border-radius: 4px; font-size: 0.72rem; color: var(--primary); }
+
+    /* Style 1 — Icon left */
+    .sc-1 { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px 22px; display: flex; align-items: center; gap: 14px; transition: box-shadow 0.2s, transform 0.2s; }
+    .sc-1:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .sc-1-icon  { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.35rem; flex-shrink: 0; }
+    .sc-1-val   { font-size: 1.55rem; font-weight: 800; color: var(--text-main); line-height: 1; }
+    .sc-1-label { font-size: 0.76rem; color: var(--text-muted); margin-top: 3px; }
+    .sc-1-change { font-size: 0.73rem; font-weight: 600; margin-top: 4px; display: flex; align-items: center; gap: 3px; }
+    .change-up   { color: #00c878; }
+    .change-down { color: var(--primary); }
+
+    /* Style 2 — Top icon, centered */
+    .sc-2 { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 22px; text-align: center; transition: box-shadow 0.2s, transform 0.2s; }
+    .sc-2:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .sc-2-icon  { font-size: 1.9rem; margin-bottom: 8px; }
+    .sc-2-val   { font-size: 1.9rem; font-weight: 900; color: var(--text-main); line-height: 1; }
+    .sc-2-label { font-size: 0.76rem; color: var(--text-muted); margin-top: 5px; }
+
+    /* Style 3 — Gradient colored */
+    .sc-3 { border-radius: var(--radius); padding: 20px 22px; color: #fff; transition: box-shadow 0.2s, transform 0.2s; }
+    .sc-3:hover { transform: translateY(-3px); }
+    .sc-3-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+    .sc-3-icon  { width: 44px; height: 44px; border-radius: 10px; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .sc-3-badge { background: rgba(255,255,255,0.2); border-radius: 50px; padding: 3px 10px; font-size: 0.7rem; font-weight: 700; }
+    .sc-3-val   { font-size: 1.9rem; font-weight: 900; line-height: 1; margin-bottom: 3px; }
+    .sc-3-label { font-size: 0.8rem; opacity: 0.8; margin-bottom: 12px; }
+    .sc-3-bar   { height: 5px; background: rgba(255,255,255,0.25); border-radius: 3px; overflow: hidden; }
+    .sc-3-bar-fill { height: 100%; background: rgba(255,255,255,0.8); border-radius: 3px; }
+
+    /* Style 4 — Minimal left accent */
+    .sc-4 { background: var(--bg-card); border: 1px solid var(--border-color); border-left: 4px solid var(--primary); border-radius: var(--radius); padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; transition: box-shadow 0.2s; }
+    .sc-4:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+    .sc-4-val   { font-size: 1.45rem; font-weight: 800; color: var(--text-main); }
+    .sc-4-label { font-size: 0.76rem; color: var(--text-muted); margin-top: 2px; }
+    .sc-4-icon  { font-size: 1.9rem; color: var(--primary); opacity: 0.25; }
+
+    /* Style 5 — With sparkline */
+    .sc-5 { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 18px 22px; transition: box-shadow 0.2s, transform 0.2s; }
+    .sc-5:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .sc-5-top   { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .sc-5-val   { font-size: 1.45rem; font-weight: 800; color: var(--text-main); line-height: 1; margin-bottom: 3px; }
+    .sc-5-label { font-size: 0.76rem; color: var(--text-muted); }
+
+    /* Summary row */
+    .stat-summary { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; }
+    .stat-summary-row { display: flex; flex-wrap: wrap; }
+    .stat-summary-item { flex: 1; min-width: 130px; padding: 18px 22px; border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+    .stat-summary-item:nth-child(5) { border-right: none; }
+    .stat-summary-val   { font-size: 1.45rem; font-weight: 800; color: var(--text-main); line-height: 1; margin-bottom: 3px; }
+    .stat-summary-label { font-size: 0.73rem; color: var(--text-muted); }
+    .stat-summary-change { font-size: 0.7rem; font-weight: 600; margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="../../index.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="ri-dashboard-3-fill"></i></div>
+    <span class="sidebar-brand-text">Red<span>Dash</span></span>
+  </a>
+  <div class="sidebar-scroll">
+    <ul class="sidebar-nav">
+      <li class="sidebar-section-label">Main</li>
+      <li class="sidebar-item">
+        <a href="../../index.html" class="sidebar-link" data-tooltip="Dashboard"><i class="ri-dashboard-3-line"></i><span class="sidebar-link-text">Dashboard</span></a>
+      </li>
+      <li class="sidebar-section-label">Apps</li>
+      <li class="sidebar-item">
+        <a href="../../users.html" class="sidebar-link" data-tooltip="Users"><i class="ri-team-line"></i><span class="sidebar-link-text">Users</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../projects.html" class="sidebar-link" data-tooltip="Projects"><i class="ri-folder-3-line"></i><span class="sidebar-link-text">Projects</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../calendar.html" class="sidebar-link" data-tooltip="Calendar"><i class="ri-calendar-line"></i><span class="sidebar-link-text">Calendar</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../kanban.html" class="sidebar-link" data-tooltip="Kanban"><i class="ri-layout-column-line"></i><span class="sidebar-link-text">Kanban</span><span class="sidebar-badge">New</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../chat.html" class="sidebar-link" data-tooltip="Chat"><i class="ri-message-3-line"></i><span class="sidebar-link-text">Chat</span><span class="sidebar-badge">5</span></a>
+      </li>
+      <li class="sidebar-section-label">Pages</li>
+      <li class="sidebar-item">
+        <a href="../../pricing.html" class="sidebar-link" data-tooltip="Pricing"><i class="ri-price-tag-3-line"></i><span class="sidebar-link-text">Pricing</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../faq.html" class="sidebar-link" data-tooltip="FAQ"><i class="ri-question-line"></i><span class="sidebar-link-text">FAQ</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../profile.html" class="sidebar-link" data-tooltip="Profile"><i class="ri-user-3-line"></i><span class="sidebar-link-text">Profile</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="#authMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#authMenu" aria-expanded="false" data-tooltip="Authentication">
+          <i class="ri-shield-keyhole-line"></i><span class="sidebar-link-text">Authentication</span><i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="authMenu">
+          <li><a href="../../login.html" class="sidebar-link">Login</a></li>
+          <li><a href="../../register.html" class="sidebar-link">Register</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-item">
+        <a href="#errorMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#errorMenu" aria-expanded="false" data-tooltip="Error Pages">
+          <i class="ri-error-warning-line"></i><span class="sidebar-link-text">Error Pages</span><i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="errorMenu">
+          <li><a href="../../404.html" class="sidebar-link">404 Page</a></li>
+          <li><a href="../../maintenance.html" class="sidebar-link">Maintenance</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-section-label">UI Components</li>
+      <li class="sidebar-item active">
+        <a href="#uiMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#uiMenu" aria-expanded="true" data-tooltip="UI Kit">
+          <i class="ri-stack-line"></i><span class="sidebar-link-text">UI Kit</span><i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse show" id="uiMenu">
+          <li><a href="card.html" class="sidebar-link">Cards</a></li>
+          <li><a href="stat-card.html" class="sidebar-link active">Stat Cards</a></li>
+          <li><a href="modal.html" class="sidebar-link">UI Elements</a></li>
+          <li><a href="table.html" class="sidebar-link">Tables &amp; Timeline</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-section-label">Support</li>
+      <li class="sidebar-item">
+        <a href="../../documentation.html" class="sidebar-link" data-tooltip="Documentation"><i class="ri-book-open-line"></i><span class="sidebar-link-text">Documentation</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../changelog.html" class="sidebar-link" data-tooltip="Changelog"><i class="ri-history-line"></i><span class="sidebar-link-text">Changelog</span></a>
+      </li>
+    </ul>
+  </div>
+  <div class="sidebar-footer">
+    <a href="../../profile.html" class="sidebar-user">
+      <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="sidebar-user-avatar">
+      <div class="sidebar-user-info">
+        <span class="sidebar-user-name">Alex Johnson</span>
+        <span class="sidebar-user-role">Administrator</span>
+      </div>
+    </a>
+  </div>
+</aside>
+
+<!-- MAIN WRAPPER -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- NAVBAR -->
+  <header class="navbar-top">
+    <button class="navbar-toggle" data-action="toggle-sidebar"><i class="ri-menu-line"></i></button>
+    <div class="navbar-search">
+      <i class="ri-search-line navbar-search-icon"></i>
+      <input type="text" placeholder="Search anything..." autocomplete="off">
+    </div>
+    <div class="navbar-actions">
+      <button class="navbar-action-btn" data-action="toggle-theme"><i class="ri-moon-line" data-theme-icon></i></button>
+      <div class="position-relative">
+        <button class="lang-selector" data-dropdown-trigger="langMenu">
+          <span class="lang-flag">🇺🇸</span><span class="lang-current-label">EN</span><i class="ri-arrow-down-s-line" style="font-size:13px"></i>
+        </button>
+        <ul class="dropdown-menu" id="langMenu" style="min-width:140px;right:0;left:auto;position:absolute;top:calc(100%+6px)">
+          <li><a class="dropdown-item" data-lang="en"><span class="lang-flag">🇺🇸</span> English</a></li>
+          <li><a class="dropdown-item" data-lang="hi"><span class="lang-flag">🇮🇳</span> हिंदी</a></li>
+          <li><a class="dropdown-item" data-lang="ar"><span class="lang-flag">🇸🇦</span> العربية</a></li>
+        </ul>
+      </div>
+      <div class="navbar-divider"></div>
+      <button class="navbar-action-btn" data-action="open-settings"><i class="ri-settings-3-line"></i></button>
+      <div class="navbar-divider"></div>
+      <div class="position-relative">
+        <div class="navbar-user" data-dropdown-trigger="userDropdown">
+          <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="navbar-user-avatar">
+          <span class="navbar-user-name">Alex Johnson</span>
+          <i class="ri-arrow-down-s-line navbar-user-chevron"></i>
+        </div>
+        <ul class="dropdown-menu" id="userDropdown" style="right:0;left:auto;position:absolute;top:calc(100%+8px);min-width:200px">
+          <li><a class="dropdown-item" href="../../profile.html"><i class="ri-user-3-line"></i> Profile</a></li>
+          <li><a class="dropdown-item" href="../../login.html" style="color:var(--danger)"><i class="ri-logout-box-r-line"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGE CONTENT -->
+  <main class="page-content">
+
+    <div class="page-header d-flex align-items-start justify-content-between flex-wrap gap-3">
+      <div>
+        <h1 class="page-title">Stat Cards</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../../index.html">Home</a></li>
+            <li class="breadcrumb-item">UI Kit</li>
+            <li class="breadcrumb-item active">Stat Cards</li>
+          </ol>
+        </nav>
+      </div>
+      <span style="background:rgba(255,0,56,0.1);color:var(--primary);border-radius:6px;padding:4px 12px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em"><i class="ri-bar-chart-box-line me-1"></i>Component</span>
+    </div>
+
+    <!-- Style 1 -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <div class="kit-section-title">Style 1 — Icon Left</div>
+        <div class="kit-section-desc">Classic stat card with left icon, value, label, and trend indicator.</div>
+      </div>
+      <div class="kit-preview">
+        <div class="kit-preview-body">
+          <div class="row g-3">
+            <div class="col-sm-6 col-xl-3">
+              <div class="sc-1">
+                <div class="sc-1-icon" style="background:rgba(255,0,56,0.1);color:var(--primary)"><i class="ri-money-dollar-circle-line"></i></div>
+                <div>
+                  <div class="sc-1-val" data-counter="84250">$0</div>
+                  <div class="sc-1-label">Total Revenue</div>
+                  <div class="sc-1-change change-up"><i class="ri-arrow-up-line"></i>+12.5% vs last month</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div class="sc-1">
+                <div class="sc-1-icon" style="background:rgba(0,152,255,0.1);color:#0098ff"><i class="ri-shopping-cart-line"></i></div>
+                <div>
+                  <div class="sc-1-val" data-counter="1284">0</div>
+                  <div class="sc-1-label">New Orders</div>
+                  <div class="sc-1-change change-up"><i class="ri-arrow-up-line"></i>+8.1% vs last month</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div class="sc-1">
+                <div class="sc-1-icon" style="background:rgba(0,200,120,0.1);color:#00c878"><i class="ri-user-add-line"></i></div>
+                <div>
+                  <div class="sc-1-val" data-counter="3720">0</div>
+                  <div class="sc-1-label">New Users</div>
+                  <div class="sc-1-change change-up"><i class="ri-arrow-up-line"></i>+22.3% vs last month</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div class="sc-1">
+                <div class="sc-1-icon" style="background:rgba(255,180,0,0.1);color:#ffb400"><i class="ri-star-line"></i></div>
+                <div>
+                  <div class="sc-1-val">4.8</div>
+                  <div class="sc-1-label">Avg Rating</div>
+                  <div class="sc-1-change change-down"><i class="ri-arrow-down-line"></i>-0.2 vs last month</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.sc-1</code> — icon + value + label + trend</div>
+      </div>
+    </div>
+
+    <!-- Style 2 -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <div class="kit-section-title">Style 2 — Top Icon, Centered</div>
+        <div class="kit-section-desc">Compact centered stat with large icon and number.</div>
+      </div>
+      <div class="kit-preview">
+        <div class="kit-preview-body">
+          <div class="row g-3">
+            <div class="col-6 col-md-3">
+              <div class="sc-2">
+                <div class="sc-2-icon" style="color:var(--primary)"><i class="ri-team-line"></i></div>
+                <div class="sc-2-val" data-counter2="5482">0</div>
+                <div class="sc-2-label">Total Users</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="sc-2">
+                <div class="sc-2-icon" style="color:#0098ff"><i class="ri-folder-3-line"></i></div>
+                <div class="sc-2-val" data-counter2="248">0</div>
+                <div class="sc-2-label">Active Projects</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="sc-2">
+                <div class="sc-2-icon" style="color:#00c878"><i class="ri-check-double-line"></i></div>
+                <div class="sc-2-val" data-counter2="1840">0</div>
+                <div class="sc-2-label">Tasks Completed</div>
+              </div>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="sc-2">
+                <div class="sc-2-icon" style="color:#ffb400"><i class="ri-time-line"></i></div>
+                <div class="sc-2-val">98.9%</div>
+                <div class="sc-2-label">Uptime SLA</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.sc-2</code> — centered icon, large value</div>
+      </div>
+    </div>
+
+    <!-- Style 3 -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <div class="kit-section-title">Style 3 — Gradient Colored</div>
+        <div class="kit-section-desc">Full-color gradient stat card with progress bar indicator.</div>
+      </div>
+      <div class="kit-preview">
+        <div class="kit-preview-body">
+          <div class="row g-3">
+            <div class="col-sm-6 col-xl-3">
+              <div class="sc-3" style="background:linear-gradient(135deg,#ff0038,#c0002d);box-shadow:0 8px 24px rgba(255,0,56,0.3)">
+                <div class="sc-3-header"><div class="sc-3-icon"><i class="ri-money-dollar-circle-line"></i></div><div class="sc-3-badge">+12.5%</div></div>
+                <div class="sc-3-val">$84.2K</div>
+                <div class="sc-3-label">Total Revenue</div>
+                <div class="sc-3-bar"><div class="sc-3-bar-fill" style="width:72%"></div></div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div class="sc-3" style="background:linear-gradient(135deg,#0098ff,#0060cc);box-shadow:0 8px 24px rgba(0,152,255,0.3)">
+                <div class="sc-3-header"><div class="sc-3-icon"><i class="ri-user-line"></i></div><div class="sc-3-badge">+22.3%</div></div>
+                <div class="sc-3-val">3,720</div>
+                <div class="sc-3-label">New Signups</div>
+                <div class="sc-3-bar"><div class="sc-3-bar-fill" style="width:58%"></div></div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div class="sc-3" style="background:linear-gradient(135deg,#00c878,#007a48);box-shadow:0 8px 24px rgba(0,200,120,0.3)">
+                <div class="sc-3-header"><div class="sc-3-icon"><i class="ri-check-double-line"></i></div><div class="sc-3-badge">+8.1%</div></div>
+                <div class="sc-3-val">1,840</div>
+                <div class="sc-3-label">Tasks Done</div>
+                <div class="sc-3-bar"><div class="sc-3-bar-fill" style="width:85%"></div></div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-xl-3">
+              <div class="sc-3" style="background:linear-gradient(135deg,#ffb400,#c87800);box-shadow:0 8px 24px rgba(255,180,0,0.3)">
+                <div class="sc-3-header"><div class="sc-3-icon"><i class="ri-star-line"></i></div><div class="sc-3-badge">Stable</div></div>
+                <div class="sc-3-val">4.8/5</div>
+                <div class="sc-3-label">Avg Rating</div>
+                <div class="sc-3-bar"><div class="sc-3-bar-fill" style="width:96%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.sc-3</code> — gradient bg, icon, badge, progress bar</div>
+      </div>
+    </div>
+
+    <!-- Style 4 -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <div class="kit-section-title">Style 4 — Minimal Left Accent</div>
+        <div class="kit-section-desc">Clean minimal stat with colored left border, ideal for compact layouts.</div>
+      </div>
+      <div class="kit-preview">
+        <div class="kit-preview-body">
+          <div class="row g-3">
+            <div class="col-sm-6 col-md-3">
+              <div class="sc-4" style="border-left-color:var(--primary)">
+                <div><div class="sc-4-val">$84.2K</div><div class="sc-4-label">Revenue</div></div>
+                <i class="ri-money-dollar-circle-line sc-4-icon" style="color:var(--primary)"></i>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="sc-4" style="border-left-color:#0098ff">
+                <div><div class="sc-4-val">1,284</div><div class="sc-4-label">Orders</div></div>
+                <i class="ri-shopping-cart-line sc-4-icon" style="color:#0098ff"></i>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="sc-4" style="border-left-color:#00c878">
+                <div><div class="sc-4-val">3,720</div><div class="sc-4-label">Users</div></div>
+                <i class="ri-team-line sc-4-icon" style="color:#00c878"></i>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="sc-4" style="border-left-color:#ffb400">
+                <div><div class="sc-4-val">98.9%</div><div class="sc-4-label">Uptime</div></div>
+                <i class="ri-server-line sc-4-icon" style="color:#ffb400"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.sc-4</code> — left border accent, value, ghost icon</div>
+      </div>
+    </div>
+
+    <!-- Style 5 -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <div class="kit-section-title">Style 5 — With Mini Sparkline Chart</div>
+        <div class="kit-section-desc">Stat card with an embedded Chart.js sparkline for trend visualization.</div>
+      </div>
+      <div class="kit-preview">
+        <div class="kit-preview-body">
+          <div class="row g-3">
+            <div class="col-sm-6 col-md-3">
+              <div class="sc-5">
+                <div class="sc-5-top">
+                  <div><div class="sc-5-val">$84.2K</div><div class="sc-5-label">Revenue</div></div>
+                  <span style="background:rgba(0,200,120,0.1);color:#00c878;border-radius:6px;padding:2px 8px;font-size:0.7rem;font-weight:700">+12.5%</span>
+                </div>
+                <canvas id="spark1" height="50"></canvas>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="sc-5">
+                <div class="sc-5-top">
+                  <div><div class="sc-5-val">1,284</div><div class="sc-5-label">Orders</div></div>
+                  <span style="background:rgba(0,200,120,0.1);color:#00c878;border-radius:6px;padding:2px 8px;font-size:0.7rem;font-weight:700">+8.1%</span>
+                </div>
+                <canvas id="spark2" height="50"></canvas>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="sc-5">
+                <div class="sc-5-top">
+                  <div><div class="sc-5-val">3,720</div><div class="sc-5-label">New Users</div></div>
+                  <span style="background:rgba(0,200,120,0.1);color:#00c878;border-radius:6px;padding:2px 8px;font-size:0.7rem;font-weight:700">+22%</span>
+                </div>
+                <canvas id="spark3" height="50"></canvas>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="sc-5">
+                <div class="sc-5-top">
+                  <div><div class="sc-5-val">248</div><div class="sc-5-label">Projects</div></div>
+                  <span style="background:rgba(255,0,56,0.1);color:var(--primary);border-radius:6px;padding:2px 8px;font-size:0.7rem;font-weight:700">-3.2%</span>
+                </div>
+                <canvas id="spark4" height="50"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.sc-5</code> — value + trend badge + Chart.js sparkline</div>
+      </div>
+    </div>
+
+    <!-- Summary Row -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <div class="kit-section-title">Summary Stat Row</div>
+        <div class="kit-section-desc">Multi-stat horizontal strip — great for page headers or report summaries.</div>
+      </div>
+      <div class="kit-preview">
+        <div class="kit-preview-body">
+          <div class="stat-summary">
+            <div class="stat-summary-row">
+              <div class="stat-summary-item">
+                <div class="stat-summary-val">$1.2M</div>
+                <div class="stat-summary-label">Annual Revenue</div>
+                <div class="stat-summary-change change-up">↑ 18.4% YoY</div>
+              </div>
+              <div class="stat-summary-item">
+                <div class="stat-summary-val">48.2K</div>
+                <div class="stat-summary-label">Total Customers</div>
+                <div class="stat-summary-change change-up">↑ 22.1% YoY</div>
+              </div>
+              <div class="stat-summary-item">
+                <div class="stat-summary-val">15,480</div>
+                <div class="stat-summary-label">Orders Shipped</div>
+                <div class="stat-summary-change change-up">↑ 9.7% YoY</div>
+              </div>
+              <div class="stat-summary-item">
+                <div class="stat-summary-val">$24.80</div>
+                <div class="stat-summary-label">Avg Order Value</div>
+                <div class="stat-summary-change change-down">↓ 2.3% YoY</div>
+              </div>
+              <div class="stat-summary-item" style="border-right:none">
+                <div class="stat-summary-val">98.9%</div>
+                <div class="stat-summary-label">Uptime SLA</div>
+                <div class="stat-summary-change change-up">↑ 0.3% YoY</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.stat-summary</code> — horizontal strip for compact multi-metric display</div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="page-footer">
+    <span>© 2026 <strong>RedDash</strong>. All rights reserved.</span>
+    <span>Version 1.0.0</span>
+  </footer>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-panel-header">
+    <span class="settings-panel-title"><i class="ri-settings-3-line me-2"></i>Layout Settings</span>
+    <button class="settings-close" data-action="close-settings"><i class="ri-close-line"></i></button>
+  </div>
+  <div class="settings-panel-body">
+    <div class="settings-section-title">Theme</div>
+    <div class="settings-option" data-action="toggle-theme"><i class="ri-moon-line"></i> Dark Mode</div>
+    <div class="settings-section-title">Layout Type</div>
+    <div class="settings-option active" data-layout="default"><i class="ri-layout-left-2-line"></i> Default</div>
+    <div class="settings-option" data-layout="horizontal"><i class="ri-layout-top-2-line"></i> Horizontal</div>
+    <div class="settings-option" data-layout="boxed"><i class="ri-layout-4-line"></i> Boxed</div>
+    <div class="settings-section-title">Language</div>
+    <div class="settings-option" data-lang="en">🇺🇸 English</div>
+    <div class="settings-option" data-lang="hi">🇮🇳 हिंदी</div>
+    <div class="settings-option" data-lang="ar">🇸🇦 العربية</div>
+  </div>
+</div>
+<button class="scroll-to-top" id="scrollToTop"><i class="ri-arrow-up-line"></i></button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/layout.js"></script>
+<script src="../../assets/js/animations.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+<script>
+(function () {
+  document.querySelectorAll('[data-counter]').forEach(el => {
+    const raw = el.dataset.counter;
+    const target = parseInt(raw.replace(/\D/g,''), 10);
+    const prefix = raw.startsWith('$') ? '$' : '';
+    gsap.fromTo(el, { innerText: 0 }, { innerText: target, duration: 1.6, ease: 'power2.out', delay: 0.4, snap: { innerText: 1 },
+      onUpdate() { el.textContent = prefix + Math.round(parseFloat(el.innerText)).toLocaleString(); }
+    });
+  });
+  document.querySelectorAll('[data-counter2]').forEach(el => {
+    const target = parseInt(el.dataset.counter2, 10);
+    gsap.fromTo(el, { innerText: 0 }, { innerText: target, duration: 1.4, ease: 'power2.out', delay: 0.5, snap: { innerText: 1 },
+      onUpdate() { el.textContent = Math.round(parseFloat(el.innerText)).toLocaleString(); }
+    });
+  });
+
+  const sparkOpts = { responsive: true, animation: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } } };
+  const sparkLabels = ['M','T','W','T','F','S','S'];
+  const sparkColor = (c) => ({ borderColor: c, backgroundColor: c.replace(')', ',0.1)').replace('rgb','rgba'), tension: 0.4, fill: true, pointRadius: 0, borderWidth: 2 });
+  const randData = () => Array.from({length:7}, () => Math.floor(Math.random()*60+40));
+
+  new Chart(document.getElementById('spark1'), { type:'line', data:{ labels:sparkLabels, datasets:[{...sparkColor('rgb(255,0,56)'), data: randData()}] }, options: sparkOpts });
+  new Chart(document.getElementById('spark2'), { type:'line', data:{ labels:sparkLabels, datasets:[{...sparkColor('rgb(0,152,255)'), data: randData()}] }, options: sparkOpts });
+  new Chart(document.getElementById('spark3'), { type:'line', data:{ labels:sparkLabels, datasets:[{...sparkColor('rgb(0,200,120)'), data: randData()}] }, options: sparkOpts });
+  new Chart(document.getElementById('spark4'), { type:'line', data:{ labels:sparkLabels, datasets:[{...sparkColor('rgb(255,180,0)'), data: randData()}] }, options: sparkOpts });
+
+  gsap.from('.page-header', { y: 16, opacity: 0, duration: 0.4, ease: 'power2.out' });
+  gsap.from('.kit-section', { y: 14, opacity: 0, stagger: 0.07, duration: 0.35, ease: 'power2.out', delay: 0.1 });
+})();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (typeof gsap === 'undefined') return;
+  gsap.from('.page-header',  { y: 18, opacity: 0, duration: 0.45, ease: 'power2.out' });
+  gsap.from('.kit-section',  { y: 14, opacity: 0, stagger: 0.07, duration: 0.4, ease: 'power2.out', delay: 0.12 });
+  gsap.from('.navbar-top',   { y: -10, opacity: 0, duration: 0.35, ease: 'power2.out' });
+});
+</script>
+</body>
+</html>

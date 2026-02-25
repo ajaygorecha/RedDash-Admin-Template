@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ — RedDash</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Remix Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+
+  <!-- Theme & Layout CSS -->
+  <link rel="stylesheet" href="assets/css/theme.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+
+  <style>
+    /* ── FAQ Hero ── */
+    .faq-hero {
+      background: linear-gradient(135deg, var(--primary) 0%, #c0002d 100%);
+      border-radius: var(--radius);
+      padding: 48px 40px;
+      text-align: center;
+      color: #fff;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .faq-hero::before {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+      top: -80px; right: -60px;
+    }
+    .faq-hero::after {
+      content: '';
+      position: absolute;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+      bottom: -60px; left: -40px;
+    }
+    .faq-hero-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      position: relative; z-index: 1;
+    }
+    .faq-hero-sub {
+      font-size: 1rem;
+      opacity: 0.85;
+      margin-bottom: 24px;
+      position: relative; z-index: 1;
+    }
+    .faq-hero-search {
+      max-width: 520px;
+      margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+    .faq-hero-search input {
+      width: 100%;
+      padding: 14px 20px 14px 48px;
+      border-radius: 50px;
+      border: none;
+      font-size: 0.95rem;
+      outline: none;
+      background: rgba(255,255,255,0.95);
+      color: #212529;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+    .faq-hero-search i {
+      position: absolute;
+      left: 18px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+
+    /* ── Category Tabs ── */
+    .faq-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .faq-tab-btn {
+      padding: 8px 20px;
+      border-radius: 50px;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-card);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .faq-tab-btn:hover,
+    .faq-tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    /* ── Accordion ── */
+    .faq-accordion-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .faq-accordion-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    }
+    .faq-accordion-btn {
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      cursor: pointer;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .faq-accordion-btn:hover { color: var(--primary); }
+    .faq-accordion-btn[aria-expanded="true"] { color: var(--primary); }
+    .faq-question-icon {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: rgba(255,0,56,0.1);
+      color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+    .faq-accordion-btn[aria-expanded="true"] .faq-question-icon {
+      background: var(--primary);
+      color: #fff;
+    }
+    .faq-chevron {
+      margin-left: auto;
+      font-size: 1.1rem;
+      transition: transform 0.3s;
+      color: var(--text-muted);
+    }
+    .faq-accordion-btn[aria-expanded="true"] .faq-chevron {
+      transform: rotate(180deg);
+      color: var(--primary);
+    }
+    .faq-accordion-body {
+      padding: 0 24px 20px 72px;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+
+    /* ── Section titles ── */
+    .faq-section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 32px 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .faq-section-title i {
+      color: var(--primary);
+      font-size: 1.2rem;
+    }
+
+    /* ── Stats bar ── */
+    .faq-stats {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+    .faq-stat-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 150px;
+    }
+    .faq-stat-icon {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .faq-stat-label { font-size: 0.78rem; color: var(--text-muted); }
+    .faq-stat-val   { font-size: 1.3rem; font-weight: 700; color: var(--text-main); line-height: 1.1; }
+
+    /* ── Contact CTA ── */
+    .faq-contact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 40px;
+      text-align: center;
+      margin-top: 40px;
+    }
+    .faq-contact-icon {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: rgba(255,0,56,0.1);
+      color: var(--primary);
+      font-size: 2rem;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .faq-contact-title { font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+    .faq-contact-sub   { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; }
+    .contact-options { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── No results ── */
+    .faq-no-results {
+      text-align: center;
+      padding: 48px 20px;
+      display: none;
+    }
+    .faq-no-results i { font-size: 3rem; color: var(--text-muted); margin-bottom: 12px; }
+    .faq-no-results p { color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <a href="index.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="ri-dashboard-3-fill"></i></div>
+    <span class="sidebar-brand-text">Red<span>Dash</span></span>
+  </a>
+
+  <div class="sidebar-scroll">
+    <ul class="sidebar-nav">
+      <li class="sidebar-section-label">Main</li>
+      <li class="sidebar-item">
+        <a href="index.html" class="sidebar-link" data-tooltip="Dashboard">
+          <i class="ri-dashboard-3-line"></i>
+          <span class="sidebar-link-text">Dashboard</span>
+        </a>
+      </li>
+
+      <li class="sidebar-section-label">Apps</li>
+      <li class="sidebar-item">
+        <a href="users.html" class="sidebar-link" data-tooltip="Users">
+          <i class="ri-team-line"></i>
+          <span class="sidebar-link-text">Users</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="projects.html" class="sidebar-link" data-tooltip="Projects">
+          <i class="ri-folder-3-line"></i>
+          <span class="sidebar-link-text">Projects</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="calendar.html" class="sidebar-link" data-tooltip="Calendar">
+          <i class="ri-calendar-line"></i>
+          <span class="sidebar-link-text">Calendar</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="kanban.html" class="sidebar-link" data-tooltip="Kanban">
+          <i class="ri-layout-column-line"></i>
+          <span class="sidebar-link-text">Kanban</span>
+          <span class="sidebar-badge">New</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="chat.html" class="sidebar-link" data-tooltip="Chat">
+          <i class="ri-message-3-line"></i>
+          <span class="sidebar-link-text">Chat</span>
+          <span class="sidebar-badge">5</span>
+        </a>
+      </li>
+
+      <li class="sidebar-section-label">Pages</li>
+      <li class="sidebar-item">
+        <a href="pricing.html" class="sidebar-link" data-tooltip="Pricing">
+          <i class="ri-price-tag-3-line"></i>
+          <span class="sidebar-link-text">Pricing</span>
+        </a>
+      </li>
+      <li class="sidebar-item active">
+        <a href="faq.html" class="sidebar-link" data-tooltip="FAQ">
+          <i class="ri-question-line"></i>
+          <span class="sidebar-link-text">FAQ</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="profile.html" class="sidebar-link" data-tooltip="Profile">
+          <i class="ri-user-3-line"></i>
+          <span class="sidebar-link-text">Profile</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="#authMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#authMenu" aria-expanded="false" data-tooltip="Authentication">
+          <i class="ri-shield-keyhole-line"></i>
+          <span class="sidebar-link-text">Authentication</span>
+          <i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="authMenu">
+          <li><a href="login.html" class="sidebar-link">Login</a></li>
+          <li><a href="register.html" class="sidebar-link">Register</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-item">
+        <a href="#errorMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#errorMenu" aria-expanded="false" data-tooltip="Error Pages">
+          <i class="ri-error-warning-line"></i>
+          <span class="sidebar-link-text">Error Pages</span>
+          <i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="errorMenu">
+          <li><a href="404.html" class="sidebar-link">404 Page</a></li>
+          <li><a href="maintenance.html" class="sidebar-link">Maintenance</a></li>
+        </ul>
+      </li>
+
+      
+      <li class="sidebar-section-label">UI Components</li>
+      <li class="sidebar-item">
+        <a href="#uiMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#uiMenu" aria-expanded="false" data-tooltip="UI Kit">
+          <i class="ri-stack-line"></i>
+          <span class="sidebar-link-text">UI Kit</span>
+          <i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="uiMenu">
+          <li><a href="components/components-items/card.html" class="sidebar-link">Cards</a></li>
+          <li><a href="components/components-items/stat-card.html" class="sidebar-link">Stat Cards</a></li>
+          <li><a href="components/components-items/modal.html" class="sidebar-link">UI Elements</a></li>
+          <li><a href="components/components-items/table.html" class="sidebar-link">Tables &amp; Timeline</a></li>
+        </ul>
+      </li>
+
+<li class="sidebar-section-label">Support</li>
+      <li class="sidebar-item">
+        <a href="documentation.html" class="sidebar-link" data-tooltip="Documentation">
+          <i class="ri-book-open-line"></i>
+          <span class="sidebar-link-text">Documentation</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="changelog.html" class="sidebar-link" data-tooltip="Changelog">
+          <i class="ri-history-line"></i>
+          <span class="sidebar-link-text">Changelog</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="profile.html" class="sidebar-user">
+      <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="sidebar-user-avatar">
+      <div class="sidebar-user-info">
+        <span class="sidebar-user-name">Alex Johnson</span>
+        <span class="sidebar-user-role">Administrator</span>
+      </div>
+    </a>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════
+     MAIN WRAPPER
+═══════════════════════════════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- ── NAVBAR ── -->
+  <header class="navbar-top">
+    <button class="navbar-toggle" data-action="toggle-sidebar">
+      <i class="ri-menu-line"></i>
+    </button>
+
+    <div class="navbar-search">
+      <i class="ri-search-line navbar-search-icon"></i>
+      <input type="text" placeholder="Search anything..." id="navSearchInput" autocomplete="off">
+    </div>
+
+    <div class="navbar-actions">
+      <button class="navbar-action-btn" data-action="toggle-theme">
+        <i class="ri-moon-line" data-theme-icon></i>
+      </button>
+
+      <div class="position-relative">
+        <button class="lang-selector" data-dropdown-trigger="langMenu">
+          <span class="lang-current-flag lang-flag">🇺🇸</span>
+          <span class="lang-current-label">EN</span>
+          <i class="ri-arrow-down-s-line" style="font-size:13px"></i>
+        </button>
+        <ul class="dropdown-menu" id="langMenu" style="min-width:140px;right:0;left:auto;position:absolute;top:calc(100%+6px)">
+          <li><a class="dropdown-item" data-lang="en"><span class="lang-flag">🇺🇸</span> English</a></li>
+          <li><a class="dropdown-item" data-lang="hi"><span class="lang-flag">🇮🇳</span> हिंदी</a></li>
+          <li><a class="dropdown-item" data-lang="ar"><span class="lang-flag">🇸🇦</span> العربية</a></li>
+        </ul>
+      </div>
+
+      <div class="navbar-divider"></div>
+      <button class="navbar-action-btn" data-action="open-settings">
+        <i class="ri-settings-3-line"></i>
+      </button>
+      <div class="navbar-divider"></div>
+
+      <div class="position-relative">
+        <div class="navbar-user" data-dropdown-trigger="userDropdown">
+          <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="navbar-user-avatar">
+          <span class="navbar-user-name">Alex Johnson</span>
+          <i class="ri-arrow-down-s-line navbar-user-chevron"></i>
+        </div>
+        <ul class="dropdown-menu" id="userDropdown" style="right:0;left:auto;position:absolute;top:calc(100%+8px);min-width:200px">
+          <li><a class="dropdown-item" href="profile.html"><i class="ri-user-3-line"></i> Profile</a></li>
+          <li><a class="dropdown-item" href="login.html" style="color:var(--danger)"><i class="ri-logout-box-r-line"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── PAGE CONTENT ── -->
+  <main class="page-content" id="pageContent">
+
+    <!-- Breadcrumb -->
+    <div class="page-header">
+      <div>
+        <h1 class="page-title" data-translate="faq">Frequently Asked Questions</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0">
+            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+            <li class="breadcrumb-item active">FAQ</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Hero Search -->
+    <div class="faq-hero" id="faqHero">
+      <div class="faq-hero-title">How can we help you?</div>
+      <div class="faq-hero-sub">Search through our knowledge base or browse by category</div>
+      <div class="faq-hero-search">
+        <i class="ri-search-line"></i>
+        <input type="text" id="faqSearch" placeholder="Search questions...">
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="faq-stats" id="faqStats">
+      <div class="faq-stat-item">
+        <div class="faq-stat-icon" style="background:rgba(255,0,56,0.1);color:var(--primary)"><i class="ri-question-answer-line"></i></div>
+        <div>
+          <div class="faq-stat-val" data-counter="48">0</div>
+          <div class="faq-stat-label">Total Questions</div>
+        </div>
+      </div>
+      <div class="faq-stat-item">
+        <div class="faq-stat-icon" style="background:rgba(0,200,120,0.1);color:#00c878"><i class="ri-folder-open-line"></i></div>
+        <div>
+          <div class="faq-stat-val" data-counter="6">0</div>
+          <div class="faq-stat-label">Categories</div>
+        </div>
+      </div>
+      <div class="faq-stat-item">
+        <div class="faq-stat-icon" style="background:rgba(0,152,255,0.1);color:#0098ff"><i class="ri-thumb-up-line"></i></div>
+        <div>
+          <div class="faq-stat-val">97%</div>
+          <div class="faq-stat-label">Helpful Rating</div>
+        </div>
+      </div>
+      <div class="faq-stat-item">
+        <div class="faq-stat-icon" style="background:rgba(255,180,0,0.1);color:#ffb400"><i class="ri-time-line"></i></div>
+        <div>
+          <div class="faq-stat-val">&lt; 2min</div>
+          <div class="faq-stat-label">Avg Read Time</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Tabs -->
+    <div class="faq-tabs" id="faqTabs">
+      <button class="faq-tab-btn active" data-category="all"><i class="ri-apps-line"></i> All</button>
+      <button class="faq-tab-btn" data-category="general"><i class="ri-information-line"></i> General</button>
+      <button class="faq-tab-btn" data-category="account"><i class="ri-user-settings-line"></i> Account</button>
+      <button class="faq-tab-btn" data-category="billing"><i class="ri-bank-card-line"></i> Billing</button>
+      <button class="faq-tab-btn" data-category="technical"><i class="ri-code-s-slash-line"></i> Technical</button>
+      <button class="faq-tab-btn" data-category="security"><i class="ri-shield-check-line"></i> Security</button>
+      <button class="faq-tab-btn" data-category="integrations"><i class="ri-plug-line"></i> Integrations</button>
+    </div>
+
+    <!-- No results state -->
+    <div class="faq-no-results" id="faqNoResults">
+      <i class="ri-search-2-line d-block"></i>
+      <h5 style="color:var(--text-main);margin-bottom:8px">No results found</h5>
+      <p>Try different keywords or browse by category</p>
+    </div>
+
+    <!-- ── General ── -->
+    <div class="faq-section-title faq-category-title" data-category="general">
+      <i class="ri-information-line"></i> General
+    </div>
+    <div id="faqGeneral" class="faq-category-group" data-category="general">
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          What is RedDash Admin Template?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq1">
+          <div class="faq-accordion-body">
+            RedDash is a premium multi-layout admin dashboard template built with Bootstrap 5, GSAP animations, Chart.js, DataTables, FullCalendar, and Three.js. It includes a complete UI system with dark mode, multi-language support, RTL layout, and over 15 ready-to-use pages.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          Is RedDash free to use?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq2">
+          <div class="faq-accordion-body">
+            RedDash is a commercial template. It's available for purchase with a regular or extended license. The regular license allows use in one end product that is free for end users, while the extended license allows use in one end product that end users may be charged for.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          Which browsers are supported?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq3">
+          <div class="faq-accordion-body">
+            RedDash supports all modern browsers including Chrome 90+, Firefox 88+, Safari 14+, Edge 90+. Internet Explorer is not supported. The template uses modern CSS features like CSS variables and Grid layout.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          Is the template responsive?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq4">
+          <div class="faq-accordion-body">
+            Yes, RedDash is fully responsive. It uses Bootstrap 5's grid system and custom breakpoints to provide an optimal experience on mobile, tablet, laptop, and desktop screens. The sidebar collapses on smaller screens with touch-friendly navigation.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Account ── -->
+    <div class="faq-section-title faq-category-title" data-category="account">
+      <i class="ri-user-settings-line"></i> Account
+    </div>
+    <div id="faqAccount" class="faq-category-group" data-category="account">
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq5" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          How do I create an admin account?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq5">
+          <div class="faq-accordion-body">
+            Navigate to the Register page from the Authentication section in the sidebar. Fill in your name, email, and password. After registration, you'll be redirected to the dashboard with full admin access. You can manage user roles from the Users Management page.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq6" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          How do I update my profile information?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq6">
+          <div class="faq-accordion-body">
+            Go to the Profile page from the sidebar or the user dropdown in the navbar. Click the Settings tab to update your name, email, bio, and other personal information. You can also change your avatar and password from this page.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq7" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          Can I have multiple user roles?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq7">
+          <div class="faq-accordion-body">
+            RedDash includes predefined user roles such as Administrator, Editor, Viewer, and Support. Roles can be assigned when creating or editing a user from the Users Management page. Each role has configurable permissions for different modules.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Billing ── -->
+    <div class="faq-section-title faq-category-title" data-category="billing">
+      <i class="ri-bank-card-line"></i> Billing
+    </div>
+    <div id="faqBilling" class="faq-category-group" data-category="billing">
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq8" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          What payment methods are accepted?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq8">
+          <div class="faq-accordion-body">
+            We accept all major credit cards (Visa, Mastercard, American Express), PayPal, and bank transfers for enterprise orders. All payments are processed securely through our payment provider with 256-bit SSL encryption.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq9" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          Do you offer refunds?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq9">
+          <div class="faq-accordion-body">
+            We offer a 14-day money-back guarantee if you are not satisfied with the template. To request a refund, contact our support team with your order number and reason for the refund. Refunds are processed within 5–7 business days.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq10" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          What is included in the extended license?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq10">
+          <div class="faq-accordion-body">
+            The extended license allows you to use RedDash in one SaaS product or web application where end users pay to access the product. It includes lifetime updates, 6 months of premium support, and the right to sub-license to your clients as part of a finished product.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Technical ── -->
+    <div class="faq-section-title faq-category-title" data-category="technical">
+      <i class="ri-code-s-slash-line"></i> Technical
+    </div>
+    <div id="faqTechnical" class="faq-category-group" data-category="technical">
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq11" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          How do I customize the primary color?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq11">
+          <div class="faq-accordion-body">
+            Open <code>assets/css/theme.css</code> and change the <code>--primary</code> CSS variable value. The default is <code>#ff0038</code>. All UI elements that use <code>var(--primary)</code> will update automatically. No build step is needed.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq12" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          How do I add a new page?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq12">
+          <div class="faq-accordion-body">
+            Copy any existing HTML file (e.g., <code>users.html</code>) and rename it. Update the <code>&lt;title&gt;</code> tag, change the active sidebar link class, and replace the page content inside <code>&lt;main class="page-content"&gt;</code>. Add a link to the new page in the sidebar navigation.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq13" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          Does RedDash require a build process?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq13">
+          <div class="faq-accordion-body">
+            No build process is required. RedDash uses vanilla HTML, CSS, and JavaScript with CDN-loaded libraries. You can open any HTML file directly in a browser or serve it with any web server. It works with Nginx, Apache, Netlify, Vercel, and GitHub Pages out of the box.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq14" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          How does dark mode work?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq14">
+          <div class="faq-accordion-body">
+            Dark mode is implemented using CSS variables and the <code>[data-theme="dark"]</code> attribute on the <code>&lt;html&gt;</code> element. Clicking the theme toggle button in the navbar switches the attribute, and the preference is saved in <code>localStorage</code> so it persists across page loads.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Security ── -->
+    <div class="faq-section-title faq-category-title" data-category="security">
+      <i class="ri-shield-check-line"></i> Security
+    </div>
+    <div id="faqSecurity" class="faq-category-group" data-category="security">
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq15" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          Is my data secure with RedDash?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq15">
+          <div class="faq-accordion-body">
+            RedDash is a frontend template and does not handle or store any data on its own. Security depends on your backend implementation. The template follows security best practices: no inline event handlers, no eval usage, and no external script loading beyond trusted CDNs. Always implement proper authentication and authorization on your backend.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq16" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          How do I implement authentication?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq16">
+          <div class="faq-accordion-body">
+            RedDash includes login and register page templates. Connect them to your backend API by modifying the form submit handlers in the page's script section. We recommend using JWT tokens stored in <code>httpOnly</code> cookies or implementing an OAuth2 flow for production applications.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Integrations ── -->
+    <div class="faq-section-title faq-category-title" data-category="integrations">
+      <i class="ri-plug-line"></i> Integrations
+    </div>
+    <div id="faqIntegrations" class="faq-category-group" data-category="integrations">
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq17" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          Can I integrate RedDash with React or Vue?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq17">
+          <div class="faq-accordion-body">
+            RedDash is built with vanilla HTML/CSS/JS, but its design patterns and CSS variables can be ported to React, Vue, or Angular. Use it as a design reference and implement the same component structure in your preferred framework. The CSS files can be imported directly into any project.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq18" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          How do I connect a real database?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq18">
+          <div class="faq-accordion-body">
+            Replace the static data in the DataTables initialization with AJAX calls to your REST API. For Chart.js, fetch your data asynchronously and pass it to the chart datasets. RedDash provides all the frontend scaffolding — just wire it to your backend endpoints.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-accordion-card">
+        <button class="faq-accordion-btn" data-bs-toggle="collapse" data-bs-target="#faq19" aria-expanded="false">
+          <div class="faq-question-icon"><i class="ri-question-mark"></i></div>
+          Does it work with Laravel or Django backends?
+          <i class="ri-arrow-down-s-line faq-chevron"></i>
+        </button>
+        <div class="collapse" id="faq19">
+          <div class="faq-accordion-body">
+            Yes. RedDash is backend-agnostic and works with any web framework — Laravel, Django, Express, Rails, FastAPI, and more. Serve the HTML files as templates (Blade, Jinja2, etc.) or use them as a static frontend consuming your backend's REST or GraphQL API.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Contact CTA ── -->
+    <div class="faq-contact-card" id="faqContactCard">
+      <div class="faq-contact-icon"><i class="ri-customer-service-2-line"></i></div>
+      <div class="faq-contact-title">Still have questions?</div>
+      <div class="faq-contact-sub">Can't find the answer you're looking for? Our support team is here to help.</div>
+      <div class="contact-options">
+        <a href="#" class="btn btn-sm px-4" style="background:var(--primary);color:#fff;border-radius:8px">
+          <i class="ri-mail-send-line me-2"></i>Email Support
+        </a>
+        <a href="chat.html" class="btn btn-sm px-4" style="border:1.5px solid var(--border-color);color:var(--text-main);background:transparent;border-radius:8px">
+          <i class="ri-message-3-line me-2"></i>Live Chat
+        </a>
+        <a href="documentation.html" class="btn btn-sm px-4" style="border:1.5px solid var(--border-color);color:var(--text-main);background:transparent;border-radius:8px">
+          <i class="ri-book-open-line me-2"></i>Documentation
+        </a>
+      </div>
+    </div>
+
+  </main><!-- /.page-content -->
+</div><!-- /.main-wrapper -->
+
+<!-- ═══════════════════════════════════════
+     SETTINGS PANEL
+═══════════════════════════════════════ -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-panel-header">
+    <span class="settings-panel-title"><i class="ri-settings-3-line me-2"></i>Layout Settings</span>
+    <button class="settings-close" data-action="close-settings"><i class="ri-close-line"></i></button>
+  </div>
+  <div class="settings-panel-body">
+    <div class="settings-section-title">Theme</div>
+    <div class="settings-option" data-action="toggle-theme"><i class="ri-moon-line"></i> Dark Mode</div>
+    <div class="settings-section-title">Layout Type</div>
+    <div class="settings-option active" data-layout="default"><i class="ri-layout-left-2-line"></i> Default</div>
+    <div class="settings-option" data-layout="horizontal"><i class="ri-layout-top-2-line"></i> Horizontal</div>
+    <div class="settings-option" data-layout="boxed"><i class="ri-layout-4-line"></i> Boxed</div>
+    <div class="settings-section-title">Language</div>
+    <div class="settings-option" data-lang="en">🇺🇸 English</div>
+    <div class="settings-option" data-lang="hi">🇮🇳 हिंदी</div>
+    <div class="settings-option" data-lang="ar">🇸🇦 العربية</div>
+  </div>
+</div>
+
+<!-- Scroll To Top -->
+<button class="scroll-to-top" id="scrollToTop"><i class="ri-arrow-up-line"></i></button>
+
+<!-- ═══════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════ -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/layout.js"></script>
+<script src="assets/js/animations.js"></script>
+<script src="assets/js/i18n.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── GSAP entrance animations ── */
+  gsap.from('#faqHero', { y: 24, opacity: 0, duration: 0.6, ease: 'power2.out', delay: 0.1 });
+  gsap.from('#faqStats .faq-stat-item', { y: 20, opacity: 0, stagger: 0.1, duration: 0.45, ease: 'power2.out', delay: 0.3 });
+  gsap.from('#faqTabs .faq-tab-btn', { y: 12, opacity: 0, stagger: 0.06, duration: 0.35, ease: 'power2.out', delay: 0.5 });
+
+  /* ── Counter animation ── */
+  document.querySelectorAll('[data-counter]').forEach(el => {
+    const target = parseInt(el.dataset.counter, 10);
+    gsap.fromTo(el, { innerText: 0 }, {
+      innerText: target,
+      duration: 1.4,
+      ease: 'power2.out',
+      delay: 0.4,
+      snap: { innerText: 1 },
+      onUpdate() { el.textContent = Math.round(parseFloat(el.innerText)); }
+    });
+  });
+
+  /* ── Category filter ── */
+  const tabBtns   = document.querySelectorAll('.faq-tab-btn');
+  const groups    = document.querySelectorAll('.faq-category-group');
+  const titles    = document.querySelectorAll('.faq-category-title');
+  const noResults = document.getElementById('faqNoResults');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', function () {
+      tabBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      const cat = this.dataset.category;
+
+      groups.forEach(g => {
+        const show = cat === 'all' || g.dataset.category === cat;
+        g.style.display = show ? '' : 'none';
+      });
+      titles.forEach(t => {
+        const show = cat === 'all' || t.dataset.category === cat;
+        t.style.display = show ? '' : 'none';
+      });
+
+      noResults.style.display = 'none';
+    });
+  });
+
+  /* ── Live search ── */
+  const searchInput = document.getElementById('faqSearch');
+  searchInput.addEventListener('input', function () {
+    const query = this.value.toLowerCase().trim();
+
+    if (!query) {
+      document.querySelectorAll('.faq-accordion-card').forEach(c => c.style.display = '');
+      groups.forEach(g => g.style.display = '');
+      titles.forEach(t => t.style.display = '');
+      noResults.style.display = 'none';
+      return;
+    }
+
+    let anyVisible = false;
+    document.querySelectorAll('.faq-accordion-card').forEach(card => {
+      const text = card.textContent.toLowerCase();
+      const match = text.includes(query);
+      card.style.display = match ? '' : 'none';
+      if (match) anyVisible = true;
+    });
+
+    /* Hide empty groups and their titles */
+    groups.forEach((g, i) => {
+      const visible = [...g.querySelectorAll('.faq-accordion-card')].some(c => c.style.display !== 'none');
+      g.style.display = visible ? '' : 'none';
+      if (titles[i]) titles[i].style.display = visible ? '' : 'none';
+    });
+
+    noResults.style.display = anyVisible ? 'none' : 'block';
+  });
+
+  /* ── Stagger accordion cards on load ── */
+  gsap.from('.faq-accordion-card', {
+    y: 16, opacity: 0, stagger: 0.04, duration: 0.4, ease: 'power2.out', delay: 0.6
+  });
+  gsap.from('#faqContactCard', { y: 20, opacity: 0, duration: 0.5, ease: 'power2.out', delay: 0.8 });
+
+})();
+</script>
+</body>
+</html>

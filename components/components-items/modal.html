@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI Elements — RedDash UI Kit</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/theme.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <style>
+    .kit-section { margin-bottom: 48px; }
+    .kit-section-header { margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); }
+    .kit-section-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+    .kit-section-desc  { font-size: 0.82rem; color: var(--text-muted); }
+    .kit-preview { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; }
+    .kit-preview-body   { padding: 28px; }
+    .kit-preview-footer { padding: 10px 18px; background: var(--bg-body); border-top: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+    .kit-preview-footer code { background: var(--bg-hover); padding: 1px 5px; border-radius: 4px; font-size: 0.72rem; color: var(--primary); }
+    body { background: var(--bg-body); color: var(--text-main); font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .rd-btn:hover { transform: translateY(-1px); }
+    .rd-btn-primary   { background: var(--primary); color: #fff; }
+    .rd-btn-primary:hover { box-shadow: 0 6px 18px rgba(255,0,56,0.35); }
+    .rd-btn-outline   { background: transparent; color: var(--primary); border: 1.5px solid var(--primary); }
+    .rd-btn-outline:hover { background: rgba(255,0,56,0.06); }
+    .rd-btn-soft      { background: rgba(255,0,56,0.1); color: var(--primary); }
+    .rd-btn-soft:hover { background: rgba(255,0,56,0.18); }
+    .rd-btn-success   { background: #00c878; color: #fff; }
+    .rd-btn-success:hover { box-shadow: 0 6px 18px rgba(0,200,120,0.35); }
+    .rd-btn-info      { background: #0098ff; color: #fff; }
+    .rd-btn-info:hover { box-shadow: 0 6px 18px rgba(0,152,255,0.35); }
+    .rd-btn-warning   { background: #ffb400; color: #fff; }
+    .rd-btn-dark      { background: #1c1f26; color: #fff; }
+    .rd-btn-ghost     { background: transparent; color: var(--text-muted); border: 1.5px solid var(--border-color); }
+    .rd-btn-ghost:hover { color: var(--text-main); border-color: var(--text-main); }
+    .rd-btn-sm { padding: 6px 14px; font-size: 0.8rem; }
+    .rd-btn-lg { padding: 12px 28px; font-size: 1rem; }
+    .rd-btn-rounded { border-radius: 50px; }
+    .rd-btn-icon { width: 38px; height: 38px; padding: 0; justify-content: center; }
+    .rd-btn-icon.rd-btn-sm { width: 30px; height: 30px; }
+    .rd-btn-icon.rd-btn-lg { width: 48px; height: 48px; }
+
+    /* ════════ BADGES ════════ */
+    .rd-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 6px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.02em;
+    }
+    .rd-badge-pill { border-radius: 50px; }
+    .rd-badge-primary { background: rgba(255,0,56,0.1); color: var(--primary); }
+    .rd-badge-success { background: rgba(0,200,120,0.1); color: #00c878; }
+    .rd-badge-info    { background: rgba(0,152,255,0.1); color: #0098ff; }
+    .rd-badge-warning { background: rgba(255,180,0,0.1); color: #ffb400; }
+    .rd-badge-dark    { background: rgba(28,31,38,0.8); color: #e4e6eb; }
+    .rd-badge-primary-solid { background: var(--primary); color: #fff; }
+    .rd-badge-success-solid { background: #00c878; color: #fff; }
+    .rd-badge-info-solid    { background: #0098ff; color: #fff; }
+    .rd-badge-warning-solid { background: #ffb400; color: #fff; }
+    .rd-badge-dot::before { content: ''; display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* ════════ ALERTS ════════ */
+    .rd-alert {
+      padding: 14px 18px; border-radius: 8px;
+      display: flex; gap: 12px; align-items: flex-start;
+      font-size: 0.875rem; line-height: 1.6; margin-bottom: 10px;
+    }
+    .rd-alert i { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .rd-alert-title { font-weight: 700; margin-bottom: 2px; }
+    .rd-alert-primary { background: rgba(255,0,56,0.08); border-left: 3px solid var(--primary); color: var(--text-main); }
+    .rd-alert-primary i { color: var(--primary); }
+    .rd-alert-success { background: rgba(0,200,120,0.08); border-left: 3px solid #00c878; color: var(--text-main); }
+    .rd-alert-success i { color: #00c878; }
+    .rd-alert-info    { background: rgba(0,152,255,0.08); border-left: 3px solid #0098ff; color: var(--text-main); }
+    .rd-alert-info i  { color: #0098ff; }
+    .rd-alert-warning { background: rgba(255,180,0,0.08); border-left: 3px solid #ffb400; color: var(--text-main); }
+    .rd-alert-warning i { color: #ffb400; }
+    .rd-alert-dismiss { margin-left: auto; cursor: pointer; color: var(--text-muted); background: none; border: none; font-size: 1rem; line-height: 1; }
+
+    /* ════════ TABS ════════ */
+    .rd-tabs { display: flex; border-bottom: 2px solid var(--border-color); gap: 0; }
+    .rd-tab-btn {
+      padding: 10px 18px; border: none; background: transparent;
+      color: var(--text-muted); font-size: 0.875rem; font-weight: 600;
+      cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px;
+      display: flex; align-items: center; gap: 6px; transition: color 0.2s;
+    }
+    .rd-tab-btn:hover { color: var(--text-main); }
+    .rd-tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .rd-tab-content { padding: 20px 0; font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; }
+    .rd-tab-pane { display: none; }
+    .rd-tab-pane.active { display: block; }
+
+    /* ════════ ACCORDIONS ════════ */
+    .rd-accordion { border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; }
+    .rd-accordion-item { border-bottom: 1px solid var(--border-color); }
+    .rd-accordion-item:last-child { border-bottom: none; }
+    .rd-accordion-btn {
+      width: 100%; padding: 15px 20px; background: transparent; border: none;
+      text-align: left; font-size: 0.875rem; font-weight: 600; color: var(--text-main);
+      cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      transition: background 0.15s; gap: 10px;
+    }
+    .rd-accordion-btn:hover { background: var(--bg-body); }
+    .rd-accordion-btn[aria-expanded="true"] { color: var(--primary); background: rgba(255,0,56,0.04); }
+    .rd-accordion-chevron { transition: transform 0.3s; color: var(--text-muted); flex-shrink: 0; }
+    .rd-accordion-btn[aria-expanded="true"] .rd-accordion-chevron { transform: rotate(180deg); color: var(--primary); }
+    .rd-accordion-body { padding: 0 20px 16px; font-size: 0.875rem; color: var(--text-muted); line-height: 1.7; }
+
+    /* ════════ PROGRESS ════════ */
+    .rd-progress { height: 8px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
+    .rd-progress-bar { height: 100%; border-radius: 4px; transition: width 1.2s ease; }
+    .rd-progress-label { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 6px; }
+    .rd-progress-label .name { font-weight: 600; color: var(--text-main); }
+
+    /* ════════ SPINNERS ════════ */
+    .rd-spinner {
+      display: inline-block; border-radius: 50%;
+      border: 3px solid var(--border-color);
+      animation: rd-spin 0.8s linear infinite;
+    }
+    .rd-spinner-sm  { width: 20px; height: 20px; border-width: 2px; }
+    .rd-spinner-md  { width: 32px; height: 32px; }
+    .rd-spinner-lg  { width: 48px; height: 48px; border-width: 4px; }
+    .rd-spinner-primary { border-top-color: var(--primary); }
+    .rd-spinner-success { border-top-color: #00c878; }
+    .rd-spinner-info    { border-top-color: #0098ff; }
+    .rd-spinner-warning { border-top-color: #ffb400; }
+    @keyframes rd-spin { to { transform: rotate(360deg); } }
+
+    .rd-skeleton { background: linear-gradient(90deg, var(--border-color) 25%, var(--bg-body) 50%, var(--border-color) 75%); background-size: 200% 100%; animation: skeleton-shimmer 1.5s infinite; border-radius: 6px; }
+    @keyframes skeleton-shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* ════════ AVATARS ════════ */
+    .rd-avatar { border-radius: 50%; object-fit: cover; display: inline-block; border: 2px solid var(--bg-card); }
+    .rd-avatar-sm { width: 28px; height: 28px; }
+    .rd-avatar-md { width: 40px; height: 40px; }
+    .rd-avatar-lg { width: 56px; height: 56px; }
+    .rd-avatar-xl { width: 72px; height: 72px; }
+    .rd-avatar-sq { border-radius: 8px; }
+    .rd-avatar-initial {
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 50%; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .rd-avatar-group { display: flex; }
+    .rd-avatar-group .rd-avatar { margin-left: -10px; }
+    .rd-avatar-group .rd-avatar:first-child { margin-left: 0; }
+
+    /* ════════ PAGINATION ════════ */
+    .rd-pagination { display: flex; align-items: center; gap: 4px; }
+    .rd-page-item {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border-color); background: var(--bg-card);
+      color: var(--text-muted); font-size: 0.875rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s; text-decoration: none;
+    }
+    .rd-page-item:hover { border-color: var(--primary); color: var(--primary); }
+    .rd-page-item.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .rd-page-item.disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ════════ BREADCRUMB ════════ */
+    .rd-breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; }
+    .rd-breadcrumb-item a { color: var(--primary); text-decoration: none; }
+    .rd-breadcrumb-item a:hover { text-decoration: underline; }
+    .rd-breadcrumb-sep { color: var(--text-muted); }
+    .rd-breadcrumb-item.active { color: var(--text-muted); }
+
+    /* ════════ FILE UPLOAD ════════ */
+    .rd-file-drop {
+      border: 2px dashed var(--border-color); border-radius: var(--radius);
+      padding: 40px; text-align: center; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .rd-file-drop:hover { border-color: var(--primary); background: rgba(255,0,56,0.03); }
+    .rd-file-drop-icon { font-size: 2.5rem; color: var(--text-muted); margin-bottom: 12px; }
+    .rd-file-drop-title { font-weight: 700; font-size: 0.95rem; color: var(--text-main); margin-bottom: 4px; }
+    .rd-file-drop-sub   { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; }
+    .rd-file-list { margin-top: 16px; }
+    .rd-file-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px; border-radius: 8px;
+      background: var(--bg-body); border: 1px solid var(--border-color);
+      margin-bottom: 8px;
+    }
+    .rd-file-item-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .rd-file-item-name { font-size: 0.82rem; font-weight: 600; color: var(--text-main); }
+    .rd-file-item-size { font-size: 0.72rem; color: var(--text-muted); }
+    .rd-file-item-remove { margin-left: auto; color: var(--text-muted); cursor: pointer; background: none; border: none; font-size: 1rem; }
+    .rd-file-item-remove:hover { color: var(--primary); }
+
+    /* ════════ TOAST ════════ */
+    .rd-toast-stack { position: relative; }
+    .rd-toast {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: var(--radius); padding: 14px 16px;
+      display: flex; align-items: flex-start; gap: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      margin-bottom: 10px; max-width: 360px;
+    }
+    .rd-toast-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.95rem; flex-shrink: 0; }
+    .rd-toast-title { font-size: 0.875rem; font-weight: 700; color: var(--text-main); }
+    .rd-toast-msg   { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+    .rd-toast-close { margin-left: auto; color: var(--text-muted); background: none; border: none; font-size: 0.9rem; cursor: pointer; flex-shrink: 0; }
+
+    /* ════════ MODAL OVERRIDES ════════ */
+    .modal-content {
+      background: var(--bg-card); border: 1px solid var(--border-color);
+      border-radius: var(--radius); color: var(--text-main);
+    }
+    .modal-header { border-bottom: 1px solid var(--border-color); }
+    .modal-footer { border-top: 1px solid var(--border-color); }
+    .modal-title  { font-weight: 700; }
+    .btn-close    { filter: var(--close-filter, none); }
+    [data-theme="dark"] .btn-close { filter: invert(1); }
+    .form-control, .form-select { background: var(--bg-body); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 8px; }
+    .form-control:focus, .form-select:focus { background: var(--bg-body); border-color: var(--primary); color: var(--text-main); box-shadow: 0 0 0 3px rgba(255,0,56,0.12); }
+    .form-label { font-size: 0.84rem; font-weight: 600; color: var(--text-main); }
+    </style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="../../index.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="ri-dashboard-3-fill"></i></div>
+    <span class="sidebar-brand-text">Red<span>Dash</span></span>
+  </a>
+  <div class="sidebar-scroll">
+    <ul class="sidebar-nav">
+      <li class="sidebar-section-label">Main</li>
+      <li class="sidebar-item">
+        <a href="../../index.html" class="sidebar-link" data-tooltip="Dashboard"><i class="ri-dashboard-3-line"></i><span class="sidebar-link-text">Dashboard</span></a>
+      </li>
+      <li class="sidebar-section-label">Apps</li>
+      <li class="sidebar-item">
+        <a href="../../users.html" class="sidebar-link" data-tooltip="Users"><i class="ri-team-line"></i><span class="sidebar-link-text">Users</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../projects.html" class="sidebar-link" data-tooltip="Projects"><i class="ri-folder-3-line"></i><span class="sidebar-link-text">Projects</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../calendar.html" class="sidebar-link" data-tooltip="Calendar"><i class="ri-calendar-line"></i><span class="sidebar-link-text">Calendar</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../kanban.html" class="sidebar-link" data-tooltip="Kanban"><i class="ri-layout-column-line"></i><span class="sidebar-link-text">Kanban</span><span class="sidebar-badge">New</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../chat.html" class="sidebar-link" data-tooltip="Chat"><i class="ri-message-3-line"></i><span class="sidebar-link-text">Chat</span><span class="sidebar-badge">5</span></a>
+      </li>
+      <li class="sidebar-section-label">Pages</li>
+      <li class="sidebar-item">
+        <a href="../../pricing.html" class="sidebar-link" data-tooltip="Pricing"><i class="ri-price-tag-3-line"></i><span class="sidebar-link-text">Pricing</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../faq.html" class="sidebar-link" data-tooltip="FAQ"><i class="ri-question-line"></i><span class="sidebar-link-text">FAQ</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../profile.html" class="sidebar-link" data-tooltip="Profile"><i class="ri-user-3-line"></i><span class="sidebar-link-text">Profile</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="#authMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#authMenu" aria-expanded="false" data-tooltip="Authentication">
+          <i class="ri-shield-keyhole-line"></i><span class="sidebar-link-text">Authentication</span><i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="authMenu">
+          <li><a href="../../login.html" class="sidebar-link">Login</a></li>
+          <li><a href="../../register.html" class="sidebar-link">Register</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-item">
+        <a href="#errorMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#errorMenu" aria-expanded="false" data-tooltip="Error Pages">
+          <i class="ri-error-warning-line"></i><span class="sidebar-link-text">Error Pages</span><i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="errorMenu">
+          <li><a href="../../404.html" class="sidebar-link">404 Page</a></li>
+          <li><a href="../../maintenance.html" class="sidebar-link">Maintenance</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-section-label">UI Components</li>
+      <li class="sidebar-item active">
+        <a href="#uiMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#uiMenu" aria-expanded="true" data-tooltip="UI Kit">
+          <i class="ri-stack-line"></i><span class="sidebar-link-text">UI Kit</span><i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse show" id="uiMenu">
+          <li><a href="card.html" class="sidebar-link">Cards</a></li>
+          <li><a href="stat-card.html" class="sidebar-link">Stat Cards</a></li>
+          <li><a href="modal.html" class="sidebar-link active">UI Elements</a></li>
+          <li><a href="table.html" class="sidebar-link">Tables &amp; Timeline</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-section-label">Support</li>
+      <li class="sidebar-item">
+        <a href="../../documentation.html" class="sidebar-link" data-tooltip="Documentation"><i class="ri-book-open-line"></i><span class="sidebar-link-text">Documentation</span></a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../changelog.html" class="sidebar-link" data-tooltip="Changelog"><i class="ri-history-line"></i><span class="sidebar-link-text">Changelog</span></a>
+      </li>
+    </ul>
+  </div>
+  <div class="sidebar-footer">
+    <a href="../../profile.html" class="sidebar-user">
+      <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="sidebar-user-avatar">
+      <div class="sidebar-user-info">
+        <span class="sidebar-user-name">Alex Johnson</span>
+        <span class="sidebar-user-role">Administrator</span>
+      </div>
+    </a>
+  </div>
+</aside>
+<!-- MAIN WRAPPER -->
+<div class="main-wrapper" id="mainWrapper">
+  <header class="navbar-top">
+    <button class="navbar-toggle" data-action="toggle-sidebar"><i class="ri-menu-line"></i></button>
+    <div class="navbar-search">
+      <i class="ri-search-line navbar-search-icon"></i>
+      <input type="text" placeholder="Search anything..." autocomplete="off">
+    </div>
+    <div class="navbar-actions">
+      <button class="navbar-action-btn" data-action="toggle-theme"><i class="ri-moon-line" data-theme-icon></i></button>
+      <div class="position-relative">
+        <button class="lang-selector" data-dropdown-trigger="langMenu">
+          <span class="lang-flag">🇺🇸</span><span class="lang-current-label">EN</span><i class="ri-arrow-down-s-line" style="font-size:13px"></i>
+        </button>
+        <ul class="dropdown-menu" id="langMenu" style="min-width:140px;right:0;left:auto;position:absolute;top:calc(100%+6px)">
+          <li><a class="dropdown-item" data-lang="en"><span class="lang-flag">🇺🇸</span> English</a></li>
+          <li><a class="dropdown-item" data-lang="hi"><span class="lang-flag">🇮🇳</span> हिंदी</a></li>
+          <li><a class="dropdown-item" data-lang="ar"><span class="lang-flag">🇸🇦</span> العربية</a></li>
+        </ul>
+      </div>
+      <div class="navbar-divider"></div>
+      <button class="navbar-action-btn" data-action="open-settings"><i class="ri-settings-3-line"></i></button>
+      <div class="navbar-divider"></div>
+      <div class="position-relative">
+        <div class="navbar-user" data-dropdown-trigger="userDropdown">
+          <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="navbar-user-avatar">
+          <span class="navbar-user-name">Alex Johnson</span>
+          <i class="ri-arrow-down-s-line navbar-user-chevron"></i>
+        </div>
+        <ul class="dropdown-menu" id="userDropdown" style="right:0;left:auto;position:absolute;top:calc(100%+8px);min-width:200px">
+          <li><a class="dropdown-item" href="../../profile.html"><i class="ri-user-3-line"></i> Profile</a></li>
+          <li><a class="dropdown-item" href="../../login.html" style="color:var(--danger)"><i class="ri-logout-box-r-line"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+  <!-- PAGE CONTENT -->
+  <main class="page-content">
+    <div class="page-header d-flex align-items-start justify-content-between flex-wrap gap-3">
+      <div>
+        <h1 class="page-title">UI Elements</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../../index.html">Home</a></li>
+            <li class="breadcrumb-item">UI Kit</li>
+            <li class="breadcrumb-item active">UI Elements</li>
+          </ol>
+        </nav>
+      </div>
+      <span style="background:rgba(255,0,56,0.1);color:var(--primary);border-radius:6px;padding:4px 12px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em"><i class="ri-layout-masonry-line me-1"></i>Component</span>
+    </div>
+
+  </div>
+
+    <!-- ── Buttons ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Buttons</div>
+      <div class="kit-section-desc">Primary, outline, soft, color variants, sizes, rounded, and icon-only styles.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px">
+          <button class="rd-btn rd-btn-primary"><i class="ri-add-line"></i> Primary</button>
+          <button class="rd-btn rd-btn-outline"><i class="ri-edit-line"></i> Outline</button>
+          <button class="rd-btn rd-btn-soft"><i class="ri-heart-line"></i> Soft</button>
+          <button class="rd-btn rd-btn-success"><i class="ri-check-line"></i> Success</button>
+          <button class="rd-btn rd-btn-info"><i class="ri-information-line"></i> Info</button>
+          <button class="rd-btn rd-btn-warning"><i class="ri-alert-line"></i> Warning</button>
+          <button class="rd-btn rd-btn-dark"><i class="ri-settings-3-line"></i> Dark</button>
+          <button class="rd-btn rd-btn-ghost"><i class="ri-close-line"></i> Ghost</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:20px">
+          <button class="rd-btn rd-btn-primary rd-btn-sm">Small</button>
+          <button class="rd-btn rd-btn-primary">Default</button>
+          <button class="rd-btn rd-btn-primary rd-btn-lg">Large</button>
+          <button class="rd-btn rd-btn-primary rd-btn-rounded">Rounded</button>
+          <button class="rd-btn rd-btn-outline rd-btn-rounded">Outline Pill</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+          <button class="rd-btn rd-btn-primary rd-btn-icon"><i class="ri-add-line"></i></button>
+          <button class="rd-btn rd-btn-outline rd-btn-icon"><i class="ri-edit-line"></i></button>
+          <button class="rd-btn rd-btn-success rd-btn-icon"><i class="ri-check-line"></i></button>
+          <button class="rd-btn rd-btn-info rd-btn-icon rd-btn-sm"><i class="ri-eye-line"></i></button>
+          <button class="rd-btn rd-btn-primary rd-btn-icon rd-btn-lg"><i class="ri-send-plane-fill"></i></button>
+          <button class="rd-btn rd-btn-primary" disabled style="opacity:.5;cursor:not-allowed">Disabled</button>
+          <button class="rd-btn rd-btn-primary"><i class="ri-loader-4-line" style="animation:rd-spin 0.8s linear infinite"></i> Loading…</button>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-btn-{primary|outline|soft|success|info|warning|dark|ghost}</code> + size modifier <code>.rd-btn-{sm|lg}</code></div>
+    </div>
+  </div>
+
+  <!-- ── Alerts ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Alerts</div>
+      <div class="kit-section-desc">Inline contextual messages with dismissible option.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <div class="rd-alert rd-alert-primary">
+          <i class="ri-information-line"></i>
+          <div><div class="rd-alert-title">Primary Alert</div>This is a primary informational message. Use for general information or tips.</div>
+          <button class="rd-alert-dismiss" onclick="this.closest('.rd-alert').remove()"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="rd-alert rd-alert-success">
+          <i class="ri-checkbox-circle-line"></i>
+          <div><div class="rd-alert-title">Success!</div>Your changes have been saved successfully. All data is up to date.</div>
+          <button class="rd-alert-dismiss" onclick="this.closest('.rd-alert').remove()"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="rd-alert rd-alert-info">
+          <i class="ri-lightbulb-line"></i>
+          <div><div class="rd-alert-title">Did you know?</div>You can switch between light and dark mode using the toggle in the navbar.</div>
+          <button class="rd-alert-dismiss" onclick="this.closest('.rd-alert').remove()"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="rd-alert rd-alert-warning" style="margin-bottom:0">
+          <i class="ri-error-warning-line"></i>
+          <div><div class="rd-alert-title">Warning</div>Your storage is 85% full. Consider upgrading your plan or deleting old files.</div>
+          <button class="rd-alert-dismiss" onclick="this.closest('.rd-alert').remove()"><i class="ri-close-line"></i></button>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-alert-{primary|success|info|warning}</code> — add <code>.rd-alert-dismiss</code> for close button</div>
+    </div>
+  </div>
+
+  <!-- ── Badges ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Badges</div>
+      <div class="kit-section-desc">Soft, solid, pill, and dot styles for labels, statuses, and notifications.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center">
+          <span class="rd-badge rd-badge-primary">Primary</span>
+          <span class="rd-badge rd-badge-success">Success</span>
+          <span class="rd-badge rd-badge-info">Info</span>
+          <span class="rd-badge rd-badge-warning">Warning</span>
+          <span class="rd-badge rd-badge-dark">Dark</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center">
+          <span class="rd-badge rd-badge-pill rd-badge-primary">Pill Primary</span>
+          <span class="rd-badge rd-badge-pill rd-badge-success">Pill Success</span>
+          <span class="rd-badge rd-badge-pill rd-badge-info">Pill Info</span>
+          <span class="rd-badge rd-badge-pill rd-badge-warning">Pill Warning</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:center">
+          <span class="rd-badge rd-badge-primary-solid">Solid</span>
+          <span class="rd-badge rd-badge-success-solid">Solid Success</span>
+          <span class="rd-badge rd-badge-info-solid">Solid Info</span>
+          <span class="rd-badge rd-badge-warning-solid">Solid Warning</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+          <span class="rd-badge rd-badge-dot rd-badge-primary">Active</span>
+          <span class="rd-badge rd-badge-dot rd-badge-success">Online</span>
+          <span class="rd-badge rd-badge-dot rd-badge-warning">Away</span>
+          <span class="rd-badge rd-badge-dot rd-badge-dark" style="color:var(--text-muted)">Offline</span>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-badge</code> + color + optional <code>.rd-badge-pill</code> or <code>.rd-badge-dot</code></div>
+    </div>
+  </div>
+
+  <!-- ── Tabs ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Tabs</div>
+      <div class="kit-section-desc">Underline tab navigation with switchable content panes.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <div class="rd-tabs" id="demoTabs">
+          <button class="rd-tab-btn active" data-target="t1"><i class="ri-home-4-line"></i> Overview</button>
+          <button class="rd-tab-btn" data-target="t2"><i class="ri-bar-chart-line"></i> Analytics</button>
+          <button class="rd-tab-btn" data-target="t3"><i class="ri-settings-3-line"></i> Settings</button>
+          <button class="rd-tab-btn" data-target="t4" disabled style="opacity:.4;cursor:not-allowed"><i class="ri-lock-line"></i> Locked</button>
+        </div>
+        <div class="rd-tab-content">
+          <div class="rd-tab-pane active" id="t1">This is the <strong>Overview</strong> tab content. Tabs use a simple underline indicator driven by a CSS class toggle — no external library needed.</div>
+          <div class="rd-tab-pane" id="t2">This is the <strong>Analytics</strong> tab. You can embed charts, tables, or any content inside each pane.</div>
+          <div class="rd-tab-pane" id="t3">This is the <strong>Settings</strong> tab. Forms, toggles, or configuration panels work perfectly here.</div>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-tabs</code> + <code>.rd-tab-btn</code> + <code>.rd-tab-pane</code> — toggle <code>.active</code> class</div>
+    </div>
+  </div>
+
+  <!-- ── Accordions ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Accordions</div>
+      <div class="kit-section-desc">Collapsible content panels using Bootstrap collapse.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <div class="rd-accordion">
+          <div class="rd-accordion-item">
+            <button class="rd-accordion-btn" data-bs-toggle="collapse" data-bs-target="#acc1" aria-expanded="true">
+              What is RedDash? <i class="ri-arrow-down-s-line rd-accordion-chevron"></i>
+            </button>
+            <div id="acc1" class="collapse show">
+              <div class="rd-accordion-body">RedDash is a premium admin dashboard template built with Bootstrap 5, GSAP, Chart.js, FullCalendar, DataTables, and Three.js. It supports dark mode, RTL, and multi-language out of the box.</div>
+            </div>
+          </div>
+          <div class="rd-accordion-item">
+            <button class="rd-accordion-btn" data-bs-toggle="collapse" data-bs-target="#acc2" aria-expanded="false">
+              Does it require a build step? <i class="ri-arrow-down-s-line rd-accordion-chevron"></i>
+            </button>
+            <div id="acc2" class="collapse">
+              <div class="rd-accordion-body">No build process is needed. RedDash is pure HTML/CSS/JS with CDN-loaded libraries. Open any page in a browser or serve with a local web server.</div>
+            </div>
+          </div>
+          <div class="rd-accordion-item">
+            <button class="rd-accordion-btn" data-bs-toggle="collapse" data-bs-target="#acc3" aria-expanded="false">
+              How do I customize the colors? <i class="ri-arrow-down-s-line rd-accordion-chevron"></i>
+            </button>
+            <div id="acc3" class="collapse">
+              <div class="rd-accordion-body">Edit the <code>--primary</code> variable in <code>assets/css/theme.css</code>. All UI elements that use <code>var(--primary)</code> will update automatically.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-accordion</code> + Bootstrap <code>data-bs-toggle="collapse"</code></div>
+    </div>
+  </div>
+
+  <!-- ── Progress Bars ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Progress Bars</div>
+      <div class="kit-section-desc">Labeled progress bars in multiple color variants and sizes.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <div class="mb-4">
+          <div class="rd-progress-label"><span class="name">JavaScript</span><span>92%</span></div>
+          <div class="rd-progress"><div class="rd-progress-bar" data-width="92" style="background:var(--primary)"></div></div>
+        </div>
+        <div class="mb-4">
+          <div class="rd-progress-label"><span class="name">Design Systems</span><span>85%</span></div>
+          <div class="rd-progress"><div class="rd-progress-bar" data-width="85" style="background:#0098ff"></div></div>
+        </div>
+        <div class="mb-4">
+          <div class="rd-progress-label"><span class="name">Node.js / APIs</span><span>74%</span></div>
+          <div class="rd-progress"><div class="rd-progress-bar" data-width="74" style="background:#00c878"></div></div>
+        </div>
+        <div class="mb-4">
+          <div class="rd-progress-label"><span class="name">DevOps</span><span>58%</span></div>
+          <div class="rd-progress" style="height:12px;border-radius:6px"><div class="rd-progress-bar" data-width="58" style="background:linear-gradient(90deg,#ffb400,#ff8c00);height:12px"></div></div>
+        </div>
+        <div>
+          <div class="rd-progress-label"><span class="name">Striped Animated</span><span>65%</span></div>
+          <div class="rd-progress" style="height:14px;border-radius:7px">
+            <div class="rd-progress-bar" data-width="65" style="background:repeating-linear-gradient(45deg,var(--primary),var(--primary) 10px,rgba(255,255,255,0.15) 10px,rgba(255,255,255,0.15) 20px);height:14px;animation:stripes 1s linear infinite;background-size:28px 28px"></div>
+          </div>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-progress</code> + <code>.rd-progress-bar</code> — set width via inline style or <code>data-width</code></div>
+    </div>
+  </div>
+
+  <!-- ── Spinners & Skeletons ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Spinners &amp; Loading Skeletons</div>
+      <div class="kit-section-desc">Loading indicators for async states.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:28px">
+          <div class="rd-spinner rd-spinner-sm rd-spinner-primary"></div>
+          <div class="rd-spinner rd-spinner-md rd-spinner-primary"></div>
+          <div class="rd-spinner rd-spinner-lg rd-spinner-primary"></div>
+          <div class="rd-spinner rd-spinner-md rd-spinner-success"></div>
+          <div class="rd-spinner rd-spinner-md rd-spinner-info"></div>
+          <div class="rd-spinner rd-spinner-md rd-spinner-warning"></div>
+        </div>
+        <div style="padding:20px;background:var(--bg-body);border-radius:var(--radius);border:1px solid var(--border-color)">
+          <div style="display:flex;gap:12px;margin-bottom:16px">
+            <div class="rd-skeleton" style="width:48px;height:48px;border-radius:50%;flex-shrink:0"></div>
+            <div style="flex:1">
+              <div class="rd-skeleton" style="height:14px;width:60%;margin-bottom:8px"></div>
+              <div class="rd-skeleton" style="height:12px;width:40%"></div>
+            </div>
+          </div>
+          <div class="rd-skeleton" style="height:12px;width:100%;margin-bottom:8px"></div>
+          <div class="rd-skeleton" style="height:12px;width:85%;margin-bottom:8px"></div>
+          <div class="rd-skeleton" style="height:12px;width:70%"></div>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-spinner</code> — <code>.rd-skeleton</code> for shimmer loading states</div>
+    </div>
+  </div>
+
+  <!-- ── Avatars ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Avatars</div>
+      <div class="kit-section-desc">Circle, square, initial-based, and grouped avatar styles.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px">
+          <img src="https://picsum.photos/seed/av1/100" class="rd-avatar rd-avatar-sm" alt="">
+          <img src="https://picsum.photos/seed/av2/100" class="rd-avatar rd-avatar-md" alt="">
+          <img src="https://picsum.photos/seed/av3/100" class="rd-avatar rd-avatar-lg" alt="">
+          <img src="https://picsum.photos/seed/av4/100" class="rd-avatar rd-avatar-xl" alt="">
+          <img src="https://picsum.photos/seed/av5/100" class="rd-avatar rd-avatar-lg rd-avatar-sq" alt="">
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+          <div class="rd-avatar-initial rd-avatar-md" style="background:var(--primary)">AJ</div>
+          <div class="rd-avatar-initial rd-avatar-md" style="background:#0098ff">SC</div>
+          <div class="rd-avatar-initial rd-avatar-md" style="background:#00c878">MD</div>
+          <div class="rd-avatar-initial rd-avatar-md" style="background:#ffb400">LP</div>
+          <div class="rd-avatar-initial rd-avatar-lg" style="background:var(--primary);border-radius:10px">RD</div>
+        </div>
+        <!-- Avatar group -->
+        <div class="rd-avatar-group" style="align-items:center">
+          <img src="https://picsum.photos/seed/g1/100" class="rd-avatar rd-avatar-md" alt="" style="border:2px solid var(--bg-card)">
+          <img src="https://picsum.photos/seed/g2/100" class="rd-avatar rd-avatar-md" alt="" style="border:2px solid var(--bg-card)">
+          <img src="https://picsum.photos/seed/g3/100" class="rd-avatar rd-avatar-md" alt="" style="border:2px solid var(--bg-card)">
+          <img src="https://picsum.photos/seed/g4/100" class="rd-avatar rd-avatar-md" alt="" style="border:2px solid var(--bg-card)">
+          <div class="rd-avatar-initial rd-avatar-md" style="background:var(--primary);border:2px solid var(--bg-card);margin-left:-10px;font-size:0.7rem">+8</div>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-avatar-{sm|md|lg|xl}</code> — <code>.rd-avatar-sq</code> for square — <code>.rd-avatar-group</code> for stack</div>
+    </div>
+  </div>
+
+  <!-- ── Pagination ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Pagination</div>
+      <div class="kit-section-desc">Page navigation with active, disabled, and previous/next controls.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <div class="rd-pagination" style="margin-bottom:20px">
+          <a class="rd-page-item disabled"><i class="ri-arrow-left-s-line"></i></a>
+          <a class="rd-page-item active">1</a>
+          <a class="rd-page-item">2</a>
+          <a class="rd-page-item">3</a>
+          <span class="rd-page-item" style="border:none;background:transparent;cursor:default">…</span>
+          <a class="rd-page-item">8</a>
+          <a class="rd-page-item">9</a>
+          <a class="rd-page-item"><i class="ri-arrow-right-s-line"></i></a>
+        </div>
+        <div class="rd-pagination">
+          <a class="rd-page-item" style="border-radius:50px;padding:0 14px;width:auto">Previous</a>
+          <a class="rd-page-item active">1</a>
+          <a class="rd-page-item">2</a>
+          <a class="rd-page-item">3</a>
+          <a class="rd-page-item" style="border-radius:50px;padding:0 14px;width:auto">Next</a>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-pagination</code> + <code>.rd-page-item</code> — add <code>.active</code> or <code>.disabled</code></div>
+    </div>
+  </div>
+
+  <!-- ── Breadcrumbs ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Breadcrumbs</div>
+      <div class="kit-section-desc">Navigation path indicator with icons and arrow separator.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <div class="rd-breadcrumb" style="margin-bottom:14px">
+          <span class="rd-breadcrumb-item"><a href="#">Home</a></span>
+          <span class="rd-breadcrumb-sep"><i class="ri-arrow-right-s-line"></i></span>
+          <span class="rd-breadcrumb-item"><a href="#">Dashboard</a></span>
+          <span class="rd-breadcrumb-sep"><i class="ri-arrow-right-s-line"></i></span>
+          <span class="rd-breadcrumb-item active">Components</span>
+        </div>
+        <div class="rd-breadcrumb">
+          <span class="rd-breadcrumb-item"><a href="#"><i class="ri-home-4-line"></i></a></span>
+          <span class="rd-breadcrumb-sep">/</span>
+          <span class="rd-breadcrumb-item"><a href="#">Apps</a></span>
+          <span class="rd-breadcrumb-sep">/</span>
+          <span class="rd-breadcrumb-item"><a href="#">Users</a></span>
+          <span class="rd-breadcrumb-sep">/</span>
+          <span class="rd-breadcrumb-item active">Edit Profile</span>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-breadcrumb</code> + <code>.rd-breadcrumb-item</code> + <code>.rd-breadcrumb-sep</code></div>
+    </div>
+  </div>
+
+  <!-- ── File Upload ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">File Upload</div>
+      <div class="kit-section-desc">Drag &amp; drop upload zone with attached file list.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <label class="rd-file-drop" for="fileInput">
+          <div class="rd-file-drop-icon"><i class="ri-upload-cloud-2-line"></i></div>
+          <div class="rd-file-drop-title">Drop files here or click to upload</div>
+          <div class="rd-file-drop-sub">Supports PDF, DOC, JPG, PNG up to 20 MB each</div>
+          <button class="rd-btn rd-btn-outline rd-btn-sm" type="button">Browse Files</button>
+          <input type="file" id="fileInput" multiple style="display:none">
+        </label>
+        <div class="rd-file-list">
+          <div class="rd-file-item">
+            <span class="rd-file-item-icon" style="color:#0098ff"><i class="ri-file-pdf-2-line"></i></span>
+            <div>
+              <div class="rd-file-item-name">project-brief.pdf</div>
+              <div class="rd-file-item-size">2.4 MB</div>
+            </div>
+            <div style="flex:1;margin:0 12px">
+              <div class="rd-progress" style="height:5px"><div class="rd-progress-bar" style="width:100%;background:#0098ff"></div></div>
+            </div>
+            <span style="font-size:0.72rem;color:#00c878;font-weight:700"><i class="ri-check-line"></i> Done</span>
+            <button class="rd-file-item-remove"><i class="ri-close-line"></i></button>
+          </div>
+          <div class="rd-file-item">
+            <span class="rd-file-item-icon" style="color:var(--primary)"><i class="ri-image-2-line"></i></span>
+            <div>
+              <div class="rd-file-item-name">dashboard-mockup.png</div>
+              <div class="rd-file-item-size">5.7 MB</div>
+            </div>
+            <div style="flex:1;margin:0 12px">
+              <div class="rd-progress" style="height:5px"><div class="rd-progress-bar" style="width:68%;background:var(--primary)"></div></div>
+            </div>
+            <span style="font-size:0.72rem;color:var(--text-muted)">68%</span>
+            <button class="rd-file-item-remove"><i class="ri-close-line"></i></button>
+          </div>
+          <div class="rd-file-item">
+            <span class="rd-file-item-icon" style="color:#00c878"><i class="ri-file-zip-line"></i></span>
+            <div>
+              <div class="rd-file-item-name">assets-v2.zip</div>
+              <div class="rd-file-item-size">18.2 MB</div>
+            </div>
+            <div style="flex:1;margin:0 12px">
+              <div class="rd-progress" style="height:5px"><div class="rd-progress-bar" style="width:32%;background:#00c878"></div></div>
+            </div>
+            <span style="font-size:0.72rem;color:var(--text-muted)">32%</span>
+            <button class="rd-file-item-remove"><i class="ri-close-line"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-file-drop</code> + <code>.rd-file-list</code> + <code>.rd-file-item</code></div>
+    </div>
+  </div>
+
+  <!-- ── Toast ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Toasts &amp; Notifications</div>
+      <div class="kit-section-desc">Non-intrusive notification messages.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <div class="rd-toast">
+          <div class="rd-toast-icon" style="background:rgba(0,200,120,0.1);color:#00c878"><i class="ri-checkbox-circle-line"></i></div>
+          <div><div class="rd-toast-title">Changes saved</div><div class="rd-toast-msg">Your profile has been updated successfully.</div></div>
+          <button class="rd-toast-close"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="rd-toast">
+          <div class="rd-toast-icon" style="background:rgba(255,0,56,0.1);color:var(--primary)"><i class="ri-error-warning-line"></i></div>
+          <div><div class="rd-toast-title">Delete failed</div><div class="rd-toast-msg">You do not have permission to delete this record.</div></div>
+          <button class="rd-toast-close"><i class="ri-close-line"></i></button>
+        </div>
+        <div class="rd-toast" style="margin-bottom:0">
+          <div class="rd-toast-icon" style="background:rgba(0,152,255,0.1);color:#0098ff"><i class="ri-information-line"></i></div>
+          <div><div class="rd-toast-title">New message</div><div class="rd-toast-msg">Sarah Chen sent you a message in Chat.</div></div>
+          <button class="rd-toast-close"><i class="ri-close-line"></i></button>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-toast</code> — position with <code>position: fixed; bottom: 24px; right: 24px</code> in production</div>
+    </div>
+  </div>
+
+  <!-- ── Modals ── -->
+  <div class="kit-section">
+    <div class="kit-section-header">
+      <div class="kit-section-title">Modals</div>
+      <div class="kit-section-desc">Standard, confirmation, and form modals powered by Bootstrap.</div>
+    </div>
+    <div class="kit-preview">
+      <div class="kit-preview-body">
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="rd-btn rd-btn-primary" data-bs-toggle="modal" data-bs-target="#modalBasic">Basic Modal</button>
+          <button class="rd-btn rd-btn-outline" data-bs-toggle="modal" data-bs-target="#modalConfirm">Confirm Modal</button>
+          <button class="rd-btn rd-btn-soft" data-bs-toggle="modal" data-bs-target="#modalForm">Form Modal</button>
+        </div>
+      </div>
+      <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> Bootstrap 5 modal with custom theme overrides — <code>data-bs-toggle="modal"</code></div>
+    </div>
+  </div>
+
+  </main>
+  <footer class="page-footer">
+    <span>© 2026 <strong>RedDash</strong>. All rights reserved.</span>
+    <span>Version 1.0.0</span>
+  </footer>
+</div><!-- /.main-wrapper -->
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-panel-header">
+    <span class="settings-panel-title"><i class="ri-settings-3-line me-2"></i>Layout Settings</span>
+    <button class="settings-close" data-action="close-settings"><i class="ri-close-line"></i></button>
+  </div>
+  <div class="settings-panel-body">
+    <div class="settings-section-title">Theme</div>
+    <div class="settings-option" data-action="toggle-theme"><i class="ri-moon-line"></i> Dark Mode</div>
+    <div class="settings-section-title">Layout Type</div>
+    <div class="settings-option active" data-layout="default"><i class="ri-layout-left-2-line"></i> Default</div>
+    <div class="settings-option" data-layout="horizontal"><i class="ri-layout-top-2-line"></i> Horizontal</div>
+    <div class="settings-option" data-layout="boxed"><i class="ri-layout-4-line"></i> Boxed</div>
+    <div class="settings-section-title">Language</div>
+    <div class="settings-option" data-lang="en">🇺🇸 English</div>
+    <div class="settings-option" data-lang="hi">🇮🇳 हिंदी</div>
+    <div class="settings-option" data-lang="ar">🇸🇦 العربية</div>
+  </div>
+</div>
+<button class="scroll-to-top" id="scrollToTop"><i class="ri-arrow-up-line"></i></button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/layout.js"></script>
+<script src="../../assets/js/animations.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (typeof gsap === 'undefined') return;
+  gsap.from('.page-header',  { y: 18, opacity: 0, duration: 0.45, ease: 'power2.out' });
+  gsap.from('.kit-section',  { y: 14, opacity: 0, stagger: 0.07, duration: 0.4, ease: 'power2.out', delay: 0.12 });
+  gsap.from('.navbar-top',   { y: -10, opacity: 0, duration: 0.35, ease: 'power2.out' });
+});
+</script>
+</body>
+</html>

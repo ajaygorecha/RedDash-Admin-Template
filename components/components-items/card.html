@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cards — RedDash UI Kit</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/theme.css">
+  <link rel="stylesheet" href="../../assets/css/layout.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+
+  <style>
+    /* ── Section & preview box ── */
+    .kit-section { margin-bottom: 48px; }
+    .kit-section-header { margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid var(--border-color); }
+    .kit-section-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+    .kit-section-desc  { font-size: 0.82rem; color: var(--text-muted); }
+    .kit-preview { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; }
+    .kit-preview-body   { padding: 28px; }
+    .kit-preview-footer { padding: 10px 18px; background: var(--bg-body); border-top: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+    .kit-preview-footer code { background: var(--bg-hover); padding: 1px 5px; border-radius: 4px; font-size: 0.72rem; color: var(--primary); }
+
+    /* ── Card variants ── */
+    .rd-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; transition: box-shadow 0.2s, transform 0.2s; }
+    .rd-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.09); transform: translateY(-2px); }
+    .rd-card-header { padding: 14px 18px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
+    .rd-card-title    { font-size: 0.88rem; font-weight: 700; color: var(--text-main); }
+    .rd-card-subtitle { font-size: 0.76rem; color: var(--text-muted); margin-top: 2px; }
+    .rd-card-body   { padding: 18px; }
+    .rd-card-footer { padding: 12px 18px; border-top: 1px solid var(--border-color); background: var(--bg-body); }
+    .rd-card-img    { width: 100%; height: 150px; object-fit: cover; display: block; }
+    .rd-card-text   { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+    .rd-card-accent-primary { border-top: 3px solid var(--primary); }
+    .rd-card-accent-success { border-top: 3px solid #00c878; }
+    .rd-card-accent-info    { border-top: 3px solid #0098ff; }
+    .rd-card-accent-warning { border-top: 3px solid #ffb400; }
+
+    .rd-card-primary { background: var(--primary); border-color: var(--primary); }
+    .rd-card-primary .rd-card-title, .rd-card-primary .rd-card-text { color: rgba(255,255,255,0.9); }
+    .rd-card-primary .rd-card-subtitle { color: rgba(255,255,255,0.65); }
+    .rd-card-primary .rd-card-footer { background: rgba(0,0,0,0.12); border-color: rgba(255,255,255,0.15); }
+
+    .rd-card-dark { background: #1c1f26; border-color: #2a2e38; }
+    .rd-card-dark .rd-card-title { color: #e4e6eb; }
+    .rd-card-dark .rd-card-text  { color: #8b92a5; }
+    .rd-card-dark .rd-card-footer { background: #161920; border-color: #2a2e38; color: #8b92a5; }
+
+    .rd-glass-bg { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); border-radius: var(--radius); padding: 20px; }
+    .rd-card-glass { background: rgba(255,255,255,0.08); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius); }
+
+    .rd-icon-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 22px; text-align: center; transition: box-shadow 0.2s, transform 0.2s; }
+    .rd-icon-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.09); transform: translateY(-3px); }
+    .rd-icon-wrap { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin: 0 auto 12px; }
+    .rd-icon-card-title { font-size: 0.88rem; font-weight: 700; color: var(--text-main); margin-bottom: 5px; }
+    .rd-icon-card-text  { font-size: 0.79rem; color: var(--text-muted); line-height: 1.5; }
+
+    .rd-profile-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); overflow: hidden; text-align: center; transition: box-shadow 0.2s, transform 0.2s; }
+    .rd-profile-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.09); transform: translateY(-2px); }
+    .rd-profile-cover { height: 76px; background: linear-gradient(135deg, var(--primary) 0%, #c0002d 100%); }
+    .rd-profile-avatar { width: 64px; height: 64px; border-radius: 50%; border: 3px solid var(--bg-card); margin: -32px auto 10px; display: block; object-fit: cover; }
+    .rd-profile-name  { font-size: 0.92rem; font-weight: 700; color: var(--text-main); margin-bottom: 2px; }
+    .rd-profile-role  { font-size: 0.76rem; color: var(--text-muted); margin-bottom: 12px; }
+    .rd-profile-stats { display: flex; border-top: 1px solid var(--border-color); }
+    .rd-profile-stat  { flex: 1; padding: 10px 6px; text-align: center; border-right: 1px solid var(--border-color); }
+    .rd-profile-stat:last-child { border-right: none; }
+    .rd-profile-stat-val   { font-size: 0.95rem; font-weight: 700; color: var(--text-main); line-height: 1; }
+    .rd-profile-stat-label { font-size: 0.66rem; color: var(--text-muted); margin-top: 2px; }
+
+    .rd-pricing-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 26px 22px; text-align: center; transition: box-shadow 0.2s, transform 0.2s; }
+    .rd-pricing-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.09); transform: translateY(-3px); }
+    .rd-pricing-card.featured { border-color: var(--primary); position: relative; }
+    .rd-pricing-card.featured::before { content: 'POPULAR'; position: absolute; top: -1px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #fff; font-size: 0.62rem; font-weight: 800; padding: 3px 12px; border-radius: 0 0 8px 8px; letter-spacing: 0.08em; }
+    .rd-pricing-name  { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary); margin-bottom: 8px; }
+    .rd-pricing-price { font-size: 2.2rem; font-weight: 900; color: var(--text-main); line-height: 1; }
+    .rd-pricing-price sup { font-size: 0.95rem; font-weight: 700; vertical-align: top; margin-top: 8px; }
+    .rd-pricing-price sub { font-size: 0.78rem; font-weight: 500; color: var(--text-muted); }
+    .rd-pricing-desc  { font-size: 0.78rem; color: var(--text-muted); margin: 8px 0 18px; }
+    .rd-pricing-features { list-style: none; padding: 0; text-align: left; margin-bottom: 18px; }
+    .rd-pricing-features li { font-size: 0.8rem; color: var(--text-muted); padding: 5px 0; display: flex; align-items: center; gap: 7px; border-bottom: 1px solid var(--border-color); }
+    .rd-pricing-features li:last-child { border-bottom: none; }
+    .rd-pricing-features li i { color: #00c878; font-size: 0.88rem; }
+    .rd-pricing-features li.disabled i { color: var(--border-color); }
+    .rd-pricing-features li.disabled { color: var(--border-color); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <a href="../../index.html" class="sidebar-brand">
+    <div class="sidebar-brand-icon"><i class="ri-dashboard-3-fill"></i></div>
+    <span class="sidebar-brand-text">Red<span>Dash</span></span>
+  </a>
+
+  <div class="sidebar-scroll">
+    <ul class="sidebar-nav">
+      <li class="sidebar-section-label">Main</li>
+      <li class="sidebar-item">
+        <a href="../../index.html" class="sidebar-link" data-tooltip="Dashboard">
+          <i class="ri-dashboard-3-line"></i>
+          <span class="sidebar-link-text">Dashboard</span>
+        </a>
+      </li>
+
+      <li class="sidebar-section-label">Apps</li>
+      <li class="sidebar-item">
+        <a href="../../users.html" class="sidebar-link" data-tooltip="Users">
+          <i class="ri-team-line"></i>
+          <span class="sidebar-link-text">Users</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../projects.html" class="sidebar-link" data-tooltip="Projects">
+          <i class="ri-folder-3-line"></i>
+          <span class="sidebar-link-text">Projects</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../calendar.html" class="sidebar-link" data-tooltip="Calendar">
+          <i class="ri-calendar-line"></i>
+          <span class="sidebar-link-text">Calendar</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../kanban.html" class="sidebar-link" data-tooltip="Kanban">
+          <i class="ri-layout-column-line"></i>
+          <span class="sidebar-link-text">Kanban</span>
+          <span class="sidebar-badge">New</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../chat.html" class="sidebar-link" data-tooltip="Chat">
+          <i class="ri-message-3-line"></i>
+          <span class="sidebar-link-text">Chat</span>
+          <span class="sidebar-badge">5</span>
+        </a>
+      </li>
+
+      <li class="sidebar-section-label">Pages</li>
+      <li class="sidebar-item">
+        <a href="../../pricing.html" class="sidebar-link" data-tooltip="Pricing">
+          <i class="ri-price-tag-3-line"></i>
+          <span class="sidebar-link-text">Pricing</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../faq.html" class="sidebar-link" data-tooltip="FAQ">
+          <i class="ri-question-line"></i>
+          <span class="sidebar-link-text">FAQ</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../profile.html" class="sidebar-link" data-tooltip="Profile">
+          <i class="ri-user-3-line"></i>
+          <span class="sidebar-link-text">Profile</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="#authMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#authMenu" aria-expanded="false" data-tooltip="Authentication">
+          <i class="ri-shield-keyhole-line"></i>
+          <span class="sidebar-link-text">Authentication</span>
+          <i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="authMenu">
+          <li><a href="../../login.html" class="sidebar-link">Login</a></li>
+          <li><a href="../../register.html" class="sidebar-link">Register</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-item">
+        <a href="#errorMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#errorMenu" aria-expanded="false" data-tooltip="Error Pages">
+          <i class="ri-error-warning-line"></i>
+          <span class="sidebar-link-text">Error Pages</span>
+          <i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse" id="errorMenu">
+          <li><a href="../../404.html" class="sidebar-link">404 Page</a></li>
+          <li><a href="../../maintenance.html" class="sidebar-link">Maintenance</a></li>
+        </ul>
+      </li>
+
+      <li class="sidebar-section-label">UI Components</li>
+      <li class="sidebar-item active">
+        <a href="#uiMenu" class="sidebar-link" data-bs-toggle="collapse" data-bs-target="#uiMenu" aria-expanded="true" data-tooltip="UI Kit">
+          <i class="ri-stack-line"></i>
+          <span class="sidebar-link-text">UI Kit</span>
+          <i class="ri-arrow-right-s-line sidebar-arrow"></i>
+        </a>
+        <ul class="sidebar-submenu collapse show" id="uiMenu">
+          <li><a href="card.html" class="sidebar-link active">Cards</a></li>
+          <li><a href="stat-card.html" class="sidebar-link">Stat Cards</a></li>
+          <li><a href="modal.html" class="sidebar-link">UI Elements</a></li>
+          <li><a href="table.html" class="sidebar-link">Tables &amp; Timeline</a></li>
+        </ul>
+      </li>
+
+      <li class="sidebar-section-label">Support</li>
+      <li class="sidebar-item">
+        <a href="../../documentation.html" class="sidebar-link" data-tooltip="Documentation">
+          <i class="ri-book-open-line"></i>
+          <span class="sidebar-link-text">Documentation</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a href="../../changelog.html" class="sidebar-link" data-tooltip="Changelog">
+          <i class="ri-history-line"></i>
+          <span class="sidebar-link-text">Changelog</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="../../profile.html" class="sidebar-user">
+      <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="sidebar-user-avatar">
+      <div class="sidebar-user-info">
+        <span class="sidebar-user-name">Alex Johnson</span>
+        <span class="sidebar-user-role">Administrator</span>
+      </div>
+    </a>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════
+     MAIN WRAPPER
+═══════════════════════════════════════ -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- NAVBAR -->
+  <header class="navbar-top">
+    <button class="navbar-toggle" data-action="toggle-sidebar">
+      <i class="ri-menu-line"></i>
+    </button>
+    <div class="navbar-search">
+      <i class="ri-search-line navbar-search-icon"></i>
+      <input type="text" placeholder="Search anything..." autocomplete="off">
+    </div>
+    <div class="navbar-actions">
+      <button class="navbar-action-btn" data-action="toggle-theme">
+        <i class="ri-moon-line" data-theme-icon></i>
+      </button>
+      <div class="position-relative">
+        <button class="lang-selector" data-dropdown-trigger="langMenu">
+          <span class="lang-flag">🇺🇸</span>
+          <span class="lang-current-label">EN</span>
+          <i class="ri-arrow-down-s-line" style="font-size:13px"></i>
+        </button>
+        <ul class="dropdown-menu" id="langMenu" style="min-width:140px;right:0;left:auto;position:absolute;top:calc(100%+6px)">
+          <li><a class="dropdown-item" data-lang="en"><span class="lang-flag">🇺🇸</span> English</a></li>
+          <li><a class="dropdown-item" data-lang="hi"><span class="lang-flag">🇮🇳</span> हिंदी</a></li>
+          <li><a class="dropdown-item" data-lang="ar"><span class="lang-flag">🇸🇦</span> العربية</a></li>
+        </ul>
+      </div>
+      <div class="navbar-divider"></div>
+      <button class="navbar-action-btn" data-action="open-settings">
+        <i class="ri-settings-3-line"></i>
+      </button>
+      <div class="navbar-divider"></div>
+      <div class="position-relative">
+        <div class="navbar-user" data-dropdown-trigger="userDropdown">
+          <img src="https://picsum.photos/seed/admin/100" alt="Admin" class="navbar-user-avatar">
+          <span class="navbar-user-name">Alex Johnson</span>
+          <i class="ri-arrow-down-s-line navbar-user-chevron"></i>
+        </div>
+        <ul class="dropdown-menu" id="userDropdown" style="right:0;left:auto;position:absolute;top:calc(100%+8px);min-width:200px">
+          <li><a class="dropdown-item" href="../../profile.html"><i class="ri-user-3-line"></i> Profile</a></li>
+          <li><a class="dropdown-item" href="../../login.html" style="color:var(--danger)"><i class="ri-logout-box-r-line"></i> Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGE CONTENT -->
+  <main class="page-content">
+
+    <!-- Page Header -->
+    <div class="page-header d-flex align-items-start justify-content-between flex-wrap gap-3">
+      <div>
+        <h1 class="page-title">Cards</h1>
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../../index.html">Home</a></li>
+            <li class="breadcrumb-item">UI Kit</li>
+            <li class="breadcrumb-item active">Cards</li>
+          </ol>
+        </nav>
+      </div>
+      <span style="background:rgba(255,0,56,0.1);color:var(--primary);border-radius:6px;padding:4px 12px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em"><i class="ri-layout-2-line me-1"></i>Component</span>
+    </div>
+
+    <!-- 1. Basic Card -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <div class="kit-section-title">Basic Card</div>
+        <div class="kit-section-desc">Standard card with header, body, and optional footer.</div>
+      </div>
+      <div class="kit-preview">
+        <div class="kit-preview-body">
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="rd-card">
+                <div class="rd-card-header">
+                  <div>
+                    <div class="rd-card-title">Card Title</div>
+                    <div class="rd-card-subtitle">Card subtitle text</div>
+                  </div>
+                  <button style="background:none;border:none;color:var(--text-muted);cursor:pointer"><i class="ri-more-2-line"></i></button>
+                </div>
+                <div class="rd-card-body">
+                  <p class="rd-card-text">A basic card component with a header, body, and footer. Use it to group related content together in a clean container.</p>
+                </div>
+                <div class="rd-card-footer d-flex gap-2">
+                  <button class="btn btn-sm" style="background:var(--primary);color:#fff;border-radius:6px;border:none">Action</button>
+                  <button class="btn btn-sm" style="border:1px solid var(--border-color);color:var(--text-muted);background:transparent;border-radius:6px">Cancel</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="rd-card h-100">
+                <div class="rd-card-body">
+                  <div style="width:44px;height:44px;background:rgba(255,0,56,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:1.2rem;margin-bottom:12px"><i class="ri-notification-3-line"></i></div>
+                  <div class="rd-card-title mb-1">Notification Card</div>
+                  <p class="rd-card-text">Body-only card with an icon header for contextual alerts or info.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="rd-card h-100">
+                <img src="https://picsum.photos/seed/card1/400/150" class="rd-card-img" alt="card">
+                <div class="rd-card-body">
+                  <div class="rd-card-title mb-1">Image Card</div>
+                  <p class="rd-card-text">Card with a full-width cover image at the top.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> Use <code>.rd-card</code> + <code>.rd-card-header</code> + <code>.rd-card-body</code> + <code>.rd-card-footer</code></div>
+      </div>
+    </div>
+
+    <!-- 2. Accent Border Cards -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <div class="kit-section-title">Accent Border Cards</div>
+        <div class="kit-section-desc">Cards with a colored top border to convey status or category.</div>
+      </div>
+      <div class="kit-preview">
+        <div class="kit-preview-body">
+          <div class="row g-3">
+            <div class="col-sm-6 col-md-3">
+              <div class="rd-card rd-card-accent-primary">
+                <div class="rd-card-body">
+                  <div class="rd-card-title mb-1">Primary</div>
+                  <p class="rd-card-text">Brand color accent. Use for primary content blocks.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="rd-card rd-card-accent-success">
+                <div class="rd-card-body">
+                  <div class="rd-card-title mb-1">Success</div>
+                  <p class="rd-card-text">Green accent for positive data or success states.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="rd-card rd-card-accent-info">
+                <div class="rd-card-body">
+                  <div class="rd-card-title mb-1">Info</div>
+                  <p class="rd-card-text">Blue accent for informational content.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="rd-card rd-card-accent-warning">
+                <div class="rd-card-body">
+                  <div class="rd-card-title mb-1">Warning</div>
+                  <p class="rd-card-text">Amber accent for warnings or pending states.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> Add <code>.rd-card-accent-{primary|success|info|warning}</code> to <code>.rd-card</code></div>
+      </div>
+    </div>
+
+    <!-- 3. Colored & Dark Cards -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <div class="kit-section-title">Colored &amp; Dark Cards</div>
+        <div class="kit-section-desc">Full background color cards for emphasis sections.</div>
+      </div>
+      <div class="kit-preview">
+        <div class="kit-preview-body">
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="rd-card rd-card-primary">
+                <div class="rd-card-body" style="padding:22px">
+                  <div class="rd-card-title mb-2">Primary Card</div>
+                  <p class="rd-card-text">Filled background using the primary brand color. Great for CTAs or featured callouts.</p>
+                </div>
+                <div class="rd-card-footer">
+                  <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border:none;border-radius:6px">Learn More</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="rd-card rd-card-dark">
+                <div class="rd-card-body" style="padding:22px">
+                  <div class="rd-card-title mb-2">Dark Card</div>
+                  <p class="rd-card-text">Dark background card. Works in both light and dark mode independently.</p>
+                </div>
+                <div class="rd-card-footer">
+                  <button class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);border:none;border-radius:6px">Explore</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="rd-glass-bg h-100">
+                <div class="rd-card-glass" style="padding:22px;height:100%">
+                  <div class="rd-card-title mb-2" style="color:#fff">Glass Card</div>
+                  <p class="rd-card-text" style="color:rgba(255,255,255,0.65)">Glassmorphism style with blur, transparency, and subtle border.</p>
+                  <button class="btn btn-sm mt-3" style="background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:6px">Action</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-card-primary</code> · <code>.rd-card-dark</code> · <code>.rd-card-glass</code> on <code>.rd-glass-bg</code></div>
+      </div>
+    </div>
+
+    <!-- 4. Icon Cards -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <div class="kit-section-title">Icon Cards</div>
+        <div class="kit-section-desc">Centered icon cards for feature highlights, service listings, or menu grids.</div>
+      </div>
+      <div class="kit-preview">
+        <div class="kit-preview-body">
+          <div class="row g-3">
+            <div class="col-sm-6 col-md-3">
+              <div class="rd-icon-card">
+                <div class="rd-icon-wrap" style="background:rgba(255,0,56,0.1);color:var(--primary)"><i class="ri-shield-check-line"></i></div>
+                <div class="rd-icon-card-title">Security</div>
+                <div class="rd-icon-card-text">Enterprise-grade security with 2FA and SSO support.</div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="rd-icon-card">
+                <div class="rd-icon-wrap" style="background:rgba(0,152,255,0.1);color:#0098ff"><i class="ri-global-line"></i></div>
+                <div class="rd-icon-card-title">Global CDN</div>
+                <div class="rd-icon-card-text">Assets served from 200+ edge locations worldwide.</div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="rd-icon-card">
+                <div class="rd-icon-wrap" style="background:rgba(0,200,120,0.1);color:#00c878"><i class="ri-line-chart-line"></i></div>
+                <div class="rd-icon-card-title">Analytics</div>
+                <div class="rd-icon-card-text">Real-time insights and performance dashboards.</div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+              <div class="rd-icon-card">
+                <div class="rd-icon-wrap" style="background:rgba(255,180,0,0.1);color:#ffb400"><i class="ri-customer-service-2-line"></i></div>
+                <div class="rd-icon-card-title">24/7 Support</div>
+                <div class="rd-icon-card-text">Dedicated support team available around the clock.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> Use <code>.rd-icon-card</code> + <code>.rd-icon-wrap</code> with inline color utilities</div>
+      </div>
+    </div>
+
+    <!-- 5. Profile Cards -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <div class="kit-section-title">Profile Cards</div>
+        <div class="kit-section-desc">User/team member cards with cover, avatar, and statistics.</div>
+      </div>
+      <div class="kit-preview">
+        <div class="kit-preview-body">
+          <div class="row g-4">
+            <div class="col-sm-6 col-lg-3">
+              <div class="rd-profile-card">
+                <div class="rd-profile-cover"></div>
+                <img src="https://picsum.photos/seed/p1/100" alt="User" class="rd-profile-avatar">
+                <div style="padding:0 14px">
+                  <div class="rd-profile-name">Sarah Chen</div>
+                  <div class="rd-profile-role">UI / UX Designer</div>
+                </div>
+                <div class="rd-profile-stats" style="margin-top:12px">
+                  <div class="rd-profile-stat"><div class="rd-profile-stat-val">48</div><div class="rd-profile-stat-label">Projects</div></div>
+                  <div class="rd-profile-stat"><div class="rd-profile-stat-val">1.2k</div><div class="rd-profile-stat-label">Followers</div></div>
+                  <div class="rd-profile-stat"><div class="rd-profile-stat-val">96</div><div class="rd-profile-stat-label">Tasks</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="rd-profile-card">
+                <div class="rd-profile-cover" style="background:linear-gradient(135deg,#0098ff,#005c99)"></div>
+                <img src="https://picsum.photos/seed/p2/100" alt="User" class="rd-profile-avatar">
+                <div style="padding:0 14px">
+                  <div class="rd-profile-name">Mark Davis</div>
+                  <div class="rd-profile-role">Senior Developer</div>
+                </div>
+                <div class="rd-profile-stats" style="margin-top:12px">
+                  <div class="rd-profile-stat"><div class="rd-profile-stat-val">72</div><div class="rd-profile-stat-label">Projects</div></div>
+                  <div class="rd-profile-stat"><div class="rd-profile-stat-val">3.4k</div><div class="rd-profile-stat-label">Followers</div></div>
+                  <div class="rd-profile-stat"><div class="rd-profile-stat-val">143</div><div class="rd-profile-stat-label">Tasks</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="rd-profile-card">
+                <div class="rd-profile-cover" style="background:linear-gradient(135deg,#00c878,#007a48)"></div>
+                <img src="https://picsum.photos/seed/p3/100" alt="User" class="rd-profile-avatar">
+                <div style="padding:0 14px">
+                  <div class="rd-profile-name">Lisa Park</div>
+                  <div class="rd-profile-role">Product Manager</div>
+                </div>
+                <div class="rd-profile-stats" style="margin-top:12px">
+                  <div class="rd-profile-stat"><div class="rd-profile-stat-val">31</div><div class="rd-profile-stat-label">Projects</div></div>
+                  <div class="rd-profile-stat"><div class="rd-profile-stat-val">820</div><div class="rd-profile-stat-label">Followers</div></div>
+                  <div class="rd-profile-stat"><div class="rd-profile-stat-val">58</div><div class="rd-profile-stat-label">Tasks</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="rd-profile-card">
+                <div class="rd-profile-cover" style="background:linear-gradient(135deg,#ffb400,#c87800)"></div>
+                <img src="https://picsum.photos/seed/p4/100" alt="User" class="rd-profile-avatar">
+                <div style="padding:0 14px">
+                  <div class="rd-profile-name">Tom Wilson</div>
+                  <div class="rd-profile-role">DevOps Engineer</div>
+                </div>
+                <div class="rd-profile-stats" style="margin-top:12px">
+                  <div class="rd-profile-stat"><div class="rd-profile-stat-val">24</div><div class="rd-profile-stat-label">Projects</div></div>
+                  <div class="rd-profile-stat"><div class="rd-profile-stat-val">540</div><div class="rd-profile-stat-label">Followers</div></div>
+                  <div class="rd-profile-stat"><div class="rd-profile-stat-val">77</div><div class="rd-profile-stat-label">Tasks</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> <code>.rd-profile-card</code> + <code>.rd-profile-cover</code> + <code>.rd-profile-stats</code></div>
+      </div>
+    </div>
+
+    <!-- 6. Pricing Cards -->
+    <div class="kit-section">
+      <div class="kit-section-header">
+        <div class="kit-section-title">Pricing Cards</div>
+        <div class="kit-section-desc">Three-tier pricing card layout with feature lists and featured highlight.</div>
+      </div>
+      <div class="kit-preview">
+        <div class="kit-preview-body">
+          <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+              <div class="rd-pricing-card">
+                <div class="rd-pricing-name">Starter</div>
+                <div class="rd-pricing-price"><sup>$</sup>9<sub>/mo</sub></div>
+                <div class="rd-pricing-desc">Perfect for individuals and small projects.</div>
+                <ul class="rd-pricing-features">
+                  <li><i class="ri-check-line"></i> 5 Projects</li>
+                  <li><i class="ri-check-line"></i> 10 GB Storage</li>
+                  <li><i class="ri-check-line"></i> Email Support</li>
+                  <li class="disabled"><i class="ri-close-line"></i> Analytics</li>
+                  <li class="disabled"><i class="ri-close-line"></i> Team Access</li>
+                </ul>
+                <button class="btn btn-sm w-100" style="border:1.5px solid var(--border-color);color:var(--text-main);background:transparent;border-radius:8px">Get Started</button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="rd-pricing-card featured">
+                <div class="rd-pricing-name">Pro</div>
+                <div class="rd-pricing-price"><sup>$</sup>29<sub>/mo</sub></div>
+                <div class="rd-pricing-desc">For growing teams and professional use.</div>
+                <ul class="rd-pricing-features">
+                  <li><i class="ri-check-line"></i> Unlimited Projects</li>
+                  <li><i class="ri-check-line"></i> 100 GB Storage</li>
+                  <li><i class="ri-check-line"></i> Priority Support</li>
+                  <li><i class="ri-check-line"></i> Analytics</li>
+                  <li class="disabled"><i class="ri-close-line"></i> Team Access</li>
+                </ul>
+                <button class="btn btn-sm w-100" style="background:var(--primary);color:#fff;border-radius:8px;border:none">Start Free Trial</button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="rd-pricing-card">
+                <div class="rd-pricing-name">Enterprise</div>
+                <div class="rd-pricing-price"><sup>$</sup>99<sub>/mo</sub></div>
+                <div class="rd-pricing-desc">For large organizations and enterprise needs.</div>
+                <ul class="rd-pricing-features">
+                  <li><i class="ri-check-line"></i> Unlimited Everything</li>
+                  <li><i class="ri-check-line"></i> 1 TB Storage</li>
+                  <li><i class="ri-check-line"></i> 24/7 Dedicated Support</li>
+                  <li><i class="ri-check-line"></i> Advanced Analytics</li>
+                  <li><i class="ri-check-line"></i> Unlimited Team Access</li>
+                </ul>
+                <button class="btn btn-sm w-100" style="background:var(--primary);color:#fff;border-radius:8px;border:none">Contact Sales</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="kit-preview-footer"><i class="ri-code-s-slash-line"></i> Add <code>.featured</code> modifier to highlight the recommended pricing tier</div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="page-footer">
+    <span>© 2026 <strong>RedDash</strong>. All rights reserved.</span>
+    <span>Version 1.0.0</span>
+  </footer>
+
+</div><!-- /.main-wrapper -->
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Settings Panel -->
+<div class="settings-overlay" id="settingsOverlay"></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-panel-header">
+    <span class="settings-panel-title"><i class="ri-settings-3-line me-2"></i>Layout Settings</span>
+    <button class="settings-close" data-action="close-settings"><i class="ri-close-line"></i></button>
+  </div>
+  <div class="settings-panel-body">
+    <div class="settings-section-title">Theme</div>
+    <div class="settings-option" data-action="toggle-theme"><i class="ri-moon-line"></i> Dark Mode</div>
+    <div class="settings-section-title">Layout Type</div>
+    <div class="settings-option active" data-layout="default"><i class="ri-layout-left-2-line"></i> Default</div>
+    <div class="settings-option" data-layout="horizontal"><i class="ri-layout-top-2-line"></i> Horizontal</div>
+    <div class="settings-option" data-layout="boxed"><i class="ri-layout-4-line"></i> Boxed</div>
+    <div class="settings-section-title">Language</div>
+    <div class="settings-option" data-lang="en">🇺🇸 English</div>
+    <div class="settings-option" data-lang="hi">🇮🇳 हिंदी</div>
+    <div class="settings-option" data-lang="ar">🇸🇦 العربية</div>
+  </div>
+</div>
+
+<button class="scroll-to-top" id="scrollToTop"><i class="ri-arrow-up-line"></i></button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/layout.js"></script>
+<script src="../../assets/js/animations.js"></script>
+<script src="../../assets/js/i18n.js"></script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  if (typeof gsap === 'undefined') return;
+  gsap.from('.page-header',  { y: 18, opacity: 0, duration: 0.45, ease: 'power2.out' });
+  gsap.from('.kit-section',  { y: 14, opacity: 0, stagger: 0.07, duration: 0.4, ease: 'power2.out', delay: 0.12 });
+  gsap.from('.navbar-top',   { y: -10, opacity: 0, duration: 0.35, ease: 'power2.out' });
+});
+</script>
+</body>
+</html>
