@@ -4,39 +4,6 @@
 
 const AnimationManager = (() => {
 
-  // Page fade-in on load
-  function pageEnter() {
-    if (typeof gsap === 'undefined') return;
-
-    gsap.from('.page-content', {
-      opacity: 0,
-      y: 16,
-      duration: 0.5,
-      ease: 'power2.out'
-    });
-
-    gsap.from('.stat-card', {
-      opacity: 0,
-      y: 20,
-      duration: 0.4,
-      stagger: 0.08,
-      ease: 'power2.out',
-      delay: 0.1
-    });
-
-    const dashCards = document.querySelectorAll('.card-hover, .stat-card');
-    if (dashCards.length) {
-      gsap.from(dashCards, {
-        opacity: 0,
-        y: 16,
-        duration: 0.45,
-        stagger: 0.06,
-        ease: 'power2.out',
-        delay: 0.15
-      });
-    }
-  }
-
   // Animated counter
   function animateCounters() {
     if (typeof gsap === 'undefined') return;
@@ -147,13 +114,12 @@ const AnimationManager = (() => {
   }
 
   function init() {
-    pageEnter();
     animateCounters();
     initCardHover();
     animateProgress();
   }
 
-  return { init, pageEnter, animateCounters, sidebarAnimate, notificationDropdown, modalEnter, animateProgress, animateList };
+  return { init, animateCounters, sidebarAnimate, notificationDropdown, modalEnter, animateProgress, animateList };
 })();
 
 document.addEventListener('DOMContentLoaded', () => AnimationManager.init());

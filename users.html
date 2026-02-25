@@ -93,7 +93,7 @@
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
-      padding: 16px 20px;
+      padding: 20px 24px;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -456,7 +456,7 @@
     <!-- Page Header -->
     <div class="page-header">
       <div>
-        <h1 class="page-title" data-translate="usersTitle">Users Management</h1>
+        <h1 class="page-title" data-translate="page.users">Users Management</h1>
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.html" data-translate="home">Home</a></li>
@@ -1006,13 +1006,6 @@
       onUpdate() { el.textContent = Math.round(parseFloat(el.innerText)).toLocaleString(); }
     });
   });
-
-  /* ── Page entrance animation ── */
-  gsap.from('#statsRow .stat-card-users', {
-    y: 24, opacity: 0, stagger: 0.1, duration: 0.5, ease: 'power2.out', delay: 0.1
-  });
-  gsap.from('.filter-bar', { y: 16, opacity: 0, duration: 0.4, ease: 'power2.out', delay: 0.5 });
-  gsap.from('.table-card',  { y: 16, opacity: 0, duration: 0.4, ease: 'power2.out', delay: 0.6 });
 
   /* Add User form submit */
   document.getElementById('addUserForm')?.addEventListener('submit', function (e) {

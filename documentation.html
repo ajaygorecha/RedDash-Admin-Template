@@ -425,7 +425,7 @@
 
     <div class="page-header">
       <div>
-        <h1 class="page-title">Documentation</h1>
+        <h1 class="page-title" data-translate="page.documentation">Documentation</h1>
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="index.html">Home</a></li>
@@ -1074,10 +1074,6 @@ window.addEventListener(<span class="str">'resize'</span>, () => {
       setTimeout(() => btn.textContent = 'Copy', 1500);
     });
   };
-
-  /* ── GSAP entrance ── */
-  gsap.from('.docs-sidebar', { x: -20, opacity: 0, duration: 0.5, ease: 'power2.out', delay: 0.1 });
-  gsap.from('.docs-section.active', { y: 16, opacity: 0, duration: 0.5, ease: 'power2.out', delay: 0.2 });
 
 })();
 </script>

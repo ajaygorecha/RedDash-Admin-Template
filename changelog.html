@@ -407,7 +407,7 @@
 
     <div class="page-header">
       <div>
-        <h1 class="page-title">Changelog</h1>
+        <h1 class="page-title" data-translate="page.changelog">Changelog</h1>
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb mb-0">
             <li class="breadcrumb-item"><a href="index.html">Home</a></li>
@@ -774,11 +774,6 @@
       onUpdate() { el.textContent = Math.round(parseFloat(el.innerText)); }
     });
   });
-
-  /* ── GSAP entrance ── */
-  gsap.from('#changelogHero',     { y: 20, opacity: 0, duration: 0.5, ease: 'power2.out', delay: 0.1 });
-  gsap.from('.version-sidebar',   { x: -16, opacity: 0, duration: 0.5, ease: 'power2.out', delay: 0.2 });
-  gsap.from('.timeline-entry',    { y: 24, opacity: 0, stagger: 0.15, duration: 0.5, ease: 'power2.out', delay: 0.3 });
 
   /* ── Version nav scroll ── */
   document.querySelectorAll('.version-nav-item').forEach(item => {

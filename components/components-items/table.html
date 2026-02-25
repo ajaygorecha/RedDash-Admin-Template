@@ -232,8 +232,6 @@
       <span style="background:rgba(255,0,56,0.1);color:var(--primary);border-radius:6px;padding:4px 12px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em"><i class="ri-table-line me-1"></i>Component</span>
     </div>
 
-  </div>
-
     <!-- ── Basic Table ── -->
   <div class="kit-section">
     <div class="kit-section-header">
@@ -599,13 +597,5 @@
 <script src="../../assets/js/i18n.js"></script>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  if (typeof gsap === 'undefined') return;
-  gsap.from('.page-header',  { y: 18, opacity: 0, duration: 0.45, ease: 'power2.out' });
-  gsap.from('.kit-section',  { y: 14, opacity: 0, stagger: 0.07, duration: 0.4, ease: 'power2.out', delay: 0.12 });
-  gsap.from('.navbar-top',   { y: -10, opacity: 0, duration: 0.35, ease: 'power2.out' });
-});
-</script>
 </body>
 </html>

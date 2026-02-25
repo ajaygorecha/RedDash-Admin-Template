@@ -69,6 +69,16 @@ const I18nManager = (() => {
       'notifications.markAll': 'Mark all as read',
       'notifications.viewAll': 'View all notifications',
       'notifications.empty': 'No new notifications',
+      // Page titles
+      'page.users': 'Users Management',
+      'page.projects': 'Projects',
+      'page.calendar': 'Calendar',
+      'page.kanban': 'Kanban Board',
+      'page.pricing': 'Pricing Plans',
+      'page.faq': 'Frequently Asked Questions',
+      'page.profile': 'My Profile',
+      'page.documentation': 'Documentation',
+      'page.changelog': 'Changelog',
     },
     hi: {
       'nav.dashboard': 'डैशबोर्ड',
@@ -125,6 +135,16 @@ const I18nManager = (() => {
       'notifications.markAll': 'सभी पढ़े हुए मार्क करें',
       'notifications.viewAll': 'सभी सूचनाएं देखें',
       'notifications.empty': 'कोई नई सूचना नहीं',
+      // Page titles
+      'page.users': 'उपयोगकर्ता प्रबंधन',
+      'page.projects': 'प्रोजेक्ट',
+      'page.calendar': 'कैलेंडर',
+      'page.kanban': 'कानबान बोर्ड',
+      'page.pricing': 'मूल्य निर्धारण योजनाएं',
+      'page.faq': 'सामान्य प्रश्न',
+      'page.profile': 'मेरी प्रोफाइल',
+      'page.documentation': 'दस्तावेज़ीकरण',
+      'page.changelog': 'परिवर्तन लॉग',
     },
     ar: {
       'nav.dashboard': 'لوحة التحكم',
@@ -181,6 +201,16 @@ const I18nManager = (() => {
       'notifications.markAll': 'وضع علامة مقروء للكل',
       'notifications.viewAll': 'عرض كل الإشعارات',
       'notifications.empty': 'لا توجد إشعارات جديدة',
+      // Page titles
+      'page.users': 'إدارة المستخدمين',
+      'page.projects': 'المشاريع',
+      'page.calendar': 'التقويم',
+      'page.kanban': 'لوحة كانبان',
+      'page.pricing': 'خطط الأسعار',
+      'page.faq': 'الأسئلة الشائعة',
+      'page.profile': 'ملفي الشخصي',
+      'page.documentation': 'التوثيق',
+      'page.changelog': 'سجل التغييرات',
     }
   };
 

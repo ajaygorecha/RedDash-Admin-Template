@@ -842,8 +842,28 @@ select.form-control {
 }
 
 /* --------------------------------------------------
-   PAGINATION
+   PAGINATION — Bootstrap override + custom
    -------------------------------------------------- */
+
+/* Override Bootstrap's default blue with brand color */
+.pagination {
+  --bs-pagination-color: var(--text-muted);
+  --bs-pagination-bg: var(--bg-card);
+  --bs-pagination-border-color: var(--border-color);
+  --bs-pagination-hover-color: var(--primary);
+  --bs-pagination-hover-bg: var(--primary-soft);
+  --bs-pagination-hover-border-color: var(--primary);
+  --bs-pagination-focus-color: var(--primary);
+  --bs-pagination-focus-bg: var(--primary-soft);
+  --bs-pagination-focus-box-shadow: 0 0 0 0.2rem rgba(255, 0, 56, 0.25);
+  --bs-pagination-active-color: #fff;
+  --bs-pagination-active-bg: var(--primary);
+  --bs-pagination-active-border-color: var(--primary);
+  --bs-pagination-disabled-color: var(--text-muted);
+  --bs-pagination-disabled-bg: var(--bg-card);
+  --bs-pagination-disabled-border-color: var(--border-color);
+}
+
 .pagination-custom {
   display: flex;
   align-items: center;

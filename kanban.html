@@ -106,7 +106,7 @@
       <!-- Page Header -->
       <div class="page-header">
         <div>
-          <h1 class="page-title">Kanban Board</h1>
+          <h1 class="page-title" data-translate="page.kanban">Kanban Board</h1>
           <nav aria-label="breadcrumb">
             <ol class="breadcrumb mb-0">
               <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
@@ -673,13 +673,6 @@
     setTimeout(() => t.remove(), 3000);
   }
 
-  /* Animate cards on load */
-  document.addEventListener('DOMContentLoaded', function() {
-    if (typeof gsap !== 'undefined') {
-      gsap.from('.kanban-col', { opacity: 0, y: 30, duration: 0.5, stagger: 0.1, ease: 'power2.out', delay: 0.2 });
-      gsap.from('.stat-mini', { opacity: 0, y: 20, duration: 0.4, stagger: 0.08, ease: 'power2.out' });
-    }
-  });
 </script>
 </body>
 </html>

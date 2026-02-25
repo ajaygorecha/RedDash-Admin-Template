@@ -560,18 +560,7 @@
   new Chart(document.getElementById('spark3'), { type:'line', data:{ labels:sparkLabels, datasets:[{...sparkColor('rgb(0,200,120)'), data: randData()}] }, options: sparkOpts });
   new Chart(document.getElementById('spark4'), { type:'line', data:{ labels:sparkLabels, datasets:[{...sparkColor('rgb(255,180,0)'), data: randData()}] }, options: sparkOpts });
 
-  gsap.from('.page-header', { y: 16, opacity: 0, duration: 0.4, ease: 'power2.out' });
-  gsap.from('.kit-section', { y: 14, opacity: 0, stagger: 0.07, duration: 0.35, ease: 'power2.out', delay: 0.1 });
 })();
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  if (typeof gsap === 'undefined') return;
-  gsap.from('.page-header',  { y: 18, opacity: 0, duration: 0.45, ease: 'power2.out' });
-  gsap.from('.kit-section',  { y: 14, opacity: 0, stagger: 0.07, duration: 0.4, ease: 'power2.out', delay: 0.12 });
-  gsap.from('.navbar-top',   { y: -10, opacity: 0, duration: 0.35, ease: 'power2.out' });
-});
 </script>
 </body>
 </html>
