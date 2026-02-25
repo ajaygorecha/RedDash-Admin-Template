@@ -7,6 +7,8 @@
 [![Bootstrap 5](https://img.shields.io/badge/Bootstrap-5.3-7952b3)](https://getbootstrap.com/)
 [![Vanilla JS](https://img.shields.io/badge/JavaScript-Vanilla-yellow)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 
+**[▶ Live Demo](https://red-dash-admin-template.vercel.app/)** · [Report Bug](https://github.com) · [Request Feature](https://github.com)
+
 ---
 
 ## 🔍 Keywords
@@ -107,6 +109,8 @@ RedDash Admin Template/
 ---
 
 ## 🚀 Quick Start
+
+**[View Live Demo →](https://red-dash-admin-template.vercel.app/)**
 
 ### Option 1: Open Directly
 
@@ -265,7 +269,9 @@ Contributions are welcome! Feel free to open issues or submit pull requests.
 
 ## ⭐ Show Your Support
 
-If this template helps you, consider giving it a star on GitHub.
+If this template helps you, consider giving it a star on GitHub or buying me a coffee!
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/yourusername)
 
 ---
 
