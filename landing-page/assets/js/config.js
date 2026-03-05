@@ -1,23 +1,23 @@
 // ============================================================
-// Stripe Configuration
-// Set MODE to "test" or "production"
+// PayPal Configuration
+// Set MODE to "sandbox" (testing) or "live" (production)
 // ============================================================
 
-const STRIPE_MODE = "test";
+const PAYPAL_MODE = "sandbox";
 
-const STRIPE_KEYS = {
-  test: "pk_test_51LQVcPSJskYSwv1INO8qc9eryy7E7r1PZlCfSUI4KSo4qDzyzpbGA4Z7f704sLca22anpThrBfnuN82K2Erv2d1900hZwZ0ik8",
-  production: "pk_live_51LQVcPSJskYSwv1IO0RqpWHXNnMNPMDxblRDSNA2priyDgWA5xOGemZcqLOoyqy7oZ8HBYi0ioFPUPfZ9pZPbFWz00adJKXuAf"
+// HOW TO GET YOUR CLIENT IDs:
+//   1. Go to https://developer.paypal.com/dashboard/applications
+//   2. "Sandbox" tab  → create/copy your sandbox client ID
+//   3. "Live" tab     → create/copy your live client ID
+const PAYPAL_CLIENT_IDS = {
+  sandbox: "AYZLoF4BBFUGHdV6OsS3qxDPbd-m4PnRXPQzQTlXHfWkxb3tpIj6sc1YF9LyGP3RMns2ETi1zFjQKE1T",
+  live:    "REPLACE_WITH_LIVE_CLIENT_ID"
 };
 
-const STRIPE_PRICE_IDS = {
-  test: "price_1T7g91SJskYSwv1ItbeNWFBJ",
-  production: "price_1T7g6dSJskYSwv1IuzaYbCO3"
-};
-
-const STRIPE_CONFIG = {
-  publishableKey: STRIPE_KEYS[STRIPE_MODE],
-  priceId: STRIPE_PRICE_IDS[STRIPE_MODE],
-  successUrl: window.location.origin + "/landing-page/success.html",
-  cancelUrl: window.location.origin + "/"
+const PAYPAL_CONFIG = {
+  clientId:    PAYPAL_CLIENT_IDS[PAYPAL_MODE],
+  currency:    "USD",
+  amount:      "29.00",
+  productName: "RedDash Admin Template",
+  successUrl:  "https://reddash.tech/landing-page/success.html"
 };
