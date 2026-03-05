@@ -3,97 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- ── Primary Meta ─────────────────────────────────────── -->
-  <title>RedDash Admin Template – Premium Bootstrap 5 Dashboard UI Kit</title>
-  <meta name="description" content="RedDash is a premium Bootstrap 5 admin dashboard template with dark mode, RTL, multi-language, Chart.js, FullCalendar, DataTables and GSAP animations. Buy once, use forever." />
-  <meta name="keywords" content="admin template, bootstrap 5 admin, dashboard template, admin panel, UI kit, dark mode admin, RTL dashboard, chart.js dashboard, admin dashboard HTML" />
-  <meta name="author" content="RedDash" />
-  <meta name="robots" content="index, follow" />
-  <meta name="theme-color" content="#ff0038" />
-
-  <!-- ── Canonical ─────────────────────────────────────────── -->
-  <!-- Replace with your actual domain before publishing -->
-  <link rel="canonical" href="https://reddash.tech/" />
-
-  <!-- ── Open Graph (Facebook / LinkedIn) ──────────────────── -->
-  <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://reddash.tech/" />
-  <meta property="og:site_name"   content="RedDash Admin Template" />
-  <meta property="og:title"       content="RedDash Admin Template – Premium Bootstrap 5 Dashboard UI Kit" />
-  <meta property="og:description" content="Modern, fast and developer-friendly admin dashboard template. Dark mode, RTL, Charts, FullCalendar, DataTables and more — buy once, use forever." />
-  <meta property="og:image"       content="https://reddash.tech/landing-page/landing-page-images/image-1.jpg" />
-  <meta property="og:image:width"  content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:locale"      content="en_US" />
-
-  <!-- ── Twitter Card ──────────────────────────────────────── -->
-  <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:title"       content="RedDash Admin Template – Premium Bootstrap 5 Dashboard" />
-  <meta name="twitter:description" content="Modern admin dashboard template with dark mode, RTL, Chart.js, FullCalendar and more. One-time purchase, lifetime access." />
-  <meta name="twitter:image"       content="https://reddash.tech/landing-page/landing-page-images/image-1.jpg" />
-
-  <!-- ── JSON-LD Structured Data ───────────────────────────── -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "SoftwareApplication",
-        "name": "RedDash Admin Template",
-        "url": "https://reddash.tech/",
-        "description": "Premium Bootstrap 5 admin dashboard template with dark mode, RTL, multi-language support, Chart.js, FullCalendar, DataTables and GSAP animations.",
-        "applicationCategory": "DeveloperApplication",
-        "operatingSystem": "Web Browser",
-        "softwareVersion": "1.0.0",
-        "screenshot": "https://reddash.tech/landing-page/landing-page-images/image-1.jpg",
-        "offers": {
-          "@type": "Offer",
-          "price": "29.00",
-          "priceCurrency": "USD",
-          "availability": "https://schema.org/InStock",
-          "seller": {
-            "@type": "Organization",
-            "name": "RedDash"
-          }
-        },
-        "featureList": [
-          "Dark Mode",
-          "RTL Support",
-          "Multi-Language (EN, HI, AR)",
-          "Chart.js Integration",
-          "FullCalendar Integration",
-          "DataTables Integration",
-          "GSAP Animations",
-          "Three.js Background",
-          "Bootstrap 5",
-          "15+ HTML Pages",
-          "50+ UI Components"
-        ]
-      },
-      {
-        "@type": "WebPage",
-        "url": "https://reddash.tech/",
-        "name": "RedDash Admin Template – Premium Bootstrap 5 Dashboard UI Kit",
-        "description": "Buy RedDash, a premium Bootstrap 5 admin dashboard template with dark mode, RTL and charts.",
-        "breadcrumb": {
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Home",
-              "item": "https://reddash.tech/"
-            }
-          ]
-        }
-      }
-    ]
-  }
-  </script>
-
-  <!-- ── Preload Hero Image ─────────────────────────────────── -->
-  <link rel="preload" as="image" href="landing-page/landing-page-images/image-1.jpg" />
+  <meta name="description" content="RedDash – Modern, fast and developer-friendly admin dashboard template built with Bootstrap 5, Chart.js, FullCalendar and more." />
+  <meta name="keywords" content="admin template, bootstrap dashboard, admin panel, redDash, UI kit" />
+  <title>RedDash Admin Template – Premium Bootstrap 5 Dashboard</title>
 
   <!-- Bootstrap 5 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
@@ -103,10 +15,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <!-- Landing Page CSS -->
-  <link rel="stylesheet" href="landing-page/assets/css/style.css" />
+  <!-- Landing Page CSS (compiled from SCSS) -->
+  <link rel="stylesheet" href="assets/css/style.css" />
 
   <style>
+    /* Inline fallback in case SCSS hasn't been compiled yet */
     :root {
       --primary: #ff0038;
       --primary-dark: #cc0030;
@@ -118,8 +31,6 @@
   </style>
 </head>
 <body>
-  <!-- Skip to main content (accessibility + SEO) -->
-  <a href="#main-content" class="visually-hidden-focusable position-absolute top-0 start-0 p-2 bg-primary text-white fw-bold" style="z-index:9999">Skip to main content</a>
 
   <!-- ══════════════════════════════════════════════════════════
        NAVBAR
@@ -134,27 +45,19 @@
           <li><a href="#preview">Preview</a></li>
           <li><a href="#pricing">Pricing</a></li>
           <li><a href="#faq">FAQ</a></li>
-          <li><a href="dashboard.html">Live Demo</a></li>
         </ul>
 
-        <div class="d-flex align-items-center gap-2">
-          <a href="dashboard.html" class="btn btn-outline-primary btn-sm px-3 d-none d-md-inline-flex align-items-center gap-1">
-            <i class="ri-eye-line"></i> Live Demo
-          </a>
-          <button class="btn btn-primary btn-sm px-4" data-action="buy-now">
-            <i class="ri-shopping-cart-line me-1"></i> Buy Now
-          </button>
-        </div>
+        <button class="btn btn-primary btn-sm px-4" data-action="buy-now">
+          <i class="ri-shopping-cart-line me-1"></i> Buy Now
+        </button>
       </div>
     </div>
   </nav>
 
-  <main id="main-content">
-
   <!-- ══════════════════════════════════════════════════════════
        HERO
   ══════════════════════════════════════════════════════════ -->
-  <section class="lp-hero" aria-label="Hero">
+  <section class="lp-hero">
     <div class="container">
       <div class="row align-items-center g-5">
 
@@ -180,8 +83,8 @@
             <button class="btn btn-primary btn-lg" data-action="buy-now">
               <i class="ri-secure-payment-line me-2"></i>Buy Now
             </button>
-            <a href="dashboard.html" class="btn btn-outline-primary btn-lg">
-              <i class="ri-eye-line me-2"></i>Live Preview
+            <a href="#preview" class="btn btn-outline-primary btn-lg">
+              <i class="ri-eye-line me-2"></i>See Preview
             </a>
           </div>
 
@@ -195,7 +98,7 @@
         <!-- Right -->
         <div class="col-lg-6">
           <div class="hero-image-wrap float-anim">
-            <img src="landing-page/landing-page-images/image-1.jpg" alt="RedDash Admin Template – Bootstrap 5 dashboard overview screenshot showing analytics charts and sidebar navigation" class="hero-img" width="800" height="500" decoding="async" />
+            <img src="landing-page-images/image-1.jpg" alt="RedDash Dashboard Preview" class="hero-img" />
 
             <div class="floating-badge badge-1">
               <div class="badge-icon" style="background:rgba(255,0,56,0.1)">
@@ -226,7 +129,7 @@
   <!-- ══════════════════════════════════════════════════════════
        STATS BAR
   ══════════════════════════════════════════════════════════ -->
-  <section class="lp-stats" aria-label="Template statistics">
+  <section class="lp-stats">
     <div class="container">
       <div class="row g-4 text-center">
         <div class="col-6 col-md-3">
@@ -260,7 +163,7 @@
   <!-- ══════════════════════════════════════════════════════════
        FEATURES
   ══════════════════════════════════════════════════════════ -->
-  <section class="lp-features section-pad" id="features" aria-label="Features">
+  <section class="lp-features section-pad" id="features">
     <div class="container">
       <div class="section-header">
         <span class="section-eyebrow">Everything You Need</span>
@@ -349,71 +252,64 @@
   <!-- ══════════════════════════════════════════════════════════
        DASHBOARD PREVIEW
   ══════════════════════════════════════════════════════════ -->
-  <section class="lp-preview section-pad" id="preview" aria-label="Dashboard preview screenshots">
+  <section class="lp-preview section-pad" id="preview">
     <div class="container">
       <div class="section-header">
         <span class="section-eyebrow">Screenshots</span>
         <h2>See It In Action</h2>
-        <p>Click any screenshot to preview it in full size, or explore the live demo.</p>
-      </div>
-
-      <!-- Live Demo Banner -->
-      <div class="text-center mb-5">
-        <a href="dashboard.html" class="btn btn-primary btn-lg px-5">
-          <i class="ri-external-link-line me-2"></i>Open Live Demo
-        </a>
+        <p>Click any screenshot to preview it in full size.</p>
       </div>
 
       <div class="preview-grid">
 
-        <div class="preview-item" data-img="landing-page/landing-page-images/image-1.jpg" data-caption="Dashboard Overview">
-          <img src="landing-page/landing-page-images/image-1.jpg" alt="RedDash dashboard overview – revenue charts and statistics cards" loading="lazy" decoding="async" width="600" height="400" />
-          <div class="preview-overlay"><i class="ri-zoom-in-line" aria-hidden="true"></i></div>
+        <div class="preview-item" data-img="landing-page-images/image-1.jpg" data-caption="Dashboard Overview">
+          <img src="landing-page-images/image-1.jpg" alt="Dashboard Overview" loading="lazy" />
+          <div class="preview-overlay"><i class="ri-zoom-in-line"></i></div>
         </div>
 
-        <div class="preview-item" data-img="landing-page/landing-page-images/image-2.jpg" data-caption="Analytics Chart">
-          <img src="landing-page/landing-page-images/image-2.jpg" alt="RedDash analytics page with Chart.js revenue and donut charts" loading="lazy" decoding="async" width="600" height="400" />
-          <div class="preview-overlay"><i class="ri-zoom-in-line" aria-hidden="true"></i></div>
+        <div class="preview-item" data-img="landing-page-images/image-2.jpg" data-caption="Analytics Chart">
+          <img src="landing-page-images/image-2.jpg" alt="Analytics Chart" loading="lazy" />
+          <div class="preview-overlay"><i class="ri-zoom-in-line"></i></div>
         </div>
 
-        <div class="preview-item" data-img="landing-page/landing-page-images/image-3.jpg" data-caption="Users Table">
-          <img src="landing-page/landing-page-images/image-3.jpg" alt="RedDash users management page with DataTables integration" loading="lazy" decoding="async" width="600" height="400" />
-          <div class="preview-overlay"><i class="ri-zoom-in-line" aria-hidden="true"></i></div>
+        <div class="preview-item" data-img="landing-page-images/image-3.jpg" data-caption="Users Table">
+          <img src="landing-page-images/image-3.jpg" alt="Users Table" loading="lazy" />
+          <div class="preview-overlay"><i class="ri-zoom-in-line"></i></div>
         </div>
 
-        <div class="preview-item" data-img="landing-page/landing-page-images/image-4.jpg" data-caption="Dark Mode">
-          <img src="landing-page/landing-page-images/image-4.jpg" alt="RedDash admin template dark mode – dark dashboard layout" loading="lazy" decoding="async" width="600" height="400" />
-          <div class="preview-overlay"><i class="ri-zoom-in-line" aria-hidden="true"></i></div>
+        <div class="preview-item" data-img="landing-page-images/image-4.jpg" data-caption="Dark Mode">
+          <img src="landing-page-images/image-4.jpg" alt="Dark Mode" loading="lazy" />
+          <div class="preview-overlay"><i class="ri-zoom-in-line"></i></div>
         </div>
 
-        <div class="preview-item" data-img="landing-page/landing-page-images/image-5.jpg" data-caption="Calendar Page">
-          <img src="landing-page/landing-page-images/image-5.jpg" alt="RedDash calendar page with FullCalendar 6 month view" loading="lazy" decoding="async" width="600" height="400" />
-          <div class="preview-overlay"><i class="ri-zoom-in-line" aria-hidden="true"></i></div>
+        <div class="preview-item" data-img="landing-page-images/image-5.jpg" data-caption="Calendar Page">
+          <img src="landing-page-images/image-5.jpg" alt="Calendar Page" loading="lazy" />
+          <div class="preview-overlay"><i class="ri-zoom-in-line"></i></div>
         </div>
 
-        <div class="preview-item" data-img="landing-page/landing-page-images/image-6.jpg" data-caption="Projects Grid">
-          <img src="landing-page/landing-page-images/image-6.jpg" alt="RedDash projects page – grid view with progress bars" loading="lazy" decoding="async" width="600" height="400" />
-          <div class="preview-overlay"><i class="ri-zoom-in-line" aria-hidden="true"></i></div>
+        <div class="preview-item" data-img="landing-page-images/image-6.jpg" data-caption="Projects Grid">
+          <img src="landing-page-images/image-6.jpg" alt="Projects Grid" loading="lazy" />
+          <div class="preview-overlay"><i class="ri-zoom-in-line"></i></div>
         </div>
 
-        <div class="preview-item" data-img="landing-page/landing-page-images/image-7.jpg" data-caption="Kanban Board">
-          <img src="landing-page/landing-page-images/image-7.jpg" alt="RedDash kanban board page – drag and drop task management UI" loading="lazy" decoding="async" width="600" height="400" />
-          <div class="preview-overlay"><i class="ri-zoom-in-line" aria-hidden="true"></i></div>
+        <div class="preview-item" data-img="landing-page-images/image-7.jpg" data-caption="Kanban Board">
+          <img src="landing-page-images/image-7.jpg" alt="Kanban Board" loading="lazy" />
+          <div class="preview-overlay"><i class="ri-zoom-in-line"></i></div>
         </div>
 
-        <div class="preview-item" data-img="landing-page/landing-page-images/image-8.jpg" data-caption="Chat Page">
-          <img src="landing-page/landing-page-images/image-8.jpg" alt="RedDash chat page – messaging UI with user list and message bubbles" loading="lazy" decoding="async" width="600" height="400" />
-          <div class="preview-overlay"><i class="ri-zoom-in-line" aria-hidden="true"></i></div>
+        <div class="preview-item" data-img="landing-page-images/image-8.jpg" data-caption="Chat Page">
+          <img src="landing-page-images/image-8.jpg" alt="Chat Page" loading="lazy" />
+          <div class="preview-overlay"><i class="ri-zoom-in-line"></i></div>
         </div>
 
-        <div class="preview-item" data-img="landing-page/landing-page-images/image-9.jpg" data-caption="Login Page">
-          <img src="landing-page/landing-page-images/image-9.jpg" alt="RedDash login page with Three.js animated background" loading="lazy" decoding="async" width="600" height="400" />
-          <div class="preview-overlay"><i class="ri-zoom-in-line" aria-hidden="true"></i></div>
+        <div class="preview-item" data-img="landing-page-images/image-9.jpg" data-caption="Login Page">
+          <img src="landing-page-images/image-9.jpg" alt="Login Page" loading="lazy" />
+          <div class="preview-overlay"><i class="ri-zoom-in-line"></i></div>
         </div>
 
-        <div class="preview-item" data-img="landing-page/landing-page-images/image-10.png" data-caption="Profile Page">
-          <img src="landing-page/landing-page-images/image-10.png" alt="RedDash user profile page with activity tabs and settings" loading="lazy" decoding="async" width="600" height="400" />
-          <div class="preview-overlay"><i class="ri-zoom-in-line" aria-hidden="true"></i></div>
+        <div class="preview-item" data-img="landing-page-images/image-10.png" data-caption="Profile Page">
+          <img src="landing-page-images/image-10.png" alt="Profile Page" loading="lazy" />
+          <div class="preview-overlay"><i class="ri-zoom-in-line"></i></div>
         </div>
 
       </div>
@@ -438,7 +334,7 @@
   <!-- ══════════════════════════════════════════════════════════
        TEMPLATE HIGHLIGHTS
   ══════════════════════════════════════════════════════════ -->
-  <section class="lp-highlights section-pad" id="highlights" aria-label="What you get">
+  <section class="lp-highlights section-pad" id="highlights">
     <div class="container">
       <div class="row align-items-center g-5">
 
@@ -490,7 +386,7 @@
 
         <div class="col-lg-6">
           <div class="highlight-img-wrap">
-            <img src="landing-page/landing-page-images/image-4.jpg" alt="RedDash admin template dark mode – professional dark dashboard layout" loading="lazy" decoding="async" width="700" height="440" />
+            <img src="landing-page-images/image-4.jpg" alt="RedDash Dark Mode Preview" />
           </div>
         </div>
 
@@ -501,7 +397,7 @@
   <!-- ══════════════════════════════════════════════════════════
        PRICING
   ══════════════════════════════════════════════════════════ -->
-  <section class="lp-pricing section-pad" id="pricing" aria-label="Pricing">
+  <section class="lp-pricing section-pad" id="pricing">
     <div class="container">
       <div class="section-header">
         <span class="section-eyebrow">Simple Pricing</span>
@@ -548,7 +444,7 @@
   <!-- ══════════════════════════════════════════════════════════
        FAQ
   ══════════════════════════════════════════════════════════ -->
-  <section class="lp-faq section-pad" id="faq" aria-label="Frequently asked questions">
+  <section class="lp-faq section-pad" id="faq">
     <div class="container">
       <div class="section-header">
         <span class="section-eyebrow">Got Questions?</span>
@@ -629,27 +525,20 @@
   <!-- ══════════════════════════════════════════════════════════
        CTA BANNER
   ══════════════════════════════════════════════════════════ -->
-  <section class="lp-cta" aria-label="Call to action">
+  <section class="lp-cta">
     <div class="container">
       <h2>Ready to Build Something Amazing?</h2>
       <p>Get instant access to RedDash and start shipping faster today.</p>
-      <div class="d-flex justify-content-center gap-3 flex-wrap">
-        <button class="btn btn-white" data-action="buy-now">
-          <i class="ri-secure-payment-line me-2"></i>Get RedDash — $29
-        </button>
-        <a href="dashboard.html" class="btn btn-outline-light btn-lg px-4">
-          <i class="ri-eye-line me-2"></i>Live Demo
-        </a>
-      </div>
+      <button class="btn btn-white" data-action="buy-now">
+        <i class="ri-secure-payment-line me-2"></i>Get RedDash — $29
+      </button>
     </div>
   </section>
-
-  </main><!-- /#main-content -->
 
   <!-- ══════════════════════════════════════════════════════════
        FOOTER
   ══════════════════════════════════════════════════════════ -->
-  <footer class="lp-footer" aria-label="Site footer">
+  <footer class="lp-footer">
     <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
       <div class="footer-brand">Red<span>Dash</span></div>
       <p>© 2024 RedDash Admin Template. All rights reserved.</p>
@@ -671,8 +560,8 @@
   ══════════════════════════════════════════════════════════ -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://js.stripe.com/v3/"></script>
-  <script src="landing-page/assets/js/config.js"></script>
-  <script src="landing-page/assets/js/stripe.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/stripe.js"></script>
 
   <script>
     // ── Navbar scroll effect ──────────────────────────────────
@@ -682,13 +571,13 @@
     });
 
     // ── Screenshot modal ──────────────────────────────────────
-    const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
-    const modalImg     = document.getElementById('modalPreviewImg');
-    const modalLabel   = document.getElementById('previewModalLabel');
+    const previewModal  = new bootstrap.Modal(document.getElementById('previewModal'));
+    const modalImg      = document.getElementById('modalPreviewImg');
+    const modalLabel    = document.getElementById('previewModalLabel');
 
     document.querySelectorAll('.preview-item').forEach(item => {
       item.addEventListener('click', () => {
-        modalImg.src           = item.dataset.img;
+        modalImg.src        = item.dataset.img;
         modalLabel.textContent = item.dataset.caption || 'Preview';
         previewModal.show();
       });

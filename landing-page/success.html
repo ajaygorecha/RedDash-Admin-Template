@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank You – RedDash Admin Template</title>
+
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <!-- Remix Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary: #ff0038;
+      --primary-soft: rgba(255,0,56,0.08);
+      --dark: #0f1115;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #fff8f9 0%, #ffffff 50%, #f8f9ff 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 16px;
+      color: #212529;
+    }
+
+    .success-card {
+      background: #fff;
+      border-radius: var(--radius);
+      padding: 56px 48px;
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.10);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .success-icon-wrap {
+      width: 90px;
+      height: 90px;
+      background: var(--primary-soft);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 28px;
+      animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+
+    .success-icon-wrap i {
+      font-size: 2.6rem;
+      color: var(--primary);
+    }
+
+    @keyframes pop {
+      0%   { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #212529;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .success-sub {
+      font-size: 1rem;
+      color: #6c757d;
+      line-height: 1.7;
+      margin-bottom: 36px;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--primary);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      padding: 16px 36px;
+      font-size: 1rem;
+      font-weight: 700;
+      transition: transform 0.25s, box-shadow 0.25s;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .download-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(255,0,56,0.30);
+      color: #fff;
+    }
+
+    .download-btn i { font-size: 1.3rem; }
+
+    .whats-included {
+      text-align: left;
+      background: #f8f9ff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin: 28px 0;
+    }
+
+    .whats-included h6 {
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #6c757d;
+      margin-bottom: 14px;
+    }
+
+    .whats-included ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .whats-included li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: #212529;
+      padding: 6px 0;
+    }
+
+    .whats-included li i {
+      color: var(--primary);
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .back-link {
+      font-size: 0.88rem;
+      color: #6c757d;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--primary); }
+
+    @media (max-width: 480px) {
+      .success-card { padding: 40px 24px; }
+      h1 { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="success-card">
+
+    <div class="success-icon-wrap">
+      <i class="ri-checkbox-circle-fill"></i>
+    </div>
+
+    <h1>Thank You for Purchasing RedDash!</h1>
+
+    <p class="success-sub">
+      Your payment was successful. Your download is ready below.
+      Check your email for the receipt.
+    </p>
+
+    <!-- Download Button -->
+    <a href="../downloads/reddash-admin-template.zip" download class="download-btn">
+      <i class="ri-download-cloud-2-line"></i>
+      Download RedDash Admin Template
+    </a>
+
+    <!-- What's inside -->
+    <div class="whats-included">
+      <h6>What's inside the ZIP</h6>
+      <ul>
+        <li><i class="ri-checkbox-circle-fill"></i> 15+ HTML pages (dashboard, users, calendar, kanban, chat &amp; more)</li>
+        <li><i class="ri-checkbox-circle-fill"></i> Modular SCSS + compiled CSS</li>
+        <li><i class="ri-checkbox-circle-fill"></i> Dark mode, RTL, multi-language (EN / HI / AR)</li>
+        <li><i class="ri-checkbox-circle-fill"></i> Chart.js, FullCalendar 6, DataTables, GSAP, Three.js</li>
+        <li><i class="ri-checkbox-circle-fill"></i> 50+ UI components</li>
+        <li><i class="ri-checkbox-circle-fill"></i> Vercel-ready configuration</li>
+        <li><i class="ri-checkbox-circle-fill"></i> Full documentation &amp; changelog</li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="back-link">
+      <i class="ri-arrow-left-line"></i> Back to landing page
+    </a>
+
+  </div>
+
+  <!-- Remix Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

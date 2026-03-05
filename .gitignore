@@ -9,6 +9,7 @@ Thumbs.db
 
 # Editor
 .vscode/
+.claude/
 .idea/
 *.swp
 *.swo
@@ -37,3 +38,6 @@ logs/
 # Temporary files
 *.tmp
 *.temp
+
+#MD files
+*.md

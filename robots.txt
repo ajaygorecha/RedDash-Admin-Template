@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Block admin/internal pages from indexing
+Disallow: /landing-page/assets/
+Disallow: /assets/
+
+# Sitemap location
+# Sitemap for reddash.tech
+Sitemap: https://reddash.tech/sitemap.xml
